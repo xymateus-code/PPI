@@ -1,0 +1,1080 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jornada PPI</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Nunito:wght@400;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1c2a22; --panel: #fbf6e9; --panel-line: #2a3a2f;
+            --arena-sky: #7ec8c2; --arena-ground: #3f7d5a; --arena-ground2: #356b4d;
+            --accent: #D85A30; --accent-dk: #993C1D;
+            --hp-green: #4cae6a; --hp-amber: #e0a828; --hp-red: #d8442f;
+            --t-tech: #4ea37d; --t-social: #d4537e; --t-processo: #e0a828; --t-gestao: #7f77dd;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html, body { height: 100%; }
+        body {
+            font-family: "Nunito", sans-serif;
+            background: #26342b;
+            display: flex; align-items: center; justify-content: center;
+            min-height: 100vh; padding: 12px; color: var(--ink);
+        }
+
+        .pixel { font-family: "Press Start 2P", monospace; line-height: 1.5; }
+
+        #game {
+            width: 100%; max-width: 460px; background: var(--panel);
+            border: 5px solid var(--panel-line); border-radius: 18px;
+            box-shadow: 0 10px 0 rgba(0,0,0,.25), 0 16px 30px rgba(0,0,0,.35);
+            overflow: hidden; position: relative;
+        }
+
+        .screen { min-height: 540px; display: flex; flex-direction: column; }
+
+        /* --- Arena --- */
+        #arena {
+            position: relative; height: 300px;
+            background: linear-gradient(var(--arena-sky) 0%, var(--arena-sky) 55%, var(--arena-ground) 55%, var(--arena-ground2) 100%);
+            overflow: hidden;
+        }
+        .platform { position: absolute; width: 150px; height: 34px; border-radius: 50%; background: rgba(0,0,0,.16); }
+        .plat-enemy { top: 110px; right: 24px; }
+        .plat-player { bottom: 30px; left: 24px; }
+        
+        .combatant { position: absolute; display: flex; flex-direction: column; align-items: center; }
+        .enemy-mon { top: 30px; right: 46px; }
+        .player-mon { bottom: 30px; left: 46px; }
+        
+        /* SPRITES TRANSPARENTES */
+        .token {
+            width: 110px; height: 110px; 
+            background-size: contain; 
+            background-position: bottom center; 
+            background-repeat: no-repeat;
+            filter: drop-shadow(0 6px 0 rgba(0,0,0,.25));
+            transition: transform 0.2s;
+        }
+        .player-mon .token { width: 120px; height: 120px; filter: drop-shadow(0 6px 0 rgba(0,0,0,.25)) drop-shadow(0 0 6px rgba(216,90,48,.6)); } 
+
+        /* --- UI Elements --- */
+        .plate {
+            background: var(--panel); border: 3px solid var(--panel-line); border-radius: 10px;
+            padding: 8px 10px; width: 185px; box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+        }
+        .plate-enemy { position: absolute; top: 15px; left: 15px; }
+        .plate-player { position: absolute; bottom: 15px; right: 15px; }
+        
+        .hpfill { height: 100%; transition: width 0.4s ease; border-radius: 4px; }
+        .hptrack { height: 10px; background: #ddd; border: 2px solid var(--panel-line); border-radius: 6px; overflow: hidden; margin: 6px 0 2px; }
+
+        .btn {
+            font-family: "Nunito", sans-serif; font-weight: 800; font-size: 14px; cursor: pointer;
+            background: var(--panel); border: 3px solid var(--panel-line); border-radius: 10px;
+            padding: 12px; text-align: left; color: var(--ink); box-shadow: 0 4px 0 rgba(0,0,0,.15);
+            transition: transform .08s, box-shadow .08s; width: 100%;
+        }
+        .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.15); }
+        
+        .btn .mv-top { display: flex; align-items: center; justify-content: space-between; gap: 6px; margin-bottom: 6px; }
+        .btn .mv-sub { font-size: 10px; font-weight: 700; color: #888; display: flex; align-items: center; }
+
+        .efftag { font-family: "Nunito", sans-serif; font-weight: 800; font-size: 9px; padding: 2px 6px; border-radius: 4px; margin-right: 6px; white-space: nowrap; color: #5a6b5f; background: #e6dcc2; }
+        .eff-strong { background: #d3edbe; color: #2f6b1f; }
+        .eff-weak { background: #f4cdc6; color: #9a3320; }
+        .eff-supp { background: #d9e6f5; color: #2f5480; }
+
+        .ov-btn {
+            font-family: "Press Start 2P", monospace; font-size: 11px; cursor: pointer;
+            background: var(--accent); color: white; border: 3px solid #fff;
+            border-radius: 10px; padding: 15px; box-shadow: 0 5px 0 rgba(0,0,0,0.2);
+            transition: transform .08s; width: 100%;
+        }
+        .ov-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,.2); }
+
+        /* --- Specific Screens --- */
+        #selectionScreen { padding: 30px; text-align: center; background: #2f4034; color: white; }
+        .sel-photo { 
+            width: 180px; height: 220px; 
+            margin: 20px auto; background-size: contain; background-repeat: no-repeat; background-position: bottom center; 
+            filter: drop-shadow(0 8px 0 rgba(0,0,0,.25));
+        }
+
+        .teamstrip { display: flex; align-items: center; gap: 8px; padding: 10px; background: #efe7d2; border-top: 4px solid var(--panel-line); border-bottom: 4px solid var(--panel-line); }
+        .team-mini { 
+            width: 38px; height: 38px; 
+            background-size: contain; background-repeat: no-repeat; background-position: bottom center; 
+            filter: drop-shadow(0 2px 0 rgba(0,0,0,.2));
+            transition: filter 0.2s, transform 0.2s;
+        }
+        .ownerchip { font-family: "Press Start 2P", monospace; font-size: 7px; padding: 3px 6px; border-radius: 4px; color: #fff; }
+        .chip-you { background: var(--accent); } .chip-rival { background: #b94b35; }
+
+        /* Mapa Visual (Track) */
+        .map-track { display: flex; align-items: center; justify-content: center; margin: 15px 0 25px; flex-wrap: wrap; gap: 0; }
+        .map-node { width: 34px; height: 34px; border-radius: 50%; border: 3px solid #fff; background: #41513f; color: #fff; display: flex; align-items: center; justify-content: center; font-family: "Press Start 2P", monospace; font-size: 11px; flex: none; }
+        .map-node.done { background: var(--hp-green); }
+        .map-node.current { background: var(--accent); box-shadow: 0 0 0 4px rgba(216,90,48,.35); }
+        .map-node.boss { border-color: #ffd27a; width: auto; padding: 0 12px; border-radius: 17px; font-size: 10px; }
+        .map-node.boss.current { background: #b94b35; }
+        .map-link { height: 3px; width: 12px; background: #5a6b5f; }
+        
+        .map-team { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; flex-wrap: wrap; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 12px;}
+        .mapt { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 50px; }
+        .mapt-tk { width: 44px; height: 44px; background-size: contain; background-repeat: no-repeat; background-position: bottom center; filter: drop-shadow(0 2px 0 rgba(0,0,0,.25)); }
+        .mapt.down .mapt-tk { filter: grayscale(1) opacity(0.45); }
+        .mapt-hp { width: 44px; height: 6px; background: #1c2a22; border-radius: 4px; overflow: hidden; }
+        .mapt-hp>div { height: 100%; background: var(--hp-green); }
+        .mapt-nm { font-size: 8px; color: #cdc6b2; font-weight: 800; font-family: "Press Start 2P", monospace; margin-top:3px;}
+
+        #msgbox { background: var(--panel); padding: 18px; min-height: 85px; font-weight: 700; font-size: 15px; line-height: 1.4; display: flex; align-items: center;}
+        #menu { padding: 15px; background: #e0d6b8; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+        .tbadge { font-family: "Press Start 2P", monospace; font-size: 8px; padding: 4px 6px; color: #fff; border-radius: 6px; display: inline-block; text-shadow: 1px 1px 0 rgba(0,0,0,.3);}
+        .t-Tech { background: var(--t-tech); } .t-Social { background: var(--t-social); }
+        .t-Processo { background: var(--t-processo); } .t-Gestão { background: var(--t-gestao); }
+        
+        .status-tag { font-size: 9px; padding: 2px 5px; border-radius: 4px; margin-left: 6px; color: white; font-weight: 800; display: inline-block;}
+        .st-veneno { background: #7d4ea3; }
+        .st-confuso { background: #d8a72f; color: #3a2a00; }
+
+        @keyframes shake { 0%, 100% {transform: translateX(0)} 25% {transform: translateX(-5px)} 75% {transform: translateX(5px)} }
+        .shake { animation: shake 0.3s 2; }
+        
+        .cur{display:inline-block; margin-left:5px; color:var(--accent); transform:translateY(1px); animation:blink .85s steps(1) infinite;}
+        @keyframes blink{50%{opacity:0;}}
+
+        .feitos-scroll::-webkit-scrollbar { width: 6px; }
+        .feitos-scroll::-webkit-scrollbar-track { background: transparent; }
+        .feitos-scroll::-webkit-scrollbar-thumb { background: #5a6b5f; border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div id="game">
+    <div id="startScreen" class="screen" style="padding:50px 20px; text-align:center; background:#26342b;">
+        <h1 class="pixel" style="color:var(--accent); font-size:24px; margin-bottom:20px; line-height: 1.4;">JORNADA PPI</h1>
+        <p style="margin-bottom:50px; font-weight:700; color:var(--panel); font-size: 16px;">Monte o time perfeito e prove seu valor no projeto.</p>
+        <button class="ov-btn" onclick="startRandomRun()" style="font-size: 14px; padding: 20px;">INICIAR JORNADA</button>
+        <button class="ov-btn" style="margin-top:20px; background:#41513f" onclick="showFeitos()">🏆 FEITOS</button>
+    </div>
+
+    <div id="selectionScreen" class="screen" style="display:none;">
+        <h2 class="pixel" style="font-size:12px;">VOCÊ SELECIONOU:</h2>
+        <div id="selPhoto" class="sel-photo"></div>
+        <h1 id="selName" class="pixel" style="font-size:20px; color:var(--accent); margin-bottom:10px;">NOME</h1>
+        <p id="selDesc" style="margin-bottom:30px; font-size:14px; padding:0 20px;">Descrição.</p>
+        <button class="ov-btn" onclick="showChoices()">CONTINUAR</button>
+    </div>
+
+    <div id="mapScreen" class="screen" style="display:none; padding:30px 20px; background: #2f4034; overflow-y:auto;">
+        <div class="pixel" id="mapHeader" style="font-size:12px; margin-bottom:20px; color:var(--accent); text-align: center;">ETAPA X DE 5 ANTES DO CHEFE</div>
+        <div id="choiceList" style="display:flex; flex-direction:column; gap:15px;"></div>
+    </div>
+
+    <div id="auditScreen" class="screen" style="display:none; padding:30px 20px; text-align:center; background:#2f4034; color:white;">
+        <h2 class="pixel" style="font-size:16px; margin-bottom:15px; color:var(--accent);">AUDITORIA SURPRESA</h2>
+        <div id="auditPhoto" class="token" style="margin: 0 auto 10px; width: 100px; height: 100px;"></div>
+        <div class="pixel" id="auditAsker" style="font-size:10px; margin-bottom:15px; color:#e0a828;">FULANO PERGUNTA:</div>
+        <div style="background:var(--panel-line); border:3px solid #5a6b5f; border-radius:12px; padding:15px; margin-bottom:20px;">
+            <p id="auditQuestion" style="font-size:16px; font-weight:800; line-height:1.4; color:white;"></p>
+        </div>
+        <div id="auditOptions" style="display:flex; flex-direction:column; gap:10px;"></div>
+    </div>
+
+    <div id="recruitScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; background:#2f4034; color:white;">
+        <h2 class="pixel" style="font-size:16px; margin-bottom:30px; color:var(--accent);">RECRUTAMENTO PPI</h2>
+        <div id="recruitPhoto" class="token" style="margin: 0 auto 20px; width: 120px; height: 120px;"></div>
+        <p id="recruitText" style="margin-bottom:40px; font-size:16px; font-weight:800;">O novato reconheceu suas habilidades e quer entrar na equipe!</p>
+        <div id="recruitOptions" style="display:flex; flex-direction:column; gap:12px;"></div>
+    </div>
+
+    <div id="battleScreen" class="screen" style="display:none;">
+        <div class="teamstrip" style="justify-content: space-between; background: #2a3a2f; border-bottom: 4px solid var(--panel-line); border-top: none; padding: 8px 15px;">
+            <div class="pixel" style="color: white; font-size: 10px;">RIVAL</div>
+            <div id="enemyStrip" style="display: flex; gap: 5px;"></div>
+        </div>
+        <div id="arena">
+            <div class="platform plat-enemy"></div>
+            <div class="platform plat-player"></div>
+            <div class="plate plate-enemy" id="plateE"></div>
+            <div class="combatant enemy-mon" id="monE"></div>
+            <div class="combatant player-mon" id="monP"></div>
+            <div class="plate plate-player" id="plateP"></div>
+        </div>
+        <div class="teamstrip" style="justify-content: space-between; background: #f0dfb6; padding: 8px 15px;">
+            <div id="teamStrip" style="display: flex; gap: 5px;"></div>
+            <div class="pixel" style="color: var(--accent); font-size: 10px;">SEU TIME</div>
+        </div>
+        <div id="msgbox"><div id="msg">...</div></div>
+        <div id="menu"></div>
+    </div>
+
+    <div id="endScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; justify-content:center; background:#1c2a22; color:white;"></div>
+    <div id="feitosScreen" class="screen feitos-scroll" style="display:none; padding:30px 20px; background:#2f4034; overflow-y:auto;"></div>
+</div>
+
+<script>
+// --- BANCO DE IMAGENS ---
+const IMG = {
+    Igor: "igor.png",
+    Barbara: "barbara.png",
+    Gabriel: "gabriel.png",
+    Guilherme: "guilherme.png",
+    Daniel: "daniel.png",
+    Eric: "eric.png",
+    Edinei: "edinei.png",
+    Isis: "isis.png",
+    Marcelo: "marcelo.png",
+    Leonardo: "leonardo.png",
+    Paloma: "paloma.png",
+    Mateus: "mateus.png",
+    Leandro: "leandro.png",
+    LeandroBoss: "leandro_boss.png" 
+};
+
+// --- PERGUNTAS DO QUIZ (SHOW DO PPI) ---
+const AUDIT_QUIZ = [
+    { asker: "Leonardo", q: "Quantos P.N. ativos temos na Linha V em PTS?", opts: ["2.500", "3.800", "4.300", "5.100"], ans: 1 },
+    { asker: "Mateus", q: "Qual o valor em kEuros que PPI lançou no sprint em 2025?", opts: ["2.115", "1.900", "2.650", "2.320"], ans: 0 },
+    { asker: "Barbara", q: "Quantas ITs temos ativas em POG?", opts: ["98", "201", "117", "183"], ans: 2 },
+    { asker: "Eric", q: "Quando foi produzida a primeira ST8000 em POG?", opts: ["Março 2025", "Abril 2025", "Maio 2025", "Junho 2025"], ans: 1 },
+    { asker: "Guilherme", q: "Quantos compostos nós produzimos atualmente em POG?", opts: ["60", "62", "64", "56"], ans: 2 },
+    { asker: "Gabriel", q: "Quantas famílias de produto nós temos em POG?", opts: ["100", "102", "93", "91"], ans: 3 },
+    { asker: "Paloma", q: "Quantas competências são avaliadas na matriz X?", opts: ["33", "27", "31", "48"], ans: 3 },
+    { asker: "Leandro", q: "Qual a visão do nosso time de PPI?", opts: ["Help POG achieve its goal of becoming the top IAM facility in the Americas.", "Support POG on its journey to become the leading IAM facility across the Americas.", "Contribute to POG’s success as the best IAM facility in the Americas.", "Support POG to become the best IAM facility in Americas."], ans: 3 }
+];
+
+const CHART = {
+    Tech: { Tech: 1, Social: 0.5, Processo: 2, Gestão: 1 },
+    Social: { Tech: 2, Social: 1, Processo: 1, Gestão: 0.5 },
+    Processo: { Tech: 0.5, Social: 1, Processo: 1, Gestão: 2 },
+    Gestão: { Tech: 1, Social: 2, Processo: 0.5, Gestão: 1 },
+};
+
+const ROSTER = {
+    Leonardo: { name: "Leonardo", types: ["Tech"], base: { hp: 60, atk: 50, def: 60, spd: 50 }, jeitao: { name: "Visão Crítica", desc: "Defesa bônus contra Processo." }, moves: [{ name: "Criar POI", type: "Tech", power: 55, kind: "dmg" }, { name: "Inserir Correia no SAP", type: "Processo", power: 65, kind: "dmg" }] },
+    Barbara: { name: "Barbara", types: ["Social"], base: { hp: 55, atk: 50, def: 50, spd: 60 }, jeitao: { name: "Poliglota", desc: "Chance de confundir o alvo." }, moves: [{ name: "Falar alemão", type: "Social", power: 45, kind: "dmg_confuse" }, { name: "Comer dodileiti", type: "Processo", power: 35, kind: "dmg_debuff", stat: "def" }] },
+    Marcelo: { name: "Marcelo", types: ["Processo"], base: { hp: 65, atk: 55, def: 60, spd: 45 }, jeitao: { name: "Pavio Curto", desc: "Dano sobe quando HP < 50%." }, moves: [{ name: "Usar boina", type: "Processo", power: 60, kind: "dmg" }, { name: "Stevie Wonder", type: "Gestão", power: 50, kind: "dmg_debuff", stat: "spd" }] },
+    Mateus: { name: "Mateus", types: ["Gestão"], base: { hp: 60, atk: 55, def: 55, spd: 55 }, jeitao: { name: "Automação", desc: "Chance de ataque duplo." }, moves: [{ name: "Foto de IA", type: "Gestão", power: 65, kind: "dmg" }, { name: "Repriorizar ação", type: "Processo", power: 75, kind: "dmg_confuse" }] },
+    Eric: { name: "Eric", types: ["Processo"], base: { hp: 55, atk: 60, def: 50, spd: 60 }, jeitao: { name: "Faro para Problema", desc: "Críticos garantidos." }, moves: [{ name: "Reduzir Setup", type: "Processo", power: 55, kind: "dmg" }, { name: "Lixo no armário", type: "Social", power: 50, kind: "dmg_raise_spd" }] },
+    Daniel: { name: "Daniel", types: ["Tech"], base: { hp: 60, atk: 45, def: 60, spd: 45 }, jeitao: { name: "Papo Longo", desc: "Pode fazer o inimigo dormir." }, moves: [{ name: "Fazer Figurinha", type: "Tech", power: 45, kind: "dmg_confuse" }, { name: "Fazer brique", type: "Social", power: 50, kind: "dmg_skip" }] },
+    Edinei: { name: "Edinei", types: ["Processo"], base: { hp: 65, atk: 50, def: 55, spd: 50 }, jeitao: { name: "Bonitão", desc: "Recupera HP a cada turno." }, moves: [{ name: "Teste na Roller", type: "Processo", power: 55, kind: "dmg" }, { name: "Criar Apelido", type: "Social", power: 35, kind: "dmg_debuff", stat: "atk" }] },
+    Guilherme: { name: "Guilherme", types: ["Processo"], base: { hp: 50, atk: 50, def: 50, spd: 70 }, jeitao: { name: "Alvo Pequeno", desc: "Maior chance de esquiva." }, moves: [{ name: "Pré Vulcanização", type: "Processo", power: 50, kind: "dmg" }, { name: "Postergar teste", type: "Tech", power: 60, kind: "dmg" }] },
+    Gabriel: { name: "Gabriel", types: ["Tech"], base: { hp: 55, atk: 55, def: 45, spd: 55 }, jeitao: { name: "Onde Eu Tava?", desc: "Chance de ignorar dano." }, moves: [{ name: "Dormir na Capão", type: "Tech", power: 35, kind: "dmg_debuff", stat: "spd" }, { name: "Deixar Lixo na Mesa", type: "Processo", power: 55, kind: "dmg_poison" }] },
+    Isis: { name: "Isis", types: ["Processo"], base: { hp: 60, atk: 50, def: 65, spd: 45 }, jeitao: { name: "Hora Extra", desc: "Sobrevive com 1 HP a golpe fatal." }, moves: [{ name: "Ajuste Receita DSS", type: "Processo", power: 55, kind: "dmg" }, { name: "Ajuda no SAP", type: "Tech", power: 40, kind: "dmg_debuff", stat: "def" }] },
+    Igor: { name: "Igor", types: ["Processo"], base: { hp: 50, atk: 60, def: 40, spd: 65 }, jeitao: { name: "Cafeína", desc: "Sempre ataca primeiro." }, moves: [{ name: "Tomar Café", type: "Social", power: 50, kind: "dmg_raise_spd" }, { name: "Criar ODS", type: "Tech", power: 60, kind: "dmg" }] },
+    Paloma: { name: "Paloma", types: ["Social"], base: { hp: 60, atk: 45, def: 55, spd: 60 }, jeitao: { name: "Engajamento", desc: "Reduz ataque do inimigo." }, moves: [{ name: "Dinâmica em grupo", type: "Social", power: 45, kind: "dmg" }, { name: "Mapa Carreira", type: "Processo", power: 50, kind: "dmg_debuff", stat: "def" }] },
+    Leandro: { name: "Leandro", types: ["Gestão"], base: { hp: 140, atk: 75, def: 75, spd: 60 }, jeitao: { name: "Gestor", desc: "Imune a ataques Sociais." }, moves: [{ name: "Cobrar Indicador", type: "Gestão", power: 90, kind: "dmg_debuff", stat: "atk" }, { name: "Revisão de Metas", type: "Processo", power: 80, kind: "dmg" }] }
+};
+
+const FEITOS_LIST = [
+    {id:"cafezinho", n:"Cofee da Sodexo", desc:"Recupere a equipe na Parada da Pizza."},
+    {id:"fds", n:"Trabalhar Final de Semana", desc:"Chegue até a etapa do Chefão Final."},
+    {id:"tomas", n:"Apresentação pro Tomas", desc:"Aprove os projetos e derrote o Leandro."},
+    {id:"ods", n:"Aprovar ODS", desc:"Use o ataque 'Criar ODS' do Igor em batalha."}
+];
+
+let run, P, E;
+const TOTAL_STEPS = 5;
+const MAX_TEAM = 5;
+let _tw = null;
+
+function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
+
+function setMsg(t) {
+    if (_tw) { clearInterval(_tw); _tw = null; }
+    const el = document.getElementById("msg");
+    let i = 0;
+    el.innerHTML = '<span class="cur">▼</span>';
+    _tw = setInterval(() => {
+        i++;
+        el.innerHTML = esc(t.slice(0, i)) + '<span class="cur">▼</span>';
+        if (i >= t.length) { clearInterval(_tw); _tw = null; }
+    }, 25);
+}
+
+function say(txt) {
+    return new Promise(res => {
+        setMsg(txt);
+        setTimeout(res, txt.length * 25 + 900);
+    });
+}
+
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function getFeitos() {
+    try {
+        return new Set(JSON.parse(localStorage.getItem('ppi_feitos') || '[]'));
+    } catch (e) {
+        return new Set();
+    }
+}
+
+function showScreen(id) {
+    document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+    document.getElementById(id).style.display = 'flex';
+}
+
+function makeMon(key, lvl = 5) {
+    const data = ROSTER[key];
+    const boost = 1 + (lvl - 5) * 0.15;
+    
+    const maxhp = Math.round((data.base.hp * 2.5 + 40) * boost);
+    const atk = Math.round(data.base.atk * boost);
+    const def = Math.round(data.base.def * boost);
+    const spd = Math.round(data.base.spd * boost);
+
+    return { 
+        key, name: data.name, hp: maxhp, maxhp, 
+        atk, def, spd, 
+        level: lvl, types: data.types, moves: data.moves, jeitao: data.jeitao,
+        stages: {atk: 0, def: 0, spd: 0}, status: null, statusTurns: 0, skip: false, sturdyUsed: false
+    };
+}
+
+function getRandomEnemy() {
+    const teamKeys = (typeof run !== 'undefined' && run && run.team) ? run.team.map(m => m.key) : [];
+    const availableKeys = Object.keys(ROSTER).filter(k => k !== "Leandro" && !teamKeys.includes(k));
+    if(availableKeys.length === 0) return "Gabriel"; 
+    return availableKeys[Math.floor(Math.random() * availableKeys.length)];
+}
+
+function startRandomRun() {
+    const chosen = getRandomEnemy();
+    run = { 
+        team: [makeMon(chosen, 5)], 
+        step: 0, 
+        feitos: getFeitos(),
+        auditDone: false,
+        rap10Done: false
+    };
+    
+    document.getElementById('selPhoto').style.backgroundImage = `url('${IMG[chosen]}')`;
+    document.getElementById('selName').innerText = chosen.toUpperCase();
+    document.getElementById('selDesc').innerText = `Jeitão: ${ROSTER[chosen].jeitao.name}. ${ROSTER[chosen].jeitao.desc}`;
+    showScreen('selectionScreen');
+}
+
+function progressTrackHTML() {
+    let nodes = "";
+    for(let i=0; i<TOTAL_STEPS; i++){
+        const cls = i < run.step ? "done" : (i === run.step ? "current" : "");
+        nodes += `<div class="map-node ${cls}">${i < run.step ? "✓" : i+1}</div><div class="map-link"></div>`;
+    }
+    nodes += `<div class="map-node boss ${run.step >= TOTAL_STEPS ? "current" : ""}">Chefão</div>`;
+    return nodes;
+}
+
+function teamPreviewHTML() {
+    return run.team.map(m => {
+        const pct = Math.max(0, Math.round((m.hp / m.maxhp) * 100));
+        const col = pct > 50 ? "var(--hp-green)" : pct > 20 ? "var(--hp-amber)" : "var(--hp-red)";
+        return `
+        <div class="mapt ${m.hp <= 0 ? "down" : ""}">
+            <div class="mapt-tk" style="background-image:url('${IMG[m.key]}')"></div>
+            <div class="mapt-hp"><div style="width:${pct}%; background:${col}"></div></div>
+            <div class="mapt-nm">${m.hp}/${m.maxhp}</div>
+        </div>`;
+    }).join("");
+}
+
+function showChoices() {
+    if (run.step >= TOTAL_STEPS) {
+        startFinalBoss();
+        return;
+    }
+
+    const nextEnemyKey = getRandomEnemy();
+    const nextEnemy = ROSTER[nextEnemyKey];
+
+    let html = `
+        <div class="map-track">${progressTrackHTML()}</div>
+        <div class="map-team">${teamPreviewHTML()}</div>
+
+        <div class="pixel" style="font-size:11px; margin-bottom:12px; color:white; text-align:center;">NOVA PRIORIDADE DEFINIDA:</div>
+        
+        <button class="btn" onclick="startBattle('${nextEnemyKey}')" style="display:flex; align-items:center; gap:12px; background:#fff; padding:15px;">
+            <div style="width:60px; height:60px; background-image:url('${IMG[nextEnemyKey]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter: drop-shadow(0 2px 0 rgba(0,0,0,.25));"></div>
+            <div>
+                <div style="font-weight:900; font-size:16px;">${nextEnemy.name}</div>
+                <div class="tbadge t-${nextEnemy.types[0]}" style="margin-top:6px;">${nextEnemy.types[0]}</div>
+            </div>
+        </button>
+    `;
+
+    // Botão de Auditoria Surpresa (Disponível 1x por etapa antes de lutar)
+    if (!run.auditDone) {
+        html += `
+        <button class="btn" onclick="startAudit()" style="margin-top:15px; background:#d9e6f5; border-color:#2f5480; text-align:center; padding:15px;">
+            <div style="font-weight:900; font-size:14px;">📋 AUDITORIA DO GEMBA</div>
+            <div style="font-size:11px; margin-top:5px; color:#666;">(Responda e ganhe status. Errar tira HP!)</div>
+        </button>`;
+    }
+
+    html += `
+        <button class="btn" onclick="pizzaHeal()" style="margin-top:15px; background:#f4d9cc; border-color:#d85a30; text-align:center; padding:15px;">
+            <div style="font-weight:900; font-size:14px;">🍕 PARADA DA PIZZA DO MARCELO</div>
+            <div style="font-size:11px; margin-top:5px; color:#666;">(Recupera o HP e avança a etapa sem dar XP)</div>
+        </button>
+    `;
+    
+    document.getElementById('mapHeader').innerText = `ETAPA ${run.step + 1} DE 5 ANTES DO CHEFE`;
+    document.getElementById('choiceList').innerHTML = html;
+    
+    if (run.step > 0 && Math.random() < 0.2 && !run.rap10Done) {
+        run.rap10Done = true;
+        run.team.forEach(m => { m.hp = Math.min(m.maxhp, m.hp + Math.round(m.maxhp * 0.3)); });
+        alert("Sorte grande! A equipe encontrou um Cofee da Sodexo esquecido na copa. Todos recuperaram 30% do HP!");
+        document.querySelector('.map-team').innerHTML = teamPreviewHTML();
+    }
+    
+    showScreen('mapScreen');
+}
+
+function pizzaHeal() {
+    run.team.forEach(m => m.hp = m.maxhp); 
+    unlockFeito("cafezinho");
+    run.step++; 
+    run.auditDone = false; // Reseta para a próxima etapa
+    run.rap10Done = false;
+    alert("A equipe comeu pizza do Marcelo e está 100% recuperada! (Porém, sem a experiência da batalha)");
+    showChoices(); 
+}
+
+/* === LÓGICA DO SHOW DO MILHÃO PPI === */
+function startAudit() {
+    const q = AUDIT_QUIZ[Math.floor(Math.random() * AUDIT_QUIZ.length)];
+    
+    document.getElementById('auditPhoto').style.backgroundImage = `url('${IMG[q.asker]}')`;
+    document.getElementById('auditAsker').innerText = q.asker.toUpperCase() + " PERGUNTA:";
+    document.getElementById('auditQuestion').innerText = q.q;
+    
+    const labels = ["A", "B", "C", "D"];
+    let optsHtml = "";
+    q.opts.forEach((opt, idx) => {
+        optsHtml += `
+        <button class="btn" onclick="answerAudit(${idx}, ${q.ans})" style="text-align:left; font-size:13px; padding:15px; font-weight:700;">
+            <strong style="color:var(--accent);">${labels[idx]})</strong> ${opt}
+        </button>`;
+    });
+    
+    document.getElementById('auditOptions').innerHTML = optsHtml;
+    showScreen('auditScreen');
+}
+
+function answerAudit(selected, correct) {
+    if (selected === correct) {
+        // Vitória no Quiz: +20% HP, +5 All Stats para os vivos
+        run.team.forEach(m => {
+            if (m.hp > 0) {
+                m.hp = Math.min(m.maxhp, m.hp + Math.round(m.maxhp * 0.2));
+                m.atk += 5; m.def += 5; m.spd += 5;
+            }
+        });
+        alert("✅ Resposta Exata! A equipe ganhou moral e conhecimento: +20% HP e +5 em todos os atributos!");
+    } else {
+        // Derrota no Quiz: -10% HP para os vivos
+        const labels = ["A", "B", "C", "D"];
+        run.team.forEach(m => {
+            if (m.hp > 0) {
+                m.hp = Math.max(1, m.hp - Math.round(m.maxhp * 0.1));
+            }
+        });
+        alert(`❌ Não Conformidade! A resposta correta era a ${labels[correct]}. A equipe ficou desmotivada e perdeu 10% de HP.`);
+    }
+    
+    run.auditDone = true; // Desabilita auditoria nesta rodada
+    showChoices(); // Volta pro mapa
+}
+/* ===================================== */
+
+async function triggerOnEnter(mon, foe, targetId) {
+    if(mon.jeitao.name === "Engajamento") {
+        foe.stages["atk"] = Math.max(-6, foe.stages["atk"] - 1);
+        document.getElementById(targetId).classList.add('shake');
+        await say(`${mon.name.split(" ")[0]} ativou Engajamento! Ataque de ${foe.name.split(" ")[0]} caiu.`);
+        renderBattle();
+        await sleep(400);
+        document.getElementById(targetId).classList.remove('shake');
+    }
+}
+
+async function startBattle(key, overrideLevel = null) {
+    run.team.forEach(m => {
+        m.stages = {atk: 0, def: 0, spd: 0};
+        m.status = null;
+        m.statusTurns = 0;
+        m.skip = false;
+        m.sturdyUsed = false;
+    });
+
+    showScreen('battleScreen');
+    P = { team: run.team, i: 0 };
+    P.i = Math.max(0, P.team.findIndex(m => m.hp > 0)); 
+
+    const eLvl = overrideLevel ? overrideLevel : 5 + run.step;
+    E = { team: [makeMon(key, eLvl)], i: 0 };
+    
+    let eImgUrl = IMG[E.team[0].key];
+    if(E.team[0].key === "Leandro" && key === "Leandro") {
+        eImgUrl = IMG.LeandroBoss || IMG.Leandro; 
+    }
+
+    renderBattle(eImgUrl);
+    
+    if (key === "Leandro") {
+        await say(`ANNOUNCEMENT! Leandro chegou no GEMBA!`);
+    } else {
+        await say(`Problema na linha! ${act(E).name.split(" ")[0]} quer marcar uma reunião!`);
+    }
+    
+    await say(`Vai, ${act(P).name.split(" ")[0]}!`);
+    
+    await triggerOnEnter(act(P), act(E), 'monE');
+    await triggerOnEnter(act(E), act(P), 'monP');
+    
+    showMenu();
+}
+
+function act(s) { return s.team[s.i]; }
+
+function renderBattle(forceEnemyImg = null) {
+    const p = act(P);
+    const e = act(E);
+    
+    const getStatusHtml = (mon) => {
+        if(mon.status === 'veneno') return `<span class="status-tag st-veneno">VEN</span>`;
+        if(mon.status === 'confuso') return `<span class="status-tag st-confuso">CONF</span>`;
+        return "";
+    };
+
+    const matchup = CHART[p.types[0]][e.types[0]];
+    let matchupText = '<span style="color: #888; font-weight: 800;">(Combate Neutro)</span>';
+    if(matchup > 1) matchupText = '<span style="color: var(--hp-green); font-weight: 800;">(Você tem Vantagem)</span>';
+    if(matchup < 1) matchupText = '<span style="color: var(--hp-red); font-weight: 800;">(Você em Desvantagem)</span>';
+
+    document.getElementById('plateE').innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
+            <div style="display:flex; align-items:center; gap:5px;">
+                <span class="ownerchip chip-rival">RIVAL</span>
+                <span class="pixel" style="font-size:12px;">${e.name.split(" ")[0]}</span>
+            </div>
+            <span class="pixel" style="font-size:9px; color:#5a6b5f;">Nv${e.level}</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+            <span class="tbadge t-${e.types[0]}">${e.types[0]}</span>
+            <span style="font-size:8px;">${matchupText}</span>
+        </div>
+        <div class="hptrack" style="margin-bottom:2px;"><div class="hpfill" style="width:${(e.hp/e.maxhp)*100}%; background:${e.hp/e.maxhp > 0.5 ? 'var(--hp-green)' : e.hp/e.maxhp > 0.2 ? 'var(--hp-amber)' : 'var(--hp-red)'};"></div></div>
+        <div style="font-size:9px; text-align:right; font-family:'Press Start 2P', monospace;">${e.hp}/${e.maxhp}</div>
+    `;
+    
+    document.getElementById('plateP').innerHTML = `
+        <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
+            <div style="display:flex; align-items:center; gap:5px;">
+                <span class="ownerchip chip-you">VOCÊ</span>
+                <span class="pixel" style="font-size:12px;">${p.name.split(" ")[0]}</span>
+                ${getStatusHtml(p)}
+            </div>
+            <span class="pixel" style="font-size:9px; color:#5a6b5f;">Nv${p.level}</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:5px; margin-bottom:4px;">
+            <span class="tbadge t-${p.types[0]}">${p.types[0]}</span>
+        </div>
+        <div class="hptrack" style="margin-bottom:2px;"><div class="hpfill" style="width:${(p.hp/p.maxhp)*100}%; background:${p.hp/p.maxhp > 0.5 ? 'var(--hp-green)' : p.hp/p.maxhp > 0.2 ? 'var(--hp-amber)' : 'var(--hp-red)'};"></div></div>
+        <div style="font-size:9px; text-align:right; font-family:'Press Start 2P', monospace;">${p.hp}/${p.maxhp}</div>
+    `;
+    
+    const eImg = forceEnemyImg ? forceEnemyImg : IMG[e.key];
+    document.getElementById('monE').innerHTML = `<div class="token" style="background-image:url('${eImg}')"></div>`;
+    document.getElementById('monP').innerHTML = `<div class="token" style="background-image:url('${IMG[p.key]}')"></div>`;
+
+    document.getElementById('teamStrip').innerHTML = run.team.map((m, idx) => 
+        `<div class="team-mini" style="background-image:url('${IMG[m.key]}'); ${m.hp <= 0 ? 'filter:grayscale(1) opacity(0.5);' : idx === P.i ? 'filter: drop-shadow(0 0 6px var(--accent)); transform: translateY(-3px);' : ''}"></div>`
+    ).join('');
+    
+    document.getElementById('enemyStrip').innerHTML = `<div class="team-mini" style="background-image:url('${eImg}'); border-color:var(--panel-line);"></div>`;
+}
+
+function showMenu() {
+    const p = act(P);
+    const e = act(E);
+    let html = "";
+    
+    p.moves.forEach((m, idx) => {
+        let effClass = "eff-normal";
+        let effText = "Normal";
+        let desc = "Dano puro e forte";
+        
+        if(m.power > 0) {
+            let mult = CHART[m.type][e.types[0]];
+            if(mult > 1) { effClass = "eff-strong"; effText = "Forte x" + mult; }
+            else if(mult < 1) { effClass = "eff-weak"; effText = "Fraco x" + mult; }
+            
+            if(m.kind.includes("confuse")) desc = "Dano + confundir";
+            else if(m.kind.includes("debuff")) desc = "Dano + enfraquecer";
+            else if(m.kind.includes("poison")) desc = "Dano + envenenar";
+            else if(m.kind.includes("skip")) desc = "Dano + pular turno";
+            else if(m.kind.includes("raise_spd")) desc = "Dano + aumenta Vel.";
+        } else {
+            effClass = "eff-supp"; effText = "Apoio";
+            desc = "Baixa status do alvo";
+        }
+
+        html += `
+        <button class="btn" onclick="useMove(${idx})">
+            <div class="mv-top">
+                <span style="font-size: 13px;">${m.name}</span>
+                <span class="tbadge t-${m.type}">${m.type}</span>
+            </div>
+            <div class="mv-sub"><span class="efftag ${effClass}">${effText}</span> <span style="font-weight: 600; color: #7d9183;">${desc}</span></div>
+        </button>`;
+    });
+    
+    if(run.team.some((m, idx) => m.hp > 0 && idx !== P.i)) {
+        html += `<button class="btn" style="grid-column: span 2; text-align:center; background:#e6dcc2; min-height: 50px;" onclick="openSwitch()">Trocar Recurso</button>`;
+    }
+    
+    document.getElementById('menu').innerHTML = html;
+}
+
+async function openSwitch(forced = false) {
+    let html = "";
+    run.team.forEach((m, idx) => {
+        const isDead = m.hp <= 0;
+        const isActive = idx === P.i;
+        const status = isActive ? "em campo" : isDead ? "caiu" : "esperando";
+        const bgFilter = isDead ? "filter: grayscale(1) opacity(0.5);" : "filter: drop-shadow(0 2px 0 rgba(0,0,0,.25));";
+        const hpPct = Math.max(0, (m.hp / m.maxhp) * 100);
+        const hpColor = hpPct > 50 ? 'var(--hp-green)' : hpPct > 20 ? 'var(--hp-amber)' : 'var(--hp-red)';
+
+        html += `
+        <button class="btn" ${isDead || isActive ? "disabled style='opacity:0.6'" : ""} style="grid-column: span 2; padding: 12px;" onclick="doSwitch(${idx}, ${forced})">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div style="width: 50px; height: 50px; background-image: url('${IMG[m.key]}'); background-size: contain; background-repeat: no-repeat; background-position: bottom center; ${bgFilter}"></div>
+                <div style="flex: 1; text-align: left;">
+                    <div style="font-weight: 900; font-size: 15px; margin-bottom: 6px;">
+                        ${m.name.split(" ")[0]} <span class="tbadge t-${m.types[0]}" style="font-size: 8px; margin-left: 6px;">${m.types[0]}</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 6px; font-size: 11px; color: #6a7a6e; font-weight: 800;">
+                        <div style="width: 8px; height: 8px; border-radius: 50%; background: ${hpColor};"></div>
+                        ${m.hp}/${m.maxhp} — ${status}
+                    </div>
+                </div>
+            </div>
+        </button>`;
+    });
+    
+    if (!forced) {
+        html += `<button class="btn" style="grid-column: span 2; background:#e6dcc2; text-align:center; min-height:40px;" onclick="showMenu()">Voltar</button>`;
+    }
+    document.getElementById('menu').innerHTML = html;
+}
+
+async function doSwitch(idx, forced = false) {
+    document.getElementById('menu').innerHTML = "";
+    
+    if (!forced) {
+        await say(`Volta, ${act(P).name.split(" ")[0]}!`);
+    }
+    
+    P.i = idx;
+    renderBattle();
+    await say(`Vai, ${act(P).name.split(" ")[0]}!`);
+    await triggerOnEnter(act(P), act(E), 'monE');
+    
+    if (!forced) {
+        const e = act(E);
+        const eMove = e.moves[Math.floor(Math.random()*e.moves.length)];
+        await performMove(e, act(P), eMove, 'monP');
+        await endOfTurn();
+        
+        if (act(P).hp <= 0) {
+            const nextIdx = run.team.findIndex(m => m.hp > 0);
+            if(nextIdx !== -1) {
+                await say(`${act(P).name.split(" ")[0]} não aguentou. Quem vai entrar?`);
+                await openSwitch(true); 
+            } else {
+                showEndScreen(false);
+            }
+        } else if (act(E).hp <= 0) {
+            handleEnemyDefeat();
+        } else {
+            showMenu();
+        }
+    } else {
+        showMenu();
+    }
+}
+
+const STAGE_MULT = [2/8, 2/7, 2/6, 2/5, 2/4, 2/3, 2/2, 3/2, 4/2, 5/2, 6/2, 7/2, 8/2]; 
+function eff(mon, stat) { return mon[stat] * STAGE_MULT[Math.max(0, Math.min(12, (mon.stages[stat] || 0) + 6))]; }
+
+function calcDamage(a, d, move) {
+    if(d.jeitao.name === "Alvo Pequeno" && Math.random() < 0.2) return {dmg:0, missed:true};
+    if(d.jeitao.name === "Onde Eu Tava?" && Math.random() < 0.15) return {dmg:0, missed:true};
+
+    let base = (move.power * 1.2) + (eff(a,"atk") * 1.0) - (eff(d,"def") * 0.4);
+    base = Math.max(5, base); 
+    
+    if(a.jeitao.name === "Pavio Curto" && a.hp < a.maxhp/2) base *= 1.5;
+
+    const stab = a.types.includes(move.type) ? 1.3 : 1;
+    let mult = CHART[move.type][d.types[0]];
+    if(d.jeitao.name === "Visão Crítica" && move.type === "Processo") mult *= 0.5;
+
+    let crit = Math.random() < 0.08;
+    if(a.jeitao.name === "Faro para Problema") crit = true;
+
+    const rand = 0.95 + Math.random() * 0.05;
+    let dmg = Math.max(1, Math.round(base * stab * mult * (crit ? 1.5 : 1) * rand));
+
+    // Limitadores Severos baseados na categoria do golpe
+    if (mult < 1) {
+        dmg = Math.max(20, Math.min(40, dmg));
+    } else if (mult > 1) {
+        dmg = Math.max(61, Math.min(80, dmg));
+    } else {
+        dmg = Math.max(41, Math.min(60, dmg));
+    }
+
+    return {dmg, mult, crit, missed:false};
+}
+
+async function applyEffect(move, atk, def) {
+    const k = move.kind;
+    if(def.hp <= 0) return;
+
+    if(k === "debuff" || k === "dmg_debuff") { 
+        if(move.stat) {
+            def.stages[move.stat] = Math.max(-6, (def.stages[move.stat] || 0) - 1);
+            await say(`O atributo de ${def.name.split(" ")[0]} caiu!`); 
+        }
+    }
+    if((k === "confuse" || k === "dmg_confuse") && !def.status && Math.random() < 0.5) { 
+        def.status = "confuso"; def.statusTurns = 2 + Math.floor(Math.random()*2); 
+        await say(`${def.name.split(" ")[0]} ficou confuso e se atrapalhou!`);
+    }
+    if(k === "dmg_poison" && !def.status && Math.random() < 0.45) { 
+        def.status = "veneno"; 
+        await say(`${def.name.split(" ")[0]} perdeu HP por causa da sujeira na mesa!`);
+    }
+    if(k === "dmg_skip" && Math.random() < 0.35) { 
+        def.skip = true; 
+        await say(`${def.name.split(" ")[0]} perdeu a concentração para a próxima rodada!`);
+    }
+    if(k === "dmg_raise_spd") { 
+        atk.stages["spd"] = Math.min(6, (atk.stages["spd"] || 0) + 1);
+        await say(`A velocidade de ${atk.name.split(" ")[0]} subiu!`); 
+    }
+}
+
+async function performMove(atk, def, move, targetId) {
+    if(atk.skip) { atk.skip = false; await say(`${atk.name.split(" ")[0]} perdeu a concentração para a próxima rodada!`); return; }
+
+    if(atk.status === "confuso") {
+        atk.statusTurns--;
+        if(Math.random() < 0.4) {
+            const selfDmg = Math.max(1, Math.round(atk.maxhp * 0.07));
+            atk.hp = Math.max(0, atk.hp - selfDmg);
+            const myTargetId = targetId === 'monE' ? 'monP' : 'monE';
+            document.getElementById(myTargetId).classList.add('shake');
+            renderBattle();
+            await say(`${atk.name.split(" ")[0]} ficou confuso e se atrapalhou! Tirou ${selfDmg} de si mesmo.`);
+            if(atk.statusTurns <= 0) atk.status = null;
+            return;
+        }
+        if(atk.statusTurns <= 0) atk.status = null;
+    }
+
+    await say(`${atk.name.split(" ")[0]} usou ${move.name}!`);
+
+    if(def.jeitao.name === "Gestor" && move.type === "Social") {
+        document.getElementById(targetId).classList.add('shake');
+        await say(`${def.name.split(" ")[0]} não aprovou o ESign! (0 Dano)`);
+        await sleep(300);
+        document.getElementById(targetId).classList.remove('shake');
+        return;
+    }
+
+    let hits = (atk.jeitao.name === "Automação" && Math.random() < 0.35) ? 2 : 1;
+    let totalDmg = 0, anyCrit = false, lastMult = 1, anyMiss = false;
+
+    for(let h=0; h<hits; h++){
+        if(def.hp <= 0) break;
+        if(move.power > 0) {
+            const r = calcDamage(atk, def, move);
+            if(r.missed) { anyMiss = true; continue; }
+            lastMult = r.mult;
+            if(r.crit) anyCrit = true;
+
+            if(def.jeitao.name === "Hora Extra" && r.dmg >= def.hp && def.hp > 1 && !def.sturdyUsed) {
+                r.dmg = def.hp - 1;
+                def.sturdyUsed = true;
+                await say(`${def.name.split(" ")[0]} fez Hora Extra e segurou com 1 HP!`);
+            }
+
+            def.hp = Math.max(0, def.hp - r.dmg);
+            totalDmg += r.dmg;
+            
+            document.getElementById(targetId).classList.add('shake');
+            renderBattle();
+            await sleep(400);
+            document.getElementById(targetId).classList.remove('shake');
+        }
+    }
+
+    if(move.power > 0) {
+        if(anyMiss && totalDmg === 0) {
+            await say(`O ataque falhou!`);
+        } else if(totalDmg > 0) {
+            let msg = "";
+            if(lastMult > 1.1) msg += "Super eficaz! ";
+            else if(lastMult < 0.9 && lastMult > 0) msg += "Pouco efeito... ";
+            if(anyCrit) msg += "Crítico! ";
+            if(hits > 1) msg += "Automação ativada! Acertou 2x! ";
+            msg += `Tirou ${totalDmg} de HP de ${def.name.split(" ")[0]}.`;
+            await say(msg);
+        }
+    }
+
+    await applyEffect(move, atk, def);
+    renderBattle();
+}
+
+async function endOfTurn() {
+    for(const char of [act(P), act(E)]) {
+        if(char.hp <= 0) continue;
+        if(char.jeitao.name === "Bonitão" && char.hp < char.maxhp) {
+            const cura = Math.round(char.maxhp * 0.05);
+            char.hp = Math.min(char.maxhp, char.hp + cura);
+            renderBattle();
+            await say(`${char.name.split(" ")[0]} recuperou HP pelo seu charme!`);
+        }
+        if(char.status === "veneno") {
+            const danoV = Math.round(char.maxhp * 0.08);
+            char.hp = Math.max(0, char.hp - danoV);
+            renderBattle();
+            await say(`${char.name.split(" ")[0]} perdeu HP por causa da sujeira na mesa!`);
+        }
+    }
+}
+
+async function handleEnemyDefeat() {
+    const e = act(E);
+    await say(`${e.name.split(" ")[0]} foi superado na discussão!`);
+    
+    let leveledUp = false;
+    run.team.forEach(m => {
+        if(m.hp > 0) {
+            m.level += 1;
+            const hpGain = Math.round(m.maxhp * 0.15); 
+            m.maxhp += hpGain;
+            m.hp += hpGain;
+            m.atk = Math.round(m.atk * 1.15);
+            m.def = Math.round(m.def * 1.15);
+            m.spd = Math.round(m.spd * 1.15);
+            leveledUp = true;
+        }
+    });
+
+    if (leveledUp) {
+        await say(`A equipe ganhou experiência na reunião! Todos subiram de Nível e os status aumentaram.`);
+    }
+
+    if (e.key === "Leandro") {
+        showEndScreen(true);
+    } else {
+        await offerRecruit(e.key);
+    }
+}
+
+async function useMove(idx) {
+    document.getElementById('menu').innerHTML = "";
+    const p = act(P);
+    const e = act(E);
+    const move = p.moves[idx];
+    
+    if(move.name === "Criar ODS") unlockFeito("ods");
+
+    let pFirst = (p.jeitao.name === "Cafeína" && e.jeitao.name !== "Cafeína") || (eff(p,"spd") >= eff(e,"spd"));
+    
+    if (pFirst) {
+        await performMove(p, e, move, 'monE');
+        if (e.hp > 0) {
+            const eMove = e.moves[Math.floor(Math.random()*e.moves.length)];
+            await performMove(e, p, eMove, 'monP');
+        }
+    } else {
+        const eMove = e.moves[Math.floor(Math.random()*e.moves.length)];
+        await performMove(e, p, eMove, 'monP');
+        if (p.hp > 0) {
+            await performMove(p, e, move, 'monE');
+        }
+    }
+
+    await endOfTurn();
+    
+    if (act(E).hp <= 0) {
+        await handleEnemyDefeat();
+    } else if (act(P).hp <= 0) {
+        const nextIdx = run.team.findIndex(m => m.hp > 0);
+        if(nextIdx !== -1) {
+            await say(`${act(P).name.split(" ")[0]} não aguentou. Quem vai entrar?`);
+            await openSwitch(true);
+        } else {
+            showEndScreen(false);
+        }
+    } else {
+        showMenu();
+    }
+}
+
+let recruitResolve;
+function offerRecruit(defeatedKey) {
+    return new Promise(res => {
+        recruitResolve = res;
+        
+        let wild = defeatedKey; 
+        if(run.team.some(m => m.key === wild)) {
+            const available = Object.keys(ROSTER).filter(k => k !== "Leandro" && !run.team.some(m => m.key === k));
+            if(available.length === 0) return resolveRecruit(); 
+            wild = available[Math.floor(Math.random() * available.length)];
+        }
+
+        const cand = ROSTER[wild];
+        document.getElementById('recruitPhoto').innerHTML = `<div style="width: 100%; height: 100%; background-image:url('${IMG[wild]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter:drop-shadow(0 6px 0 rgba(0,0,0,.25));"></div>`;
+        
+        let html = ``;
+        if (run.team.length < MAX_TEAM) {
+            html += `<button class="btn" style="text-align:center; background:#4cae6a; color:white; padding: 18px; font-size: 15px;" onclick="catchDo('${wild}')">Aprovar no Processo Seletivo</button>`;
+            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:10px; padding: 15px;" onclick="resolveRecruit()">Manda pra outra área</button>`;
+        } else {
+            html += `<p style="color:var(--hp-red); font-size:12px; margin-bottom:15px;">Equipe cheia (5 Máx). Substituir quem?</p>`;
+            run.team.forEach((m, idx) => {
+                html += `
+                <button class="btn" style="margin-bottom:8px; display:flex; align-items:center; gap:10px;" onclick="catchReplace(${idx}, '${wild}')">
+                    <div class="team-mini" style="background-image:url('${IMG[m.key]}')"></div>
+                    <div>Demitir ${m.name.split(" ")[0]} e Recrutar</div>
+                </button>`;
+            });
+            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:15px; padding: 15px;" onclick="resolveRecruit()">Manda pra outra área</button>`;
+        }
+        
+        document.getElementById('recruitOptions').innerHTML = html;
+        showScreen('recruitScreen');
+    });
+}
+
+function catchDo(wild) {
+    run.team.push(makeMon(wild, 5 + run.step)); 
+    resolveRecruit();
+}
+
+function catchReplace(idx, wild) {
+    run.team[idx] = makeMon(wild, 5 + run.step);
+    resolveRecruit();
+}
+
+function resolveRecruit() {
+    run.step++;
+    run.auditDone = false; // Reseta a auditoria ao avançar o mapa
+    run.rap10Done = false; // Reseta o cafézinho aleatório
+    showChoices();
+    recruitResolve();
+}
+
+function showEndScreen(win) {
+    showScreen('endScreen');
+    const title = win ? "VOCÊ VENCEU!" : "PROJETO REPROVADO!";
+    const sub = win ? "Apresentou os projetos e subiu no sprint! Parabéns" : "Ligue pra controladoria e tente novamente.";
+    const color = win ? "var(--hp-green)" : "var(--hp-red)";
+    
+    let html = `
+        <h1 class="pixel" style="color:${color}; font-size: 20px; line-height: 1.4;">${title}</h1>
+        <p style="margin-top:15px; font-size:14px; font-weight:700;">${sub}</p>
+        
+        <div style="background: var(--panel-line); border: 3px solid ${color}; border-radius: 12px; padding: 20px; margin-top: 30px;">
+            <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-bottom: 20px;">
+    `;
+    
+    run.team.forEach(m => {
+        html += `
+            <div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
+                <div class="team-mini" style="width:50px; height:50px; background-image:url('${IMG[m.key]}'); border-color:${color}; border-width: 3px;"></div>
+                <div style="font-size:10px; font-weight:800;">${m.name.split(" ")[0]}</div>
+                <div style="font-size:9px; color:#aaa;">Nv${m.level}</div>
+            </div>
+        `;
+    });
+    
+    html += `
+            </div>
+            <div style="display:flex; justify-content:space-around; border-top: 1px solid #555; padding-top: 15px;">
+                <div>
+                    <div style="font-size:9px; color:#aaa; margin-bottom:3px; text-transform:uppercase;">Progresso</div>
+                    <div style="font-weight:800; font-size:12px;">${win ? "Derrotou o Leandro" : `Parada ${run.step}/5`}</div>
+                </div>
+                <div>
+                    <div style="font-size:9px; color:#aaa; margin-bottom:3px; text-transform:uppercase;">Feitos</div>
+                    <div style="font-weight:800; font-size:12px;">${run.feitos.size}/4</div>
+                </div>
+            </div>
+            
+            <div style="text-align:left; margin-top:20px; font-size:11px;">
+    `;
+    
+    FEITOS_LIST.forEach(f => {
+        const got = run.feitos.has(f.id);
+        html += `<div style="margin-bottom:8px; opacity:${got?1:0.4};">
+            <span style="font-weight:800;">${got?'✅':'🔒'} ${f.n}</span><br>
+            <span style="font-size:9px; color:#aaa;">${f.desc}</span>
+        </div>`;
+    });
+    
+    html += `
+            </div>
+        </div>
+        
+        <button class="ov-btn" style="margin-top:40px; font-size: 14px; padding: 15px;" onclick="location.reload()">NOVA JORNADA</button>
+    `;
+    
+    document.getElementById('endScreen').innerHTML = html;
+}
+
+function showFeitos() {
+    showScreen('feitosScreen');
+    let html = `<h2 class="pixel" style="font-size:14px; margin-bottom:30px; color:white; text-align:center;">FEITOS DA JORNADA</h2>`;
+    FEITOS_LIST.forEach(f => {
+        const got = run?.feitos?.has(f.id);
+        html += `<div style="padding:15px; border-radius: 8px; background: ${got ? 'var(--accent)' : 'var(--panel-line)'}; color:white; margin-bottom: 10px; font-weight:800; box-shadow: 0 3px 0 rgba(0,0,0,0.2);">
+            ${got?'🏆':'🔒'} ${f.n}<br>
+            <span style="font-size:9px; font-weight:400; color:#ddd; margin-top: 4px; display:block;">${f.desc}</span>
+        </div>`;
+    });
+    html += `<button class="ov-btn" style="margin-top:30px;" onclick="showScreen('startScreen')">VOLTAR</button>`;
+    document.getElementById('feitosScreen').innerHTML = html;
+}
+
+function unlockFeito(id) {
+    if (!run) return;
+    run.feitos.add(id);
+    localStorage.setItem('ppi_feitos', JSON.stringify([...run.feitos]));
+}
+
+function startFinalBoss() {
+    unlockFeito("fds");
+    
+    run.team.forEach(m => { m.hp = m.maxhp; m.status = null; });
+    
+    startBattle('Leandro', 12);
+}
+</script>
+
+</body>
+</html>
