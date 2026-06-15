@@ -47,19 +47,22 @@
         .plat-player { bottom: 30px; left: 24px; }
         
         .combatant { position: absolute; display: flex; flex-direction: column; align-items: center; }
-        .enemy-mon { top: 30px; right: 46px; }
-        .player-mon { bottom: 30px; left: 46px; }
+        .enemy-mon { top: 10px; right: 20px; }
+        .player-mon { bottom: 10px; left: 20px; }
         
-        /* SPRITES TRANSPARENTES */
+        /* SPRITES TRANSPARENTES AUMENTADOS */
         .token {
-            width: 110px; height: 110px; 
+            width: 170px; height: 170px; /* Antes 110px */
             background-size: contain; 
             background-position: bottom center; 
             background-repeat: no-repeat;
             filter: drop-shadow(0 6px 0 rgba(0,0,0,.25));
             transition: transform 0.2s;
         }
-        .player-mon .token { width: 120px; height: 120px; filter: drop-shadow(0 6px 0 rgba(0,0,0,.25)) drop-shadow(0 0 6px rgba(216,90,48,.6)); } 
+        .player-mon .token { 
+            width: 190px; height: 190px; /* Antes 120px */
+            filter: drop-shadow(0 6px 0 rgba(0,0,0,.25)) drop-shadow(0 0 6px rgba(216,90,48,.6)); 
+        } 
 
         /* --- UI Elements --- */
         .plate {
@@ -99,14 +102,15 @@
         /* --- Specific Screens --- */
         #selectionScreen { padding: 30px; text-align: center; background: #2f4034; color: white; }
         .sel-photo { 
-            width: 180px; height: 220px; 
-            margin: 20px auto; background-size: contain; background-repeat: no-repeat; background-position: bottom center; 
+            width: 280px; height: 280px; /* Aumentado de 180px */
+            margin: 10px auto 20px; background-size: contain; background-repeat: no-repeat; background-position: bottom center; 
             filter: drop-shadow(0 8px 0 rgba(0,0,0,.25));
+            transform: scale(1.1);
         }
 
         .teamstrip { display: flex; align-items: center; gap: 8px; padding: 10px; background: #efe7d2; border-top: 4px solid var(--panel-line); border-bottom: 4px solid var(--panel-line); }
         .team-mini { 
-            width: 38px; height: 38px; 
+            width: 50px; height: 50px; /* Aumentado de 38px */
             background-size: contain; background-repeat: no-repeat; background-position: bottom center; 
             filter: drop-shadow(0 2px 0 rgba(0,0,0,.2));
             transition: filter 0.2s, transform 0.2s;
@@ -123,13 +127,13 @@
         .map-node.boss.current { background: #b94b35; }
         .map-link { height: 3px; width: 12px; background: #5a6b5f; }
         
-        .map-team { display: flex; gap: 10px; justify-content: center; margin-bottom: 25px; flex-wrap: wrap; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 12px;}
-        .mapt { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 50px; }
-        .mapt-tk { width: 44px; height: 44px; background-size: contain; background-repeat: no-repeat; background-position: bottom center; filter: drop-shadow(0 2px 0 rgba(0,0,0,.25)); }
+        .map-team { display: flex; gap: 12px; justify-content: center; margin-bottom: 25px; flex-wrap: wrap; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 12px;}
+        .mapt { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 70px; } /* Aumentado */
+        .mapt-tk { width: 70px; height: 70px; background-size: contain; background-repeat: no-repeat; background-position: bottom center; filter: drop-shadow(0 2px 0 rgba(0,0,0,.25)); } /* Aumentado */
         .mapt.down .mapt-tk { filter: grayscale(1) opacity(0.45); }
-        .mapt-hp { width: 44px; height: 6px; background: #1c2a22; border-radius: 4px; overflow: hidden; }
+        .mapt-hp { width: 60px; height: 8px; background: #1c2a22; border-radius: 4px; overflow: hidden; }
         .mapt-hp>div { height: 100%; background: var(--hp-green); }
-        .mapt-nm { font-size: 8px; color: #cdc6b2; font-weight: 800; font-family: "Press Start 2P", monospace; margin-top:3px;}
+        .mapt-nm { font-size: 9px; color: #cdc6b2; font-weight: 800; font-family: "Press Start 2P", monospace; margin-top:3px;}
 
         #msgbox { background: var(--panel); padding: 18px; min-height: 85px; font-weight: 700; font-size: 15px; line-height: 1.4; display: flex; align-items: center;}
         #menu { padding: 15px; background: #e0d6b8; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -172,14 +176,13 @@
     </div>
 
     <div id="mapScreen" class="screen" style="display:none; padding:30px 20px; background: #2f4034; overflow-y:auto;">
-        <div class="pixel" id="mapHeader" style="font-size:12px; margin-bottom:20px; color:var(--accent); text-align: center;">ETAPA X DE 5 ANTES DO CHEFE</div>
+        <div class="pixel" id="mapHeader" style="font-size:12px; margin-bottom:20px; color:var(--accent); text-align: center;">ETAPA 1 DE 5 ANTES DO CHEFE</div>
         <div id="choiceList" style="display:flex; flex-direction:column; gap:15px;"></div>
     </div>
 
     <div id="auditScreen" class="screen" style="display:none; padding:30px 20px; text-align:center; background:#2f4034; color:white;">
         <h2 class="pixel" style="font-size:16px; margin-bottom:15px; color:var(--accent);">AUDITORIA SURPRESA</h2>
-        <div id="auditPhoto" class="token" style="margin: 0 auto 10px; width: 100px; height: 100px;"></div>
-        <div class="pixel" id="auditAsker" style="font-size:10px; margin-bottom:15px; color:#e0a828;">FULANO PERGUNTA:</div>
+        <div id="auditPhoto" class="token" style="margin: 0 auto 10px; width: 160px; height: 160px;"></div> <div class="pixel" id="auditAsker" style="font-size:10px; margin-bottom:15px; color:#e0a828;">FULANO PERGUNTA:</div>
         <div style="background:var(--panel-line); border:3px solid #5a6b5f; border-radius:12px; padding:15px; margin-bottom:20px;">
             <p id="auditQuestion" style="font-size:16px; font-weight:800; line-height:1.4; color:white;"></p>
         </div>
@@ -188,8 +191,7 @@
 
     <div id="recruitScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; background:#2f4034; color:white;">
         <h2 class="pixel" style="font-size:16px; margin-bottom:30px; color:var(--accent);">RECRUTAMENTO PPI</h2>
-        <div id="recruitPhoto" class="token" style="margin: 0 auto 20px; width: 120px; height: 120px;"></div>
-        <p id="recruitText" style="margin-bottom:40px; font-size:16px; font-weight:800;">O novato reconheceu suas habilidades e quer entrar na equipe!</p>
+        <div id="recruitPhoto" class="token" style="margin: 0 auto 20px; width: 180px; height: 180px;"></div> <p id="recruitText" style="margin-bottom:40px; font-size:16px; font-weight:800;">O novato reconheceu suas habilidades e quer entrar na equipe!</p>
         <div id="recruitOptions" style="display:flex; flex-direction:column; gap:12px;"></div>
     </div>
 
@@ -237,7 +239,7 @@ const IMG = {
     LeandroBoss: "leandro_boss.png" 
 };
 
-// --- PERGUNTAS DO QUIZ (SHOW DO PPI) ---
+// --- PERGUNTAS DO QUIZ ---
 const AUDIT_QUIZ = [
     { asker: "Leonardo", q: "Quantos P.N. ativos temos na Linha V em PTS?", opts: ["2.500", "3.800", "4.300", "5.100"], ans: 1 },
     { asker: "Mateus", q: "Qual o valor em kEuros que PPI lançou no sprint em 2025?", opts: ["2.115", "1.900", "2.650", "2.320"], ans: 0 },
@@ -399,7 +401,7 @@ function showChoices() {
         <div class="pixel" style="font-size:11px; margin-bottom:12px; color:white; text-align:center;">NOVA PRIORIDADE DEFINIDA:</div>
         
         <button class="btn" onclick="startBattle('${nextEnemyKey}')" style="display:flex; align-items:center; gap:12px; background:#fff; padding:15px;">
-            <div style="width:60px; height:60px; background-image:url('${IMG[nextEnemyKey]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter: drop-shadow(0 2px 0 rgba(0,0,0,.25));"></div>
+            <div style="width:80px; height:80px; background-image:url('${IMG[nextEnemyKey]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter: drop-shadow(0 2px 0 rgba(0,0,0,.25));"></div>
             <div>
                 <div style="font-weight:900; font-size:16px;">${nextEnemy.name}</div>
                 <div class="tbadge t-${nextEnemy.types[0]}" style="margin-top:6px;">${nextEnemy.types[0]}</div>
@@ -407,7 +409,6 @@ function showChoices() {
         </button>
     `;
 
-    // Botão de Auditoria Surpresa (Disponível 1x por etapa antes de lutar)
     if (!run.auditDone) {
         html += `
         <button class="btn" onclick="startAudit()" style="margin-top:15px; background:#d9e6f5; border-color:#2f5480; text-align:center; padding:15px;">
@@ -440,7 +441,7 @@ function pizzaHeal() {
     run.team.forEach(m => m.hp = m.maxhp); 
     unlockFeito("cafezinho");
     run.step++; 
-    run.auditDone = false; // Reseta para a próxima etapa
+    run.auditDone = false; 
     run.rap10Done = false;
     alert("A equipe comeu pizza do Marcelo e está 100% recuperada! (Porém, sem a experiência da batalha)");
     showChoices(); 
@@ -469,7 +470,6 @@ function startAudit() {
 
 function answerAudit(selected, correct) {
     if (selected === correct) {
-        // Vitória no Quiz: +20% HP, +5 All Stats para os vivos
         run.team.forEach(m => {
             if (m.hp > 0) {
                 m.hp = Math.min(m.maxhp, m.hp + Math.round(m.maxhp * 0.2));
@@ -478,7 +478,6 @@ function answerAudit(selected, correct) {
         });
         alert("✅ Resposta Exata! A equipe ganhou moral e conhecimento: +20% HP e +5 em todos os atributos!");
     } else {
-        // Derrota no Quiz: -10% HP para os vivos
         const labels = ["A", "B", "C", "D"];
         run.team.forEach(m => {
             if (m.hp > 0) {
@@ -488,8 +487,8 @@ function answerAudit(selected, correct) {
         alert(`❌ Não Conformidade! A resposta correta era a ${labels[correct]}. A equipe ficou desmotivada e perdeu 10% de HP.`);
     }
     
-    run.auditDone = true; // Desabilita auditoria nesta rodada
-    showChoices(); // Volta pro mapa
+    run.auditDone = true; 
+    showChoices(); 
 }
 /* ===================================== */
 
@@ -734,7 +733,6 @@ function calcDamage(a, d, move) {
     const rand = 0.95 + Math.random() * 0.05;
     let dmg = Math.max(1, Math.round(base * stab * mult * (crit ? 1.5 : 1) * rand));
 
-    // Limitadores Severos baseados na categoria do golpe
     if (mult < 1) {
         dmg = Math.max(20, Math.min(40, dmg));
     } else if (mult > 1) {
@@ -926,7 +924,7 @@ async function useMove(idx) {
         const nextIdx = run.team.findIndex(m => m.hp > 0);
         if(nextIdx !== -1) {
             await say(`${act(P).name.split(" ")[0]} não aguentou. Quem vai entrar?`);
-            await openSwitch(true);
+            await openSwitch(true); 
         } else {
             showEndScreen(false);
         }
@@ -983,8 +981,8 @@ function catchReplace(idx, wild) {
 
 function resolveRecruit() {
     run.step++;
-    run.auditDone = false; // Reseta a auditoria ao avançar o mapa
-    run.rap10Done = false; // Reseta o cafézinho aleatório
+    run.auditDone = false; 
+    run.rap10Done = false; 
     showChoices();
     recruitResolve();
 }
