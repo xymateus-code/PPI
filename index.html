@@ -135,7 +135,7 @@
         }
 
         /* --- Specific Screens --- */
-        #selectionScreen { padding: 30px; text-align: center; background: #2f4034; color: white; }
+        #selectionScreen { padding: 30px 20px; text-align: center; background: #2f4034; color: white; overflow-y:auto; }
         .sel-photo { 
             width: 280px; height: 280px; 
             margin: 10px auto 20px; background-size: contain; background-repeat: no-repeat; background-position: bottom center; 
@@ -214,36 +214,38 @@
 <div id="toast" class="pixel"></div>
 
 <div id="game">
-    <div id="startScreen" class="screen" style="padding:40px 20px; text-align:center; background:#26342b; overflow-y: auto; display: flex; align-items: center; justify-content: center;">
+    <!-- START SCREEN -->
+    <div id="startScreen" class="screen" style="padding:50px 20px; text-align:center; background:#26342b; overflow-y: auto; display: flex; align-items: center; justify-content: center;">
         <div style="width: 100%; max-width: 320px;">
             <h1 class="pixel" style="color:var(--accent); font-size:24px; margin-bottom:15px; line-height: 1.4;">JORNADA PPI</h1>
             
-            <p style="margin-bottom:20px; font-weight:700; color:var(--panel); font-size: 16px;">Monte a equipe perfeita e prove o seu valor no projeto.</p>
+            <p style="margin-bottom:20px; font-weight:700; color:var(--panel); font-size: 16px;">Monte a equipa perfeita e prove o seu valor no projeto.</p>
 
             <div style="margin-bottom: 25px; text-align: center; width: 100%;">
                 <label class="pixel" style="font-size: 10px; color: #ddd; display: block; margin-bottom: 8px;">DIGITE SEU NOME</label>
                 <input type="text" id="inputNomeJogador" maxlength="15" placeholder="SEU NOME" style="width: 100%; padding: 15px; font-family: 'Press Start 2P', monospace; font-size: 12px; text-align: center; background: #1c2a22; color: #ffcc00; border: 3px solid #5a6b5f; border-radius: 10px; outline: none; text-transform: uppercase;">
             </div>
 
-            <button class="ov-btn" onclick="startRandomRun()" style="font-size: 14px; padding: 15px; margin-bottom: 15px;">▶ INICIAR JORNADA</button>
-            <button class="ov-btn" style="background:#2f5480; margin-bottom: 15px;" onclick="showScreen('rulesScreen')">📜 REGRAS DO JOGO</button>
-            <button class="ov-btn" style="background:#41513f; margin-bottom: 15px;" onclick="showFeitos(true)">🏆 FEITOS & RANKING</button>
-            <button class="ov-btn" style="background:#e0a828; color:#1c2a22; border-color:#fff;" onclick="showLeaderboard()">👑 PLACAR GLOBAL</button>
+            <button class="ov-btn" onclick="showStarterSelection()" style="font-size: 14px; padding: 15px; margin-bottom: 15px;">▶ INICIAR JORNADA</button>
+            <button class="ov-btn" style="background:#2f5480; margin-bottom: 15px;" onclick="showScreen('rulesScreen'); SFX.click();">📜 REGRAS DO JOGO</button>
+            <button class="ov-btn" style="background:#41513f; margin-bottom: 15px;" onclick="showFeitos(true); SFX.click();">🏆 FEITOS & RANKING</button>
+            <button class="ov-btn" style="background:#e0a828; color:#1c2a22; border-color:#fff;" onclick="showLeaderboard(); SFX.click();">👑 PLACAR GLOBAL</button>
         </div>
     </div>
 
+    <!-- RULES SCREEN -->
     <div id="rulesScreen" class="screen" style="display:none; padding:30px 20px; text-align:left; background:#2f4034; color:white; overflow-y:auto;">
         <h2 class="pixel" style="font-size:16px; margin-bottom:20px; color:var(--accent); text-align:center;">📜 REGRAS & PONTUAÇÃO</h2>
         
         <div style="background: var(--panel-line); border: 2px solid #5a6b5f; border-radius: 12px; padding: 15px; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">
-            <p style="margin-bottom:10px;"><strong>1. Trilha de 5 Etapas:</strong> Vença a equipe até chegar ao Chefão.</p>
+            <p style="margin-bottom:10px;"><strong>1. Trilha de 5 Etapas:</strong> Vença a equipa até chegar ao Chefão.</p>
             <p style="margin-bottom:10px;"><strong>2. Vantagem Tática:</strong><br> 
                <span style="color:var(--t-processo); font-weight:bold;">⚙️Processo</span> vence <span style="color:var(--t-tech); font-weight:bold;">💻Tech</span><br>
                <span style="color:var(--t-tech); font-weight:bold;">💻Tech</span> vence <span style="color:var(--t-social); font-weight:bold;">🤝Social</span><br>
                <span style="color:var(--t-social); font-weight:bold;">🤝Social</span> vence <span style="color:var(--t-gestao); font-weight:bold;">📈Gestão</span><br>
                <span style="color:var(--t-gestao); font-weight:bold;">📈Gestão</span> vence <span style="color:var(--t-processo); font-weight:bold;">⚙️Processo</span><br>
                <span style="font-size:10px; color: var(--hp-amber);">*Golpes com vantagem quebram a defesa inimiga pela metade!*</span></p>
-            <p style="margin-bottom:0;"><strong>3. Nível Importa:</strong> Lutar dá pontos e experiência. Comer Pizza cura a equipe, mas <strong>não dá pontos nem nível!</strong> Cuidado para não chegar fraco no chefe.</p>
+            <p style="margin-bottom:0;"><strong>3. Nível Importa:</strong> Lutar dá pontos e experiência. Comer Pizza cura a equipa, mas <strong>não dá pontos nem nível!</strong> Cuidado para não chegar fraco no chefe.</p>
         </div>
 
         <div style="background: var(--panel-line); border: 2px solid #ffd700; border-radius: 12px; padding: 15px; font-size: 13px; line-height: 1.5;">
@@ -258,22 +260,23 @@
             </ul>
         </div>
 
-        <button class="ov-btn" style="margin-top:20px;" onclick="showScreen('startScreen')">VOLTAR</button>
+        <button class="ov-btn" style="margin-top:20px;" onclick="showScreen('startScreen'); SFX.click();">VOLTAR</button>
     </div>
 
-    <div id="selectionScreen" class="screen" style="display:none; padding: 30px; text-align: center; background: #2f4034; color: white; overflow-y:auto;">
-        <h2 class="pixel" style="font-size:12px;">VOCÊ SELECIONOU:</h2>
-        <div id="selPhoto" class="sel-photo"></div>
-        <h1 id="selName" class="pixel" style="font-size:20px; color:var(--accent); margin-bottom:10px;">NOME</h1>
-        <p id="selDesc" style="margin-bottom:30px; font-size:14px; padding:0 20px;">Descrição.</p>
-        <button class="ov-btn" onclick="showChoices()">CONTINUAR</button>
+    <!-- SELECTION SCREEN -->
+    <div id="selectionScreen" class="screen" style="display:none; padding: 30px 20px; text-align: center; background: #2f4034; color: white; overflow-y:auto;">
+        <h2 class="pixel" style="font-size:12px; margin-bottom:20px; color:var(--accent);">ESCOLHA SEU LÍDER:</h2>
+        <p style="font-size: 13px; margin-bottom: 25px; color: #ccc;">Escolha com sabedoria quem vai liderar este Sprint.</p>
+        <div id="starterChoices" style="display:flex; flex-direction:column; gap:12px;"></div>
     </div>
 
+    <!-- MAP SCREEN -->
     <div id="mapScreen" class="screen" style="display:none; padding:30px 20px; background: #2f4034; overflow-y:auto;">
         <div class="pixel" id="mapHeader" style="font-size:12px; margin-bottom:20px; color:var(--accent); text-align: center;">ETAPA 1 DE 5 ANTES DO CHEFE</div>
         <div id="choiceList" style="display:flex; flex-direction:column; gap:15px;"></div>
     </div>
 
+    <!-- AUDIT SCREEN -->
     <div id="auditScreen" class="screen" style="display:none; padding:30px 20px; text-align:center; background:#2f4034; color:white; overflow-y:auto;">
         <h2 class="pixel" style="font-size:16px; margin-bottom:15px; color:var(--accent);">AUDITORIA SURPRESA</h2>
         <div id="auditPhoto" class="token" style="margin: 0 auto 10px; width: 160px; height: 160px;"></div>
@@ -284,6 +287,7 @@
         <div id="auditOptions" style="display:flex; flex-direction:column; gap:10px;"></div>
     </div>
     
+    <!-- QUIZ RESULT SCREEN -->
     <div id="quizResultScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; background:#2f4034; color:white; justify-content:center;">
         <div id="qrImage" style="width: 250px; height: 250px; margin: 0 auto 20px; background-size: contain; background-repeat: no-repeat; background-position: center; filter: drop-shadow(0 4px 0 rgba(0,0,0,.3));"></div>
         <h1 id="qrTitle" class="pixel" style="font-size: 20px; margin-bottom:15px; line-height: 1.4;">Resultado</h1>
@@ -291,16 +295,18 @@
         <div style="background:var(--panel-line); border:3px solid #5a6b5f; border-radius:12px; padding:15px; margin-bottom:30px;">
             <p id="qrEffect" style="font-size: 13px; color: white; margin: 0; font-weight:800;"></p>
         </div>
-        <button class="ov-btn" onclick="showChoices()">CONTINUAR A JORNADA</button>
+        <button class="ov-btn" onclick="showChoices(); SFX.click();">CONTINUAR A JORNADA</button>
     </div>
 
+    <!-- RECRUIT SCREEN -->
     <div id="recruitScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; background:#2f4034; color:white; overflow-y:auto;">
         <h2 class="pixel" style="font-size:16px; margin-bottom:30px; color:var(--accent);">RECRUTAMENTO PPI</h2>
         <div id="recruitPhoto" class="token" style="margin: 0 auto 20px; width: 180px; height: 180px;"></div>
-        <p id="recruitText" style="margin-bottom:40px; font-size:16px; font-weight:800;">O novato quer entrar na equipe!</p>
+        <p id="recruitText" style="margin-bottom:40px; font-size:16px; font-weight:800;">O novato quer entrar na equipa!</p>
         <div id="recruitOptions" style="display:flex; flex-direction:column; gap:12px;"></div>
     </div>
 
+    <!-- BATTLE SCREEN -->
     <div id="battleScreen" class="screen" style="display:none;">
         <div class="teamstrip" style="justify-content: space-between; background: #2a3a2f; border-bottom: 4px solid var(--panel-line); border-top: none; padding: 8px 15px;">
             <div class="pixel" style="color: white; font-size: 10px;">RIVAL</div>
@@ -316,12 +322,13 @@
         </div>
         <div class="teamstrip" style="justify-content: space-between; background: #f0dfb6; padding: 8px 15px;">
             <div id="teamStrip" style="display: flex; gap: 5px;"></div>
-            <div class="pixel" style="color: var(--accent); font-size: 10px;">SEU TIME</div>
+            <div class="pixel" style="color: var(--accent); font-size: 10px;">A SUA EQUIPA</div>
         </div>
         <div id="msgbox"><div id="msg">...</div></div>
         <div id="menu"></div>
     </div>
 
+    <!-- END & FEITOS SCREENS -->
     <div id="endScreen" class="screen feitos-scroll" style="display:none; padding:40px 20px; text-align:center; background:#1c2a22; color:white; overflow-y:auto;"></div>
     
     <div id="feitosScreen" class="screen feitos-scroll" style="display:none; padding:30px 20px; background:#2f4034; overflow-y:auto;"></div>
@@ -339,16 +346,52 @@
                     </tr>
                 </thead>
                 <tbody id="leaderboardBody">
-                    <tr><td colspan="3" style="text-align:center; padding: 15px;">Carregando fichas... 🪙</td></tr>
+                    <tr><td colspan="3" style="text-align:center; padding: 15px;">A ligar ao servidor... 🔌</td></tr>
                 </tbody>
             </table>
         </div>
         
-        <button class="ov-btn" style="margin-top:20px; background:var(--accent);" onclick="showScreen('startScreen')">VOLTAR AO INÍCIO</button>
+        <button class="ov-btn" style="margin-top:20px; background:var(--accent);" onclick="showScreen('startScreen'); SFX.click();">VOLTAR AO INÍCIO</button>
     </div>
 </div>
 
 <script>
+// --- SISTEMA DE ÁUDIO (Web Audio API) ---
+let audioCtx;
+function initAudio() {
+    if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    }
+    if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+    }
+}
+
+function playTone(freq, type, duration, vol=0.1) {
+    if (!audioCtx) return;
+    const osc = audioCtx.createOscillator();
+    const gain = audioCtx.createGain();
+    osc.type = type;
+    osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+    gain.gain.setValueAtTime(vol, audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + duration);
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    osc.start();
+    osc.stop(audioCtx.currentTime + duration);
+}
+
+const SFX = {
+    click: () => playTone(600, 'sine', 0.1, 0.05),
+    hit: () => playTone(150, 'square', 0.2, 0.1),
+    crit: () => { playTone(300, 'square', 0.1, 0.1); setTimeout(()=>playTone(200, 'square', 0.2, 0.1), 100); },
+    heal: () => { playTone(400, 'sine', 0.1, 0.05); setTimeout(()=>playTone(600, 'sine', 0.2, 0.05), 100); },
+    wrong: () => { playTone(150, 'sawtooth', 0.3, 0.1); setTimeout(()=>playTone(100, 'sawtooth', 0.4, 0.1), 300); },
+    right: () => { playTone(500, 'sine', 0.1, 0.05); setTimeout(()=>playTone(800, 'sine', 0.3, 0.05), 100); },
+    win: () => { [523, 659, 783, 1046].forEach((f, i) => setTimeout(() => playTone(f, 'square', 0.2, 0.05), i*150)); },
+    lose: () => { [300, 250, 200, 150].forEach((f, i) => setTimeout(() => playTone(f, 'sawtooth', 0.4, 0.1), i*300)); }
+};
+
 // --- FUNÇÕES DE SEGURANÇA LOCALSTORAGE ---
 function getLS(key, def) {
     try { return localStorage.getItem(key) || def; } 
@@ -507,11 +550,12 @@ const AUDIT_QUIZ = [
     { asker: "Daniel", q: "Quantas ODS são criadas por mês em CS?", opts: ["120", "94", "87", "160"], ans: 3 }
 ];
 
+// Corrigido para as regras do jogo: Processo vence Tech, Tech vence Social, Social vence Gestão, Gestão vence Processo
 const CHART = {
-    Tech: { Tech: 1, Social: 0.5, Processo: 2, Gestão: 1 },
-    Social: { Tech: 2, Social: 1, Processo: 1, Gestão: 0.5 },
-    Processo: { Tech: 0.5, Social: 1, Processo: 1, Gestão: 2 },
-    Gestão: { Tech: 1, Social: 2, Processo: 0.5, Gestão: 1 },
+    Tech: { Tech: 1, Social: 2, Processo: 0.5, Gestão: 1 },
+    Social: { Tech: 0.5, Social: 1, Processo: 1, Gestão: 2 },
+    Processo: { Tech: 2, Social: 1, Processo: 1, Gestão: 0.5 },
+    Gestão: { Tech: 1, Social: 0.5, Processo: 2, Gestão: 1 }
 };
 
 const ROSTER = {
@@ -527,14 +571,19 @@ const ROSTER = {
     Isis: { name: "Isis", types: ["Processo"], base: { hp: 60, atk: 50, def: 65, spd: 45 }, jeitao: { name: "Hora Extra", desc: "Sobrevive com 1 HP a golpe fatal." }, moves: [{ name: "Ajustar Receita DSS", type: "Processo", power: 55, kind: "dmg" }, { name: "Ajudar no SAP", type: "Tech", power: 40, kind: "dmg_debuff", stat: "def" }] },
     Igor: { name: "Igor", types: ["Processo"], base: { hp: 50, atk: 60, def: 40, spd: 65 }, jeitao: { name: "Cafeína", desc: "Sempre ataca primeiro." }, moves: [{ name: "Tomar um Cafezinho", type: "Social", power: 50, kind: "dmg_raise_spd" }, { name: "Criar uma ODS", type: "Tech", power: 60, kind: "dmg" }] },
     Paloma: { name: "Paloma", types: ["Social"], base: { hp: 60, atk: 45, def: 55, spd: 60 }, jeitao: { name: "Engagement", desc: "Reduz ataque do inimigo." }, moves: [{ name: "Dinâmica em grupo", type: "Social", power: 45, kind: "dmg" }, { name: "Mapa de Carreira", type: "Processo", power: 50, kind: "dmg_debuff", stat: "def" }] },
-    Leandro: { name: "Leandro", types: ["Gestão"], base: { hp: 140, atk: 75, def: 75, spd: 60 }, jeitao: { name: "O Chefe", desc: "Imune a ataques Sociais." }, moves: [{ name: "Cobrar Indicador", type: "Gestão", power: 90, kind: "dmg_debuff", stat: "atk" }, { name: "Apresentação Surpresa", type: "Processo", power: 80, kind: "dmg" }] }
+    Leandro: { name: "Leandro", types: ["Gestão"], base: { hp: 125, atk: 75, def: 75, spd: 60 }, jeitao: { name: "O Chefe", desc: "Resiste a ataques Sociais em vez de ter fraqueza." }, moves: [{ name: "Cobrar Indicador", type: "Gestão", power: 90, kind: "dmg_debuff", stat: "atk" }, { name: "Apresentação Surpresa", type: "Processo", power: 80, kind: "dmg" }] }
 };
 
 const FEITOS_LIST = [
-    {id:"cafezinho", n:"Almoço no Sujinho", desc:"Recupere a equipe na Parada da Pizza no mapa."},
-    {id:"fds", n:"Trabalhar Fim de Semana", desc:"Sobreviva a todas as etapas e chegue no Chefe."},
+    {id:"cafezinho", n:"Almoço no Sujinho", desc:"Recupere a equipa na Parada da Pizza no mapa."},
+    {id:"fds", n:"Trabalhar Fim de Semana", desc:"Sobreviva a todas as etapas e chegue ao Chefe."},
     {id:"tomas", n:"Apresentação pro Tomas", desc:"Vença o Leandro e aprove o projeto final!"},
-    {id:"ods", n:"Aprovar ODS", desc:"Use o ataque 'Criar ODS' do Igor em combate."}
+    {id:"ods", n:"Aprovar ODS", desc:"Use o ataque 'Criar uma ODS' do Igor em combate."},
+    {id:"estrategista", n:"Estrategista", desc:"Troque de membro da equipa a meio de uma batalha."},
+    {id:"sorte", n:"Sorte Grande", desc:"Encontre o café da Sodexo esquecido na copa."},
+    {id:"critico", n:"Na Mosca!", desc:"Acerte um golpe crítico num adversário."},
+    {id:"genio", n:"Génio do Gemba", desc:"Acerte em 2 perguntas da Auditoria na mesma jornada."},
+    {id:"quiz_master", n:"Mestre do Gemba", desc:"Acerte uma pergunta da Auditoria em menos de 3 segundos."}
 ];
 
 let run, P, E;
@@ -571,7 +620,7 @@ function showToast(text) {
     t.innerHTML = `🏆 NOVO FEITO DESBLOQUEADO!<br><br><span style="font-family:'Nunito',sans-serif; font-weight:800; font-size:15px; color:var(--accent-dk);">${text}</span>`;
     t.style.display = 'block';
     t.style.animation = 'none';
-    void t.offsetWidth; // trigger reflow
+    void t.offsetWidth; 
     t.style.animation = 'slideDown 0.4s ease-out';
     setTimeout(() => { t.style.display = 'none'; }, 5000);
 }
@@ -584,7 +633,10 @@ function unlockFeito(id) {
         if (typeof run !== 'undefined' && run && run.feitos) run.feitos.add(id);
         
         const feitoObj = FEITOS_LIST.find(f => f.id === id);
-        if (feitoObj) showToast(feitoObj.n);
+        if (feitoObj) {
+            SFX.win(); // Efeito sonoro de conquista
+            showToast(feitoObj.n);
+        }
     }
 }
 
@@ -621,22 +673,45 @@ function getRandomEnemy() {
     return availableKeys[Math.floor(Math.random() * availableKeys.length)];
 }
 
-function startRandomRun() {
-    // --- NOVA VALIDAÇÃO DE NOME ---
+function showStarterSelection() {
     const inputNome = document.getElementById('inputNomeJogador');
     const nome = inputNome ? inputNome.value.trim().toUpperCase() : "";
     
     if (nome === "") {
         alert("Atenção: Você precisa preencher o seu nome no crachá para jogar!");
         if(inputNome) inputNome.focus();
-        return; // Interrompe a função aqui, o jogo não começa
+        return; 
     }
-    
-    // Salva o nome no localStorage
     setLS('ppi_playerName', nome);
-    // ------------------------------
+    
+    initAudio();
+    SFX.click();
 
-    const chosen = getRandomEnemy();
+    // Escolhe 3 líderes aleatórios para iniciar
+    const available = Object.keys(ROSTER).filter(k => k !== "Leandro");
+    const shuffled = available.sort(() => 0.5 - Math.random());
+    const options = shuffled.slice(0, 3);
+    
+    let html = "";
+    options.forEach(k => {
+        const char = ROSTER[k];
+        html += `
+        <button class="btn" style="background:#1c2a22; color:#fff; border-color:#5a6b5f; display:flex; align-items:center; gap:10px; overflow:hidden;" onclick="chooseStarter('${k}')">
+            <div style="width:50px; height:50px; background-image:url('${IMG[k]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; transform: ${getTransform(k, 'miniaturas')};"></div>
+            <div style="flex:1; text-align:left;">
+                <div style="font-weight:900; font-size:14px; margin-bottom:4px;">${char.name.split(" ")[0]}</div>
+                <div class="tbadge t-${char.types[0]}">${char.types[0]}</div>
+            </div>
+        </button>
+        `;
+    });
+    
+    document.getElementById('starterChoices').innerHTML = html;
+    showScreen('selectionScreen');
+}
+
+function chooseStarter(chosen) {
+    SFX.click();
     run = { 
         team: [makeMon(chosen, 5)], 
         step: 0, 
@@ -644,15 +719,11 @@ function startRandomRun() {
         auditDone: false,
         rap10Done: false,
         battlesWon: 0,
-        quizPoints: 0, // Novo sistema de pontuação por tempo
-        quizStartTime: 0
+        quizPoints: 0, 
+        quizStartTime: 0,
+        quizWon: 0
     };
-    
-    document.getElementById('selPhoto').style.backgroundImage = `url('${IMG[chosen]}')`;
-    document.getElementById('selPhoto').style.transform = getTransform(chosen, 'telaInicial', 1.1); 
-    document.getElementById('selName').innerText = chosen.toUpperCase();
-    document.getElementById('selDesc').innerText = `Jeitão: ${ROSTER[chosen].jeitao.name}. ${ROSTER[chosen].jeitao.desc}`;
-    showScreen('selectionScreen');
+    showChoices();
 }
 
 function progressTrackHTML() {
@@ -693,7 +764,7 @@ function showChoices() {
 
         <div class="pixel" style="font-size:11px; margin-bottom:12px; color:white; text-align:center;">NOVA REUNIÃO AGENDADA:</div>
         
-        <button class="btn" onclick="startBattle('${nextEnemyKey}')" style="display:flex; align-items:center; gap:12px; background:#fff; padding:8px 15px; overflow: hidden; margin-bottom:15px;">
+        <button class="btn" onclick="SFX.click(); startBattle('${nextEnemyKey}')" style="display:flex; align-items:center; gap:12px; background:#fff; padding:8px 15px; overflow: hidden; margin-bottom:15px;">
             <div style="width:75px; height:75px; background-image:url('${IMG[nextEnemyKey]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter: drop-shadow(0 2px 0 rgba(0,0,0,.25)); transform: ${getTransform(nextEnemyKey, 'mapaAdversario', 1.3)}; margin: -5px 0;"></div>
             <div style="z-index: 2; flex:1;">
                 <div style="font-weight:900; font-size:16px;">${nextEnemy.name}</div>
@@ -708,7 +779,7 @@ function showChoices() {
             <div style="width:70px; height:70px; background-image:url('${IMG.Roleta}'); background-size:contain; background-repeat:no-repeat; background-position:center; flex-shrink:0; transform: scale(1.3);"></div>
             <div style="flex:1;">
                 <div style="font-weight:900; font-size:14px; color:#2f5480;">📋 SPRINT DO MILHÃO</div>
-                <div style="font-size:11px; margin-top:3px; color:#555; line-height:1.2;">Responda e ganhe status. Errar tira HP!</div>
+                <div style="font-size:11px; margin-top:3px; color:#555; line-height:1.2;">Responda rápido para ganhar mais pontos e status!</div>
             </div>
         </button>
         
@@ -727,8 +798,10 @@ function showChoices() {
     
     if (run.step > 0 && Math.random() < 0.2 && !run.rap10Done) {
         run.rap10Done = true;
-        run.team.forEach(m => { m.hp = Math.min(m.maxhp, m.hp + Math.round(m.maxhp * 0.3)); });
-        alert("Sorte grande! A equipe encontrou um Cofee da Sodexo esquecido na copa. Todos recuperaram 30% do HP!");
+        SFX.heal();
+        run.team.forEach(m => { m.hp = Math.min(m.maxhp, m.hp + Math.round(m.maxhp * 0.25)); });
+        unlockFeito("sorte"); // Feito do evento aleatório
+        alert("Sorte grande! A equipa encontrou um Cofee da Sodexo esquecido na copa. Todos recuperaram 25% do HP!");
         document.querySelector('.map-team').innerHTML = teamPreviewHTML();
     }
     
@@ -736,17 +809,19 @@ function showChoices() {
 }
 
 function pizzaHeal() {
+    SFX.heal();
     run.team.forEach(m => m.hp = m.maxhp); 
     unlockFeito("cafezinho");
     run.step++; 
     run.auditDone = false; 
     run.rap10Done = false;
-    alert("A equipe comeu pizza do Marcelo e está 100% recuperada! (Porém, sem a experiência da batalha)");
+    alert("A equipa comeu pizza do Marcelo e está 100% recuperada! (Porém, sem a experiência da batalha)");
     showChoices(); 
 }
 
 /* === LÓGICA DO SHOW DO MILHÃO PPI === */
 function startAudit() {
+    SFX.click();
     const q = AUDIT_QUIZ[Math.floor(Math.random() * AUDIT_QUIZ.length)];
     
     document.getElementById('auditPhoto').style.backgroundImage = `url('${IMG[q.asker]}')`;
@@ -766,12 +841,10 @@ function startAudit() {
     document.getElementById('auditOptions').innerHTML = optsHtml;
     showScreen('auditScreen');
     
-    // Inicia o cronômetro do Quiz!
     run.quizStartTime = Date.now();
 }
 
 async function answerAudit(selected, correct) {
-    // Calcula o tempo decorrido em segundos
     const timeElapsed = (Date.now() - run.quizStartTime) / 1000;
     
     const buttons = document.querySelectorAll('.opt-btn');
@@ -784,6 +857,7 @@ async function answerAudit(selected, correct) {
     const corBtn = document.getElementById('optBtn' + correct);
 
     selBtn.classList.add('opt-selected');
+    SFX.click();
 
     await sleep(2500); 
 
@@ -791,21 +865,26 @@ async function answerAudit(selected, correct) {
     
     if (selected === correct) {
         selBtn.classList.add('opt-correct');
+        SFX.right();
     } else {
         selBtn.classList.add('opt-wrong');
         corBtn.classList.add('opt-correct');
+        SFX.wrong();
     }
     
     await sleep(2000); 
     
     if (selected === correct) {
-        // Pontuação: Base 1000. Perde 50 pts por segundo. Mínimo de 100 pts garantido.
+        run.quizWon++;
+        if (run.quizWon >= 2) unlockFeito('genio');
+        if (timeElapsed <= 3.0) unlockFeito('quiz_master');
+        
         let pointsEarned = Math.max(100, 1000 - Math.floor(timeElapsed * 50));
         run.quizPoints += pointsEarned;
         
         run.team.forEach(m => {
             if (m.hp > 0) {
-                m.hp = Math.min(m.maxhp, m.hp + Math.round(m.maxhp * 0.2));
+                m.hp = Math.min(m.maxhp, m.hp + Math.round(m.maxhp * 0.25));
                 m.atk += 5; m.def += 5; m.spd += 5;
             }
         });
@@ -814,19 +893,18 @@ async function answerAudit(selected, correct) {
         document.getElementById('qrTitle').style.color = "var(--hp-green)";
         document.getElementById('qrSub').innerText = "Já pode tomar um café da máquina do Marciano.";
         
-        // Efeito com pontuação exibida
-        document.getElementById('qrEffect').innerHTML = `<strong style='color:var(--hp-green);'>+20% HP</strong> e <strong style='color:var(--hp-green);'>+5 stats</strong><br><br><strong style='color:#FFD700; font-size:16px;'>+${pointsEarned} Pts</strong> <span style='font-size:10px; color:#aaa;'>(Tempo: ${timeElapsed.toFixed(1)}s)</span>`;
+        document.getElementById('qrEffect').innerHTML = `<strong style='color:var(--hp-green);'>+25% HP</strong> e <strong style='color:var(--hp-green);'>+5 stats</strong><br><br><strong style='color:#FFD700; font-size:16px;'>+${pointsEarned} Pts</strong> <span style='font-size:10px; color:#aaa;'>(Tempo: ${timeElapsed.toFixed(1)}s)</span>`;
     } else {
         run.team.forEach(m => {
             if (m.hp > 0) {
-                m.hp = Math.max(1, m.hp - Math.round(m.maxhp * 0.1));
+                m.hp = Math.max(1, m.hp - Math.round(m.maxhp * 0.15));
             }
         });
         document.getElementById('qrImage').style.backgroundImage = `url('${IMG.QuizLose}')`;
         document.getElementById('qrTitle').innerText = "Ihh, errou!";
         document.getElementById('qrTitle').style.color = "var(--hp-red)";
         document.getElementById('qrSub').innerText = "Participe do próximo treinamento do Pachequinho.";
-        document.getElementById('qrEffect').innerHTML = "<strong style='color:var(--hp-red);'>-10% HP</strong> para todos da equipe viva!";
+        document.getElementById('qrEffect').innerHTML = "<strong style='color:var(--hp-red);'>-15% HP</strong> para todos da equipa viva!";
     }
     
     run.auditDone = true; 
@@ -835,10 +913,10 @@ async function answerAudit(selected, correct) {
 /* ===================================== */
 
 async function triggerOnEnter(mon, foe, targetId) {
-    if(mon.jeitao.name === "Engajamento") {
+    if(mon.jeitao.name === "Engagement") {
         foe.stages["atk"] = Math.max(-6, foe.stages["atk"] - 1);
         document.getElementById(targetId).classList.add('shake', 'flash');
-        await say(`${mon.name.split(" ")[0]} ativou Engajamento! Ataque de ${foe.name.split(" ")[0]} caiu.`);
+        await say(`${mon.name.split(" ")[0]} ativou Engagement! Ataque de ${foe.name.split(" ")[0]} caiu.`);
         renderBattle();
         await sleep(400);
         document.getElementById(targetId).classList.remove('shake', 'flash');
@@ -897,6 +975,11 @@ function renderBattle(forceEnemyImg = null, forceEnemyKey = null) {
         return "";
     };
 
+    const matchup = CHART[p.types[0]][e.types[0]];
+    let matchupText = '<span style="color: #888; font-weight: 800;">(Combate Neutro)</span>';
+    if(matchup > 1) matchupText = '<span style="color: var(--hp-green); font-weight: 800;">(Você tem Vantagem)</span>';
+    if(matchup < 1) matchupText = '<span style="color: var(--hp-red); font-weight: 800;">(Você em Desvantagem)</span>';
+
     document.getElementById('plateE').innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
             <div style="display:flex; align-items:center; gap:5px;">
@@ -907,6 +990,7 @@ function renderBattle(forceEnemyImg = null, forceEnemyKey = null) {
         </div>
         <div style="display:flex; align-items:center; gap:5px; margin-bottom:4px;">
             <span class="tbadge t-${e.types[0]}">${e.types[0]}</span>
+            <span style="font-size:8px;">${matchupText}</span>
         </div>
         <div class="hptrack" style="margin-bottom:2px;"><div class="hpfill" style="width:${(e.hp/e.maxhp)*100}%; background:${e.hp/e.maxhp > 0.5 ? 'var(--hp-green)' : e.hp/e.maxhp > 0.2 ? 'var(--hp-amber)' : 'var(--hp-red)'};"></div></div>
         <div style="font-size:9px; text-align:right; font-family:'Press Start 2P', monospace;">${e.hp}/${e.maxhp}</div>
@@ -955,6 +1039,9 @@ function showMenu() {
         
         if(m.power > 0) {
             let mult = CHART[m.type][e.types[0]];
+            // Resistência do Chefe
+            if(e.jeitao.name === "O Chefe" && m.type === "Social") mult = 0.5;
+
             if(mult > 1) { effClass = "eff-strong"; effText = "Forte x" + mult; }
             else if(mult < 1) { effClass = "eff-weak"; effText = "Fraco x" + mult; }
             
@@ -969,7 +1056,7 @@ function showMenu() {
         }
 
         html += `
-        <button class="btn" onclick="useMove(${idx})">
+        <button class="btn" onclick="SFX.click(); useMove(${idx})">
             <div class="mv-top">
                 <span style="font-size: 13px;">${m.name}</span>
                 <span class="tbadge t-${m.type}">${m.type}</span>
@@ -979,7 +1066,7 @@ function showMenu() {
     });
     
     if(run.team.some((m, idx) => m.hp > 0 && idx !== P.i)) {
-        html += `<button class="btn" style="grid-column: span 2; text-align:center; background:#e6dcc2; min-height: 50px;" onclick="openSwitch()">Trocar Recurso</button>`;
+        html += `<button class="btn" style="grid-column: span 2; text-align:center; background:#e6dcc2; min-height: 50px;" onclick="SFX.click(); openSwitch()">Trocar Recurso</button>`;
     }
     
     document.getElementById('menu').innerHTML = html;
@@ -996,7 +1083,7 @@ async function openSwitch(forced = false) {
         const hpColor = hpPct > 50 ? 'var(--hp-green)' : hpPct > 20 ? 'var(--hp-amber)' : 'var(--hp-red)';
 
         html += `
-        <button class="btn" ${isDead || isActive ? "disabled style='opacity:0.6'" : ""} style="grid-column: span 2; padding: 12px; overflow:hidden;" onclick="doSwitch(${idx}, ${forced})">
+        <button class="btn" ${isDead || isActive ? "disabled style='opacity:0.6'" : ""} style="grid-column: span 2; padding: 12px; overflow:hidden;" onclick="SFX.click(); doSwitch(${idx}, ${forced})">
             <div style="display: flex; align-items: center; gap: 15px;">
                 <div class="team-mini" style="border:none; border-radius:0; ${bgFilter}">
                     <div class="team-mini-img" style="background-image: url('${IMG[m.key]}'); transform: ${getTransform(m.key, 'miniaturas')};"></div>
@@ -1015,7 +1102,7 @@ async function openSwitch(forced = false) {
     });
     
     if (!forced) {
-        html += `<button class="btn" style="grid-column: span 2; background:#e6dcc2; text-align:center; min-height:40px;" onclick="showMenu()">Voltar</button>`;
+        html += `<button class="btn" style="grid-column: span 2; background:#e6dcc2; text-align:center; min-height:40px;" onclick="SFX.click(); showMenu()">Voltar</button>`;
     }
     document.getElementById('menu').innerHTML = html;
 }
@@ -1024,6 +1111,7 @@ async function doSwitch(idx, forced = false) {
     document.getElementById('menu').innerHTML = "";
     
     if (!forced) {
+        unlockFeito("estrategista"); 
         await say(`Volta, ${act(P).name.split(" ")[0]}!`);
     }
     
@@ -1039,6 +1127,7 @@ async function doSwitch(idx, forced = false) {
         await endOfTurn();
         
         if (act(P).hp <= 0) {
+            SFX.lose();
             const nextIdx = run.team.findIndex(m => m.hp > 0);
             if(nextIdx !== -1) {
                 await say(`${act(P).name.split(" ")[0]} não aguentou. Quem vai entrar?`);
@@ -1047,6 +1136,7 @@ async function doSwitch(idx, forced = false) {
                 showEndScreen(false);
             }
         } else if (act(E).hp <= 0) {
+            SFX.win();
             handleEnemyDefeat();
         } else {
             showMenu();
@@ -1060,7 +1150,7 @@ const STAGE_MULT = [2/8, 2/7, 2/6, 2/5, 2/4, 2/3, 2/2, 3/2, 4/2, 5/2, 6/2, 7/2, 
 function eff(mon, stat) { return mon[stat] * STAGE_MULT[Math.max(0, Math.min(12, (mon.stages[stat] || 0) + 6))]; }
 
 function calcDamage(a, d, move) {
-    if(d.jeitao.name === "Alvo Pequeno" && Math.random() < 0.2) return {dmg:0, missed:true};
+    if(d.jeitao.name === "Pequeno Alvo" && Math.random() < 0.2) return {dmg:0, missed:true};
     if(d.jeitao.name === "Onde Eu Tava?" && Math.random() < 0.15) return {dmg:0, missed:true};
 
     // FÓRMULA DE RPG CLÁSSICA COM RNG DE EMOÇÃO
@@ -1068,20 +1158,16 @@ function calcDamage(a, d, move) {
     
     const stab = a.types.includes(move.type) ? 1.5 : 1;
     let mult = CHART[move.type][d.types[0]];
-    if(d.jeitao.name === "Visão Crítica" && move.type === "Processo") mult *= 0.5;
-
-    // OPÇÃO A: Super Eficaz ignora 50% da defesa do inimigo
-    let defStat = eff(d, "def");
-    if (mult > 1) {
-        defStat *= 0.5; // Rasga-Armadura!
-    }
-
-    let statRatio = eff(a, "atk") / defStat;
     
+    // Passivas de Resistência e Fraqueza
+    if(d.jeitao.name === "Visão Analítica" && move.type === "Processo") mult *= 0.5;
+    if(d.jeitao.name === "O Chefe" && move.type === "Social") mult = 0.5; // O Chefe resiste à sua fraqueza Social em vez de bloqueá-la
+    
+    let statRatio = eff(a, "atk") / eff(d, "def");
     let baseDmg = ((levelFactor * move.power * statRatio) / 50) + 2;
 
     let crit = Math.random() < 0.15; // 15% chance of critical hit
-    if(a.jeitao.name === "Faro para Problema") crit = true;
+    if(a.jeitao.name === "Rei do Sprint") crit = true;
 
     // Variação de RNG entre 85% e 100% para não ser previsível
     const rand = (Math.floor(Math.random() * 16) + 85) / 100;
@@ -1091,6 +1177,15 @@ function calcDamage(a, d, move) {
     if(a.jeitao.name === "Pavio Curto" && a.hp < a.maxhp/2) dmg *= 1.5;
     
     dmg *= 2.8; // Fator de velocidade do jogo
+
+    // Cap global para manter o jogo equilibrado sem OHKOs injustos
+    if (mult < 1) {
+        dmg = Math.max(20, Math.min(40, dmg));
+    } else if (mult > 1) {
+        dmg = Math.max(61, Math.min(80, dmg));
+    } else {
+        dmg = Math.max(41, Math.min(60, dmg));
+    }
 
     return {dmg: Math.max(1, Math.round(dmg)), mult, crit, missed:false};
 }
@@ -1122,6 +1217,12 @@ async function applyEffect(move, atk, def) {
         atk.stages["spd"] = Math.min(6, (atk.stages["spd"] || 0) + 1);
         await say(`⚡ A velocidade de ${atk.name.split(" ")[0]} subiu!`); 
     }
+
+    // Passiva do Daniel
+    if (atk.jeitao.name === "Gosta de conversa" && Math.random() < 0.2 && !def.skip && def.hp > 0) {
+        def.skip = true;
+        await say(`💤 A conversa de ${atk.name.split(" ")[0]} fez o inimigo dormir e perder a rodada!`);
+    }
 }
 
 async function performMove(atk, def, move, targetId) {
@@ -1134,6 +1235,7 @@ async function performMove(atk, def, move, targetId) {
             atk.hp = Math.max(0, atk.hp - selfDmg);
             const myTargetId = targetId === 'monE' ? 'monP' : 'monE';
             document.getElementById(myTargetId).classList.add('shake', 'flash');
+            SFX.hit();
             renderBattle();
             await say(`🌀 ${atk.name.split(" ")[0]} ficou confuso e se atrapalhou! Tirou ${selfDmg} de si mesmo.`);
             await sleep(400);
@@ -1146,15 +1248,7 @@ async function performMove(atk, def, move, targetId) {
 
     await say(`${atk.name.split(" ")[0]} usou ${move.name}!`);
 
-    if(def.jeitao.name === "Gestor" && move.type === "Social") {
-        document.getElementById(targetId).classList.add('shake');
-        await say(`🚫 ${def.name.split(" ")[0]} não aprovou o ESign! (0 Dano)`);
-        await sleep(300);
-        document.getElementById(targetId).classList.remove('shake');
-        return;
-    }
-
-    let hits = (atk.jeitao.name === "Automação" && Math.random() < 0.35) ? 2 : 1;
+    let hits = (atk.jeitao.name === "Pai da Clarinha" && Math.random() < 0.35) ? 2 : 1;
     let totalDmg = 0, anyCrit = false, lastMult = 1, anyMiss = false;
 
     for(let h=0; h<hits; h++){
@@ -1175,6 +1269,10 @@ async function performMove(atk, def, move, targetId) {
             totalDmg += r.dmg;
             
             document.getElementById(targetId).classList.add('shake', 'flash');
+            if(r.crit) {
+                SFX.crit();
+                unlockFeito('critico'); 
+            } else SFX.hit();
             renderBattle();
             await sleep(400);
             document.getElementById(targetId).classList.remove('shake', 'flash');
@@ -1189,7 +1287,7 @@ async function performMove(atk, def, move, targetId) {
             if(anyCrit) msg = `💥 CRÍTICO! ` + msg;
             if(lastMult > 1.1) msg += ` Foi Super Eficaz!`;
             else if(lastMult < 0.9 && lastMult > 0) msg += ` Pouco Efetivo...`;
-            if(hits > 1) msg += ` (Automação: Acertou 2x!)`;
+            if(hits > 1) msg += ` (Pai da Clarinha: Acertou 2x!)`;
             await say(msg);
         }
     }
@@ -1204,6 +1302,7 @@ async function endOfTurn() {
         if(char.jeitao.name === "Bonitão" && char.hp < char.maxhp) {
             const cura = Math.round(char.maxhp * 0.05);
             char.hp = Math.min(char.maxhp, char.hp + cura);
+            SFX.heal();
             renderBattle();
             await say(`✨ ${char.name.split(" ")[0]} recuperou HP pelo seu charme!`);
         }
@@ -1220,7 +1319,7 @@ async function handleEnemyDefeat() {
     const e = act(E);
     
     if (e.key !== "Leandro") {
-        run.battlesWon++; // Computa a vitória se não for o chefe final
+        run.battlesWon++; 
     }
 
     await say(`${e.name.split(" ")[0]} foi superado na discussão!`);
@@ -1231,7 +1330,7 @@ async function handleEnemyDefeat() {
             m.level += 1;
             const hpGain = Math.round(m.maxhp * 0.15); 
             m.maxhp += hpGain;
-            m.hp += hpGain;
+            m.hp = Math.min(m.maxhp, m.hp + hpGain + Math.round(m.maxhp * 0.20)); // Cura extra de 20% ao subir de nível
             m.atk = Math.round(m.atk * 1.15);
             m.def = Math.round(m.def * 1.15);
             m.spd = Math.round(m.spd * 1.15);
@@ -1240,7 +1339,7 @@ async function handleEnemyDefeat() {
     });
 
     if (leveledUp) {
-        await say(`A equipe ganhou experiência na reunião! Todos subiram de Nível e os status aumentaram.`);
+        await say(`A equipa ganhou experiência na reunião! Todos subiram de Nível e recuperaram parte da energia.`);
     }
 
     if (e.key === "Leandro") {
@@ -1256,9 +1355,12 @@ async function useMove(idx) {
     const e = act(E);
     const move = p.moves[idx];
     
-    if(move.name === "Criar ODS") unlockFeito("ods");
+    if(move.name === "Criar uma ODS") unlockFeito("ods");
 
-    let pFirst = (p.jeitao.name === "Cafeína" && e.jeitao.name !== "Cafeína") || (eff(p,"spd") >= eff(e,"spd"));
+    let pFirst;
+    if (p.jeitao.name === "Cafeína" && e.jeitao.name !== "Cafeína") pFirst = true;
+    else if (e.jeitao.name === "Cafeína" && p.jeitao.name !== "Cafeína") pFirst = false;
+    else pFirst = eff(p,"spd") >= eff(e,"spd");
     
     if (pFirst) {
         await performMove(p, e, move, 'monE');
@@ -1277,8 +1379,10 @@ async function useMove(idx) {
     await endOfTurn();
     
     if (act(E).hp <= 0) {
+        SFX.win();
         await handleEnemyDefeat();
     } else if (act(P).hp <= 0) {
+        SFX.lose();
         const nextIdx = run.team.findIndex(m => m.hp > 0);
         if(nextIdx !== -1) {
             await say(`${act(P).name.split(" ")[0]} não aguentou. Quem vai entrar?`);
@@ -1311,7 +1415,7 @@ function offerRecruit(defeatedKey) {
             html += `<button class="btn" style="text-align:center; background:#4cae6a; color:white; padding: 18px; font-size: 15px;" onclick="catchDo('${wild}')">Aprovar no Processo Seletivo</button>`;
             html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:10px; padding: 15px;" onclick="resolveRecruit()">Manda para outra área</button>`;
         } else {
-            html += `<p style="color:var(--hp-red); font-size:12px; margin-bottom:15px;">equipe cheia (5 Máx). Substituir quem?</p>`;
+            html += `<p style="color:var(--hp-red); font-size:12px; margin-bottom:15px;">Equipa cheia (5 Máx). Substituir quem?</p>`;
             run.team.forEach((m, idx) => {
                 html += `
                 <button class="btn" style="margin-bottom:8px; display:flex; align-items:center; gap:10px; overflow:hidden;" onclick="catchReplace(${idx}, '${wild}')">
@@ -1330,16 +1434,19 @@ function offerRecruit(defeatedKey) {
 }
 
 function catchDo(wild) {
+    SFX.click();
     run.team.push(makeMon(wild, 5 + run.step)); 
     resolveRecruit();
 }
 
 function catchReplace(idx, wild) {
+    SFX.click();
     run.team[idx] = makeMon(wild, 5 + run.step);
     resolveRecruit();
 }
 
 function resolveRecruit() {
+    SFX.click();
     run.step++;
     run.auditDone = false; 
     run.rap10Done = false; 
@@ -1349,8 +1456,6 @@ function resolveRecruit() {
 
 function showEndScreen(win) {
     if (win) unlockFeito("tomas");
-
-    showScreen('endScreen');
 
     let score = 0;
     let aliveCount = 0;
@@ -1363,14 +1468,16 @@ function showEndScreen(win) {
         }
     });
 
-    // Matemática Nova, focada na Performance!
     score += run.battlesWon * 600;
-    score += run.quizPoints; // Adiciona os pontos adquiridos no Quiz
+    score += run.quizPoints; 
     score += extraLevels * 200;
     
     if (win) {
         score += 5000;
         score += aliveCount * 1000;
+        SFX.win();
+    } else {
+        SFX.lose();
     }
     
     score += run.feitos.size * 500;
@@ -1448,7 +1555,7 @@ function showEndScreen(win) {
                 </div>
                 <div>
                     <div style="font-size:9px; color:#aaa; margin-bottom:3px; text-transform:uppercase;">Feitos</div>
-                    <div style="font-weight:800; font-size:12px;">${getFeitos().size}/4</div>
+                    <div style="font-weight:800; font-size:12px;">${getFeitos().size}/9</div>
                 </div>
             </div>
 
@@ -1461,14 +1568,12 @@ function showEndScreen(win) {
     `;
     
     document.getElementById('endScreen').innerHTML = html;
+    showScreen('endScreen');
 
-    // --- INTEGRAÇÃO DO PLACAR GLOBAL ---
     if (score > 0) {
-        // Puxa o nome que foi salvo no início da partida
         const nomeJogador = getLS('ppi_playerName', 'ANÔNIMO');
         enviarPontuacao(nomeJogador, score);
     }
-    // -----------------------------------
 }
 
 function showFeitos(fromStart = false) {
@@ -1491,20 +1596,18 @@ function showFeitos(fromStart = false) {
     `;
 
     const onClickAction = fromStart ? "showScreen('startScreen')" : "showChoices()";
-    html += `<button class="ov-btn" style="margin-top:30px;" onclick="${onClickAction}">VOLTAR</button>`;
+    html += `<button class="ov-btn" style="margin-top:30px;" onclick="SFX.click(); ${onClickAction}">VOLTAR</button>`;
     document.getElementById('feitosScreen').innerHTML = html;
 }
 
 function startFinalBoss() {
     unlockFeito("fds");
-    
     run.team.forEach(m => { m.hp = m.maxhp; m.status = null; });
-    
     startBattle('Leandro', 12);
 }
 
 // --- FUNÇÕES DO PLACAR GLOBAL ---
-const API_URL_RANKING = "Https://script.google.com/macros/s/AKfycbySveIpuc2-gLNY82TfzeMIYxaLrh0t_s0xg_3_lU_ezto1_sKSl_oKblWqP3OfrYadGQ/exec";
+const API_URL_RANKING = "https://script.google.com/macros/s/AKfycbySveIpuc2-gLNY82TfzeMIYxaLrh0t_s0xg_3_lU_ezto1_sKSl_oKblWqP3OfrYadGQ/exec";
 
 function showLeaderboard() {
     showScreen('leaderboardScreen');
@@ -1513,7 +1616,7 @@ function showLeaderboard() {
 
 function carregarRanking() {
     const tbody = document.getElementById("leaderboardBody");
-    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 15px;">Conectando ao servidor... 🔌</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 15px;">A ligar ao servidor... 🔌</td></tr>';
 
     fetch(API_URL_RANKING)
         .then(res => res.json())
@@ -1523,20 +1626,22 @@ function carregarRanking() {
                 tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 15px;">Nenhum recorde ainda!</td></tr>';
                 return;
             }
-            dados.forEach((jog, i) => {
+            dados.sort((a, b) => b.pontuacao - a.pontuacao);
+            
+            dados.slice(0, 10).forEach((jog, i) => {
                 let icone = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i+1}º`;
                 tbody.innerHTML += `
-                    <tr style="border-bottom: 1px solid #333;">
-                        <td style="padding: 12px 5px;">${icone}</td>
+                    <tr style="border-bottom: 1px dashed #555;">
+                        <td style="padding: 12px 5px; color: var(--hp-amber); font-size: 16px;">${icone}</td>
                         <td style="padding: 12px 5px; font-weight: 800;">${jog.nome.toUpperCase()}</td>
-                        <td class="pixel" style="padding: 12px 5px; text-align: right; color: var(--hp-amber); font-size: 9px;">${jog.pontuacao}</td>
+                        <td class="pixel" style="padding: 12px 5px; text-align: right; color: var(--hp-green); font-size: 10px;">${jog.pontuacao}</td>
                     </tr>
                 `;
             });
         })
         .catch(err => {
             console.error(err);
-            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 15px; color: var(--hp-red);">Erro ao carregar o ranking.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 15px; color: var(--hp-red);">Erro ao carregar o ranking.<br><span style="font-size:9px">Verifica o Google Apps Script</span></td></tr>';
         });
 }
 
@@ -1544,18 +1649,18 @@ function enviarPontuacao(nome, pontos) {
     fetch(API_URL_RANKING, {
         method: "POST",
         mode: "no-cors",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
         body: JSON.stringify({ nome: nome, pontuacao: pontos })
     }).then(() => {
         console.log("Pontuação salva na nuvem!");
-    });
+    }).catch(err => console.error("Erro de conexão:", err));
 }
 
-// Carrega o nome do jogador salvo na memória assim que a página abre
 document.addEventListener('DOMContentLoaded', () => {
     const nomeSalvo = getLS('ppi_playerName', '');
     if (nomeSalvo !== '') {
-        document.getElementById('inputNomeJogador').value = nomeSalvo;
+        const inputEl = document.getElementById('inputNomeJogador');
+        if (inputEl) inputEl.value = nomeSalvo;
     }
 });
 </script>
