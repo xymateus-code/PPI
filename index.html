@@ -27,6 +27,29 @@
 
         .pixel { font-family: "Press Start 2P", monospace; line-height: 1.5; }
 
+        /* Notificação de Troféu */
+        #toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--hp-amber);
+            color: var(--ink);
+            border: 4px solid var(--panel-line);
+            padding: 15px 25px;
+            border-radius: 12px;
+            font-size: 10px;
+            z-index: 9999;
+            box-shadow: 0 8px 0 rgba(0,0,0,0.3);
+            text-align: center;
+            display: none;
+            animation: slideDown 0.4s ease-out;
+        }
+        @keyframes slideDown {
+            from { top: -100px; }
+            to { top: 20px; }
+        }
+
         #game {
             width: 100%; max-width: 460px; background: var(--panel);
             border: 5px solid var(--panel-line); border-radius: 18px;
@@ -46,21 +69,20 @@
         .plat-enemy { top: 110px; right: 24px; }
         .plat-player { bottom: 30px; left: 24px; }
         
-        .combatant { position: absolute; display: flex; flex-direction: column; align-items: center; }
+        .combatant { position: absolute; display: flex; flex-direction: column; align-items: center; z-index: 10; }
         .enemy-mon { top: 10px; right: 20px; }
         .player-mon { bottom: 10px; left: 20px; }
         
         /* SPRITES TRANSPARENTES AUMENTADOS */
         .token {
-            width: 170px; height: 170px; /* Antes 110px */
+            width: 170px; height: 170px; 
             background-size: contain; 
             background-position: bottom center; 
             background-repeat: no-repeat;
             filter: drop-shadow(0 6px 0 rgba(0,0,0,.25));
-            transition: transform 0.2s;
         }
         .player-mon .token { 
-            width: 190px; height: 190px; /* Antes 120px */
+            width: 190px; height: 190px; 
             filter: drop-shadow(0 6px 0 rgba(0,0,0,.25)) drop-shadow(0 0 6px rgba(216,90,48,.6)); 
         } 
 
@@ -68,9 +90,11 @@
         .plate {
             background: var(--panel); border: 3px solid var(--panel-line); border-radius: 10px;
             padding: 8px 10px; width: 185px; box-shadow: 0 4px 0 rgba(0,0,0,0.1);
+            position: absolute;
+            z-index: 20;
         }
-        .plate-enemy { position: absolute; top: 15px; left: 15px; }
-        .plate-player { position: absolute; bottom: 15px; right: 15px; }
+        .plate-enemy { top: 15px; left: 15px; }
+        .plate-player { bottom: 15px; right: 15px; }
         
         .hpfill { height: 100%; transition: width 0.4s ease; border-radius: 4px; }
         .hptrack { height: 10px; background: #ddd; border: 2px solid var(--panel-line); border-radius: 6px; overflow: hidden; margin: 6px 0 2px; }
@@ -99,22 +123,42 @@
         }
         .ov-btn:active { transform: translateY(3px); box-shadow: 0 2px 0 rgba(0,0,0,.2); }
 
+        /* Estilos do Show do Milhão PPI */
+        .opt-btn { transition: background-color 0.3s, color 0.3s; }
+        .opt-selected { background-color: var(--hp-amber) !important; color: var(--ink) !important; border-color: #fff !important; animation: optBlink 0.2s infinite alternate; }
+        .opt-correct { background-color: var(--hp-green) !important; color: white !important; border-color: #fff !important;}
+        .opt-wrong { background-color: var(--hp-red) !important; color: white !important; border-color: #fff !important;}
+
+        @keyframes optBlink {
+            from { background-color: var(--hp-amber); }
+            to { background-color: #ffd700; }
+        }
+
         /* --- Specific Screens --- */
         #selectionScreen { padding: 30px; text-align: center; background: #2f4034; color: white; }
         .sel-photo { 
-            width: 280px; height: 280px; /* Aumentado de 180px */
+            width: 280px; height: 280px; 
             margin: 10px auto 20px; background-size: contain; background-repeat: no-repeat; background-position: bottom center; 
             filter: drop-shadow(0 8px 0 rgba(0,0,0,.25));
-            transform: scale(1.1);
         }
 
         .teamstrip { display: flex; align-items: center; gap: 8px; padding: 10px; background: #efe7d2; border-top: 4px solid var(--panel-line); border-bottom: 4px solid var(--panel-line); }
         .team-mini { 
-            width: 50px; height: 50px; /* Aumentado de 38px */
-            background-size: contain; background-repeat: no-repeat; background-position: bottom center; 
+            width: 50px; height: 50px; 
+            border-radius: 50%;
+            border: 2px solid var(--panel-line);
+            background-color: #fff;
+            overflow: hidden;
+            position: relative;
             filter: drop-shadow(0 2px 0 rgba(0,0,0,.2));
             transition: filter 0.2s, transform 0.2s;
         }
+        
+        .team-mini-img {
+            width: 100%; height: 100%;
+            background-size: contain; background-repeat: no-repeat; background-position: bottom center;
+        }
+
         .ownerchip { font-family: "Press Start 2P", monospace; font-size: 7px; padding: 3px 6px; border-radius: 4px; color: #fff; }
         .chip-you { background: var(--accent); } .chip-rival { background: #b94b35; }
 
@@ -128,12 +172,15 @@
         .map-link { height: 3px; width: 12px; background: #5a6b5f; }
         
         .map-team { display: flex; gap: 12px; justify-content: center; margin-bottom: 25px; flex-wrap: wrap; background: rgba(0,0,0,0.15); padding: 15px; border-radius: 12px;}
-        .mapt { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 70px; } /* Aumentado */
-        .mapt-tk { width: 70px; height: 70px; background-size: contain; background-repeat: no-repeat; background-position: bottom center; filter: drop-shadow(0 2px 0 rgba(0,0,0,.25)); } /* Aumentado */
+        .mapt { display: flex; flex-direction: column; align-items: center; gap: 4px; width: 70px; }
+        .mapt-tk { 
+            width: 70px; height: 70px; background-size: contain; background-repeat: no-repeat; background-position: bottom center; filter: drop-shadow(0 2px 0 rgba(0,0,0,.25)); 
+            transform-origin: bottom center; 
+        }
         .mapt.down .mapt-tk { filter: grayscale(1) opacity(0.45); }
-        .mapt-hp { width: 60px; height: 8px; background: #1c2a22; border-radius: 4px; overflow: hidden; }
+        .mapt-hp { width: 60px; height: 8px; background: #1c2a22; border-radius: 4px; overflow: hidden; position: relative; z-index: 20; }
         .mapt-hp>div { height: 100%; background: var(--hp-green); }
-        .mapt-nm { font-size: 9px; color: #cdc6b2; font-weight: 800; font-family: "Press Start 2P", monospace; margin-top:3px;}
+        .mapt-nm { font-size: 9px; color: #cdc6b2; font-weight: 800; font-family: "Press Start 2P", monospace; margin-top:3px; position: relative; z-index: 20; }
 
         #msgbox { background: var(--panel); padding: 18px; min-height: 85px; font-weight: 700; font-size: 15px; line-height: 1.4; display: flex; align-items: center;}
         #menu { padding: 15px; background: #e0d6b8; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
@@ -146,8 +193,11 @@
         .st-veneno { background: #7d4ea3; }
         .st-confuso { background: #d8a72f; color: #3a2a00; }
 
+        /* Animações Impactantes */
         @keyframes shake { 0%, 100% {transform: translateX(0)} 25% {transform: translateX(-5px)} 75% {transform: translateX(5px)} }
+        @keyframes flash { 0%, 100% {filter: drop-shadow(0 6px 0 rgba(0,0,0,.25)) brightness(1) invert(0);} 50% {filter: drop-shadow(0 6px 0 rgba(0,0,0,.25)) brightness(2) invert(1);} }
         .shake { animation: shake 0.3s 2; }
+        .flash { animation: flash 0.3s 1; }
         
         .cur{display:inline-block; margin-left:5px; color:var(--accent); transform:translateY(1px); animation:blink .85s steps(1) infinite;}
         @keyframes blink{50%{opacity:0;}}
@@ -155,19 +205,58 @@
         .feitos-scroll::-webkit-scrollbar { width: 6px; }
         .feitos-scroll::-webkit-scrollbar-track { background: transparent; }
         .feitos-scroll::-webkit-scrollbar-thumb { background: #5a6b5f; border-radius: 4px; }
+        
+        .rank-badge { font-family: 'Press Start 2P', monospace; font-size: 36px; color: #fff; text-shadow: 3px 3px 0 rgba(0,0,0,0.5); margin: 10px 0; }
     </style>
 </head>
 <body>
 
+<div id="toast" class="pixel"></div>
+
 <div id="game">
-    <div id="startScreen" class="screen" style="padding:50px 20px; text-align:center; background:#26342b;">
-        <h1 class="pixel" style="color:var(--accent); font-size:24px; margin-bottom:20px; line-height: 1.4;">JORNADA PPI</h1>
-        <p style="margin-bottom:50px; font-weight:700; color:var(--panel); font-size: 16px;">Monte o time perfeito e prove seu valor no projeto.</p>
-        <button class="ov-btn" onclick="startRandomRun()" style="font-size: 14px; padding: 20px;">INICIAR JORNADA</button>
-        <button class="ov-btn" style="margin-top:20px; background:#41513f" onclick="showFeitos()">🏆 FEITOS</button>
+    <!-- START SCREEN -->
+    <div id="startScreen" class="screen" style="padding:40px 20px; text-align:center; background:#26342b; overflow-y: auto; display: flex; justify-content: center;">
+        <h1 class="pixel" style="color:var(--accent); font-size:24px; margin-bottom:15px; line-height: 1.4;">JORNADA PPI</h1>
+        
+        <p style="margin-bottom:30px; font-weight:700; color:var(--panel); font-size: 16px;">Monte a equipa perfeita e prove o seu valor no projeto.</p>
+
+        <button class="ov-btn" onclick="startRandomRun()" style="font-size: 14px; padding: 15px; margin-bottom: 15px;">▶ INICIAR JORNADA</button>
+        <button class="ov-btn" style="background:#2f5480; margin-bottom: 15px;" onclick="showScreen('rulesScreen')">📜 REGRAS DO JOGO</button>
+        <button class="ov-btn" style="background:#41513f" onclick="showFeitos(true)">🏆 FEITOS & RANKING</button>
     </div>
 
-    <div id="selectionScreen" class="screen" style="display:none;">
+    <!-- RULES SCREEN -->
+    <div id="rulesScreen" class="screen" style="display:none; padding:30px 20px; text-align:left; background:#2f4034; color:white; overflow-y:auto;">
+        <h2 class="pixel" style="font-size:16px; margin-bottom:20px; color:var(--accent); text-align:center;">📜 REGRAS & PONTUAÇÃO</h2>
+        
+        <div style="background: var(--panel-line); border: 2px solid #5a6b5f; border-radius: 12px; padding: 15px; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">
+            <p style="margin-bottom:10px;"><strong>1. Trilha de 5 Etapas:</strong> Vença a equipa até chegar ao Chefão.</p>
+            <p style="margin-bottom:10px;"><strong>2. Vantagem Tática:</strong><br> 
+               <span style="color:var(--t-processo); font-weight:bold;">⚙️Processo</span> vence <span style="color:var(--t-tech); font-weight:bold;">💻Tech</span><br>
+               <span style="color:var(--t-tech); font-weight:bold;">💻Tech</span> vence <span style="color:var(--t-social); font-weight:bold;">🤝Social</span><br>
+               <span style="color:var(--t-social); font-weight:bold;">🤝Social</span> vence <span style="color:var(--t-gestao); font-weight:bold;">📈Gestão</span><br>
+               <span style="color:var(--t-gestao); font-weight:bold;">📈Gestão</span> vence <span style="color:var(--t-processo); font-weight:bold;">⚙️Processo</span><br>
+               <span style="font-size:10px; color: var(--hp-amber);">*Golpes com vantagem quebram a defesa inimiga pela metade!*</span></p>
+            <p style="margin-bottom:0;"><strong>3. Nível Importa:</strong> Lutar dá pontos e experiência. Comer Pizza cura a equipa, mas <strong>não dá pontos nem nível!</strong> Cuidado para não chegar fraco no chefe.</p>
+        </div>
+
+        <div style="background: var(--panel-line); border: 2px solid #ffd700; border-radius: 12px; padding: 15px; font-size: 13px; line-height: 1.5;">
+            <h3 class="pixel" style="font-size: 10px; color: #ffd700; margin-bottom: 10px; text-align: center;">📈 SISTEMA DE PONTOS</h3>
+            <ul style="margin-left: 15px; padding-left: 5px;">
+                <li style="margin-bottom:5px;"><strong>Vencer Batalha:</strong> +600 pts</li>
+                <li style="margin-bottom:5px;"><strong>Níveis Adquiridos:</strong> +200 pts por nível</li>
+                <li style="margin-bottom:5px;"><strong>Show do Milhão:</strong> Até +1000 pts <br><span style="font-size:10px; color:#aaa;">(Atenção: Quanto mais rápido responder, mais pontos ganha!)</span></li>
+                <li style="margin-bottom:5px;"><strong>Derrotar o Chefe:</strong> +5000 pts</li>
+                <li style="margin-bottom:5px;"><strong>Sobreviventes no Fim:</strong> +1000 pts /pessoa</li>
+                <li><strong>Feitos:</strong> +500 pts /feito alcançado</li>
+            </ul>
+        </div>
+
+        <button class="ov-btn" style="margin-top:20px;" onclick="showScreen('startScreen')">VOLTAR</button>
+    </div>
+
+    <!-- SELECTION SCREEN -->
+    <div id="selectionScreen" class="screen" style="display:none; padding: 30px; text-align: center; background: #2f4034; color: white; overflow-y:auto;">
         <h2 class="pixel" style="font-size:12px;">VOCÊ SELECIONOU:</h2>
         <div id="selPhoto" class="sel-photo"></div>
         <h1 id="selName" class="pixel" style="font-size:20px; color:var(--accent); margin-bottom:10px;">NOME</h1>
@@ -175,26 +264,43 @@
         <button class="ov-btn" onclick="showChoices()">CONTINUAR</button>
     </div>
 
+    <!-- MAP SCREEN -->
     <div id="mapScreen" class="screen" style="display:none; padding:30px 20px; background: #2f4034; overflow-y:auto;">
         <div class="pixel" id="mapHeader" style="font-size:12px; margin-bottom:20px; color:var(--accent); text-align: center;">ETAPA 1 DE 5 ANTES DO CHEFE</div>
         <div id="choiceList" style="display:flex; flex-direction:column; gap:15px;"></div>
     </div>
 
-    <div id="auditScreen" class="screen" style="display:none; padding:30px 20px; text-align:center; background:#2f4034; color:white;">
+    <!-- AUDIT SCREEN -->
+    <div id="auditScreen" class="screen" style="display:none; padding:30px 20px; text-align:center; background:#2f4034; color:white; overflow-y:auto;">
         <h2 class="pixel" style="font-size:16px; margin-bottom:15px; color:var(--accent);">AUDITORIA SURPRESA</h2>
-        <div id="auditPhoto" class="token" style="margin: 0 auto 10px; width: 160px; height: 160px;"></div> <div class="pixel" id="auditAsker" style="font-size:10px; margin-bottom:15px; color:#e0a828;">FULANO PERGUNTA:</div>
+        <div id="auditPhoto" class="token" style="margin: 0 auto 10px; width: 160px; height: 160px;"></div>
+        <div class="pixel" id="auditAsker" style="font-size:10px; margin-bottom:15px; color:#e0a828;">FULANO PERGUNTA:</div>
         <div style="background:var(--panel-line); border:3px solid #5a6b5f; border-radius:12px; padding:15px; margin-bottom:20px;">
             <p id="auditQuestion" style="font-size:16px; font-weight:800; line-height:1.4; color:white;"></p>
         </div>
         <div id="auditOptions" style="display:flex; flex-direction:column; gap:10px;"></div>
     </div>
+    
+    <!-- QUIZ RESULT SCREEN -->
+    <div id="quizResultScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; background:#2f4034; color:white; justify-content:center;">
+        <div id="qrImage" style="width: 250px; height: 250px; margin: 0 auto 20px; background-size: contain; background-repeat: no-repeat; background-position: center; filter: drop-shadow(0 4px 0 rgba(0,0,0,.3));"></div>
+        <h1 id="qrTitle" class="pixel" style="font-size: 20px; margin-bottom:15px; line-height: 1.4;">Resultado</h1>
+        <p id="qrSub" style="font-size: 14px; font-weight: 700; margin-bottom: 20px; color: #ddd;"></p>
+        <div style="background:var(--panel-line); border:3px solid #5a6b5f; border-radius:12px; padding:15px; margin-bottom:30px;">
+            <p id="qrEffect" style="font-size: 13px; color: white; margin: 0; font-weight:800;"></p>
+        </div>
+        <button class="ov-btn" onclick="showChoices()">CONTINUAR A JORNADA</button>
+    </div>
 
-    <div id="recruitScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; background:#2f4034; color:white;">
+    <!-- RECRUIT SCREEN -->
+    <div id="recruitScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; background:#2f4034; color:white; overflow-y:auto;">
         <h2 class="pixel" style="font-size:16px; margin-bottom:30px; color:var(--accent);">RECRUTAMENTO PPI</h2>
-        <div id="recruitPhoto" class="token" style="margin: 0 auto 20px; width: 180px; height: 180px;"></div> <p id="recruitText" style="margin-bottom:40px; font-size:16px; font-weight:800;">O novato reconheceu suas habilidades e quer entrar na equipe!</p>
+        <div id="recruitPhoto" class="token" style="margin: 0 auto 20px; width: 180px; height: 180px;"></div>
+        <p id="recruitText" style="margin-bottom:40px; font-size:16px; font-weight:800;">O novato quer entrar na equipa!</p>
         <div id="recruitOptions" style="display:flex; flex-direction:column; gap:12px;"></div>
     </div>
 
+    <!-- BATTLE SCREEN -->
     <div id="battleScreen" class="screen" style="display:none;">
         <div class="teamstrip" style="justify-content: space-between; background: #2a3a2f; border-bottom: 4px solid var(--panel-line); border-top: none; padding: 8px 15px;">
             <div class="pixel" style="color: white; font-size: 10px;">RIVAL</div>
@@ -216,11 +322,133 @@
         <div id="menu"></div>
     </div>
 
-    <div id="endScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; justify-content:center; background:#1c2a22; color:white;"></div>
+    <!-- END & FEITOS SCREENS -->
+    <div id="endScreen" class="screen feitos-scroll" style="display:none; padding:40px 20px; text-align:center; background:#1c2a22; color:white; overflow-y:auto;"></div>
     <div id="feitosScreen" class="screen feitos-scroll" style="display:none; padding:30px 20px; background:#2f4034; overflow-y:auto;"></div>
 </div>
 
 <script>
+// --- FUNÇÕES DE SEGURANÇA LOCALSTORAGE ---
+function getLS(key, def) {
+    try { return localStorage.getItem(key) || def; } 
+    catch(e) { return def; }
+}
+function setLS(key, val) {
+    try { localStorage.setItem(key, val); } 
+    catch(e) {}
+}
+
+// --- CONFIGURAÇÃO DE SPRITES INDIVIDUAIS ---
+const SPRITE_CONFIG = {
+    Igor: {
+        telaInicial:  { zoom: 1.3, x: 0, y: -65.0 },
+        batalhaVoce:  { zoom: 1.2, x: -20.0, y: -50.0 },
+        batalhaRival: { zoom: 1.2, x: 0, y: -60.0 },
+        miniaturas:   { zoom: 2, x: 0, y: -10 },
+        mapaAdversario: { zoom: 1.3, x: 0, y: -10 }
+    },
+    Barbara: {
+        telaInicial:  { zoom: 1.5, x: 0, y: -90.0 },
+        batalhaVoce:  { zoom: 1.1, x: -10, y: -40 },
+        batalhaRival: { zoom: 1.2, x: 0, y: -50 },
+        miniaturas:   { zoom: 1.3, x: 0, y: -10 },
+        mapaAdversario: { zoom: 1.3, x: 0, y: -20 }
+    },
+    Gabriel: {
+        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
+        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
+        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
+        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+    },
+    Guilherme: {
+        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
+        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
+        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
+        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+    },
+    Daniel: {
+        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
+        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
+        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
+        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+    },
+    Eric: {
+        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
+        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
+        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
+        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+    },
+    Edinei: {
+        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
+        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
+        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
+        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+    },
+    Isis: {
+        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
+        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
+        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
+        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+    },
+    Marcelo: {
+        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
+        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
+        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
+        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+    },
+    Leonardo: {
+        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
+        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
+        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
+        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+    },
+    Paloma: {
+        telaInicial:  { zoom: 1.2, x: 0, y: -40.0 },
+        batalhaVoce:  { zoom: 1.0, x: -10.0, y: -40.0 },
+        batalhaRival: { zoom: 1.0, x: 0, y: -50.0 },
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
+        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+    },
+    Mateus: {
+        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
+        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
+        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
+        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+    },
+    Leandro: {
+        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
+        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
+        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
+        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+    },
+    LeandroBoss: {
+        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
+        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
+        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
+        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+    }
+};
+
+function getTransform(key, context, extraScale = 1.0) {
+    let conf = {zoom: 1.0, x: 0, y: 0};
+    if (SPRITE_CONFIG[key] && SPRITE_CONFIG[key][context]) {
+        conf = SPRITE_CONFIG[key][context];
+    }
+    const finalZoom = conf.zoom * extraScale;
+    return `translate(${conf.x}px, ${conf.y}px) scale(${finalZoom})`;
+}
+
 // --- BANCO DE IMAGENS ---
 const IMG = {
     Igor: "igor.png",
@@ -236,7 +464,11 @@ const IMG = {
     Paloma: "paloma.png",
     Mateus: "mateus.png",
     Leandro: "leandro.png",
-    LeandroBoss: "leandro_boss.png" 
+    LeandroBoss: "leandro_boss.png",
+    MarceloPizza: "Marcelopizza.png",
+    Roleta: "roleta.png",
+    QuizWin: "quiz_win.png",
+    QuizLose: "quiz_lose.png"
 };
 
 // --- PERGUNTAS DO QUIZ ---
@@ -248,7 +480,10 @@ const AUDIT_QUIZ = [
     { asker: "Guilherme", q: "Quantos compostos nós produzimos atualmente em POG?", opts: ["60", "62", "64", "56"], ans: 2 },
     { asker: "Gabriel", q: "Quantas famílias de produto nós temos em POG?", opts: ["100", "102", "93", "91"], ans: 3 },
     { asker: "Paloma", q: "Quantas competências são avaliadas na matriz X?", opts: ["33", "27", "31", "48"], ans: 3 },
-    { asker: "Leandro", q: "Qual a visão do nosso time de PPI?", opts: ["Help POG achieve its goal of becoming the top IAM facility in the Americas.", "Support POG on its journey to become the leading IAM facility across the Americas.", "Contribute to POG’s success as the best IAM facility in the Americas.", "Support POG to become the best IAM facility in Americas."], ans: 3 }
+    { asker: "Leandro", q: "Qual a visão do nosso time de PPI?", opts: ["Help POG achieve its goal of becoming the top IAM facility in the Americas.", "Support POG on its journey to become the leading IAM facility across the Americas.", "Contribute to POG’s success as the best IAM facility in the Americas.", "Support POG to become the best IAM facility in Americas."], ans: 3 },
+    { asker: "Edinei", q: "Quanto custa o almoço livre no sujinho?", opts: ["44,90", "42,90", "48,50", "47,00"], ans: 3 },
+    { asker: "Isis", q: "Quantos part numbers ativos temos em DSS?", opts: ["120", "94", "87", "160"], ans: 3 },
+    { asker: "Daniel", q: "Quantas ODS são criadas por mês em CS?", opts: ["120", "94", "87", "160"], ans: 3 }
 ];
 
 const CHART = {
@@ -259,26 +494,26 @@ const CHART = {
 };
 
 const ROSTER = {
-    Leonardo: { name: "Leonardo", types: ["Tech"], base: { hp: 60, atk: 50, def: 60, spd: 50 }, jeitao: { name: "Visão Crítica", desc: "Defesa bônus contra Processo." }, moves: [{ name: "Criar POI", type: "Tech", power: 55, kind: "dmg" }, { name: "Inserir Correia no SAP", type: "Processo", power: 65, kind: "dmg" }] },
+    Leonardo: { name: "Leonardo", types: ["Tech"], base: { hp: 60, atk: 50, def: 60, spd: 50 }, jeitao: { name: "Visão Analítica", desc: "Defesa bônus contra Processo." }, moves: [{ name: "Criar POI", type: "Tech", power: 55, kind: "dmg" }, { name: "Inserir Correia no SAP", type: "Processo", power: 65, kind: "dmg" }] },
     Barbara: { name: "Barbara", types: ["Social"], base: { hp: 55, atk: 50, def: 50, spd: 60 }, jeitao: { name: "Poliglota", desc: "Chance de confundir o alvo." }, moves: [{ name: "Falar alemão", type: "Social", power: 45, kind: "dmg_confuse" }, { name: "Comer dodileiti", type: "Processo", power: 35, kind: "dmg_debuff", stat: "def" }] },
     Marcelo: { name: "Marcelo", types: ["Processo"], base: { hp: 65, atk: 55, def: 60, spd: 45 }, jeitao: { name: "Pavio Curto", desc: "Dano sobe quando HP < 50%." }, moves: [{ name: "Usar boina", type: "Processo", power: 60, kind: "dmg" }, { name: "Stevie Wonder", type: "Gestão", power: 50, kind: "dmg_debuff", stat: "spd" }] },
-    Mateus: { name: "Mateus", types: ["Gestão"], base: { hp: 60, atk: 55, def: 55, spd: 55 }, jeitao: { name: "Automação", desc: "Chance de ataque duplo." }, moves: [{ name: "Foto de IA", type: "Gestão", power: 65, kind: "dmg" }, { name: "Repriorizar ação", type: "Processo", power: 75, kind: "dmg_confuse" }] },
-    Eric: { name: "Eric", types: ["Processo"], base: { hp: 55, atk: 60, def: 50, spd: 60 }, jeitao: { name: "Faro para Problema", desc: "Críticos garantidos." }, moves: [{ name: "Reduzir Setup", type: "Processo", power: 55, kind: "dmg" }, { name: "Lixo no armário", type: "Social", power: 50, kind: "dmg_raise_spd" }] },
-    Daniel: { name: "Daniel", types: ["Tech"], base: { hp: 60, atk: 45, def: 60, spd: 45 }, jeitao: { name: "Papo Longo", desc: "Pode fazer o inimigo dormir." }, moves: [{ name: "Fazer Figurinha", type: "Tech", power: 45, kind: "dmg_confuse" }, { name: "Fazer brique", type: "Social", power: 50, kind: "dmg_skip" }] },
-    Edinei: { name: "Edinei", types: ["Processo"], base: { hp: 65, atk: 50, def: 55, spd: 50 }, jeitao: { name: "Bonitão", desc: "Recupera HP a cada turno." }, moves: [{ name: "Teste na Roller", type: "Processo", power: 55, kind: "dmg" }, { name: "Criar Apelido", type: "Social", power: 35, kind: "dmg_debuff", stat: "atk" }] },
-    Guilherme: { name: "Guilherme", types: ["Processo"], base: { hp: 50, atk: 50, def: 50, spd: 70 }, jeitao: { name: "Alvo Pequeno", desc: "Maior chance de esquiva." }, moves: [{ name: "Pré Vulcanização", type: "Processo", power: 50, kind: "dmg" }, { name: "Postergar teste", type: "Tech", power: 60, kind: "dmg" }] },
-    Gabriel: { name: "Gabriel", types: ["Tech"], base: { hp: 55, atk: 55, def: 45, spd: 55 }, jeitao: { name: "Onde Eu Tava?", desc: "Chance de ignorar dano." }, moves: [{ name: "Dormir na Capão", type: "Tech", power: 35, kind: "dmg_debuff", stat: "spd" }, { name: "Deixar Lixo na Mesa", type: "Processo", power: 55, kind: "dmg_poison" }] },
-    Isis: { name: "Isis", types: ["Processo"], base: { hp: 60, atk: 50, def: 65, spd: 45 }, jeitao: { name: "Hora Extra", desc: "Sobrevive com 1 HP a golpe fatal." }, moves: [{ name: "Ajuste Receita DSS", type: "Processo", power: 55, kind: "dmg" }, { name: "Ajuda no SAP", type: "Tech", power: 40, kind: "dmg_debuff", stat: "def" }] },
-    Igor: { name: "Igor", types: ["Processo"], base: { hp: 50, atk: 60, def: 40, spd: 65 }, jeitao: { name: "Cafeína", desc: "Sempre ataca primeiro." }, moves: [{ name: "Tomar Café", type: "Social", power: 50, kind: "dmg_raise_spd" }, { name: "Criar ODS", type: "Tech", power: 60, kind: "dmg" }] },
-    Paloma: { name: "Paloma", types: ["Social"], base: { hp: 60, atk: 45, def: 55, spd: 60 }, jeitao: { name: "Engajamento", desc: "Reduz ataque do inimigo." }, moves: [{ name: "Dinâmica em grupo", type: "Social", power: 45, kind: "dmg" }, { name: "Mapa Carreira", type: "Processo", power: 50, kind: "dmg_debuff", stat: "def" }] },
-    Leandro: { name: "Leandro", types: ["Gestão"], base: { hp: 140, atk: 75, def: 75, spd: 60 }, jeitao: { name: "Gestor", desc: "Imune a ataques Sociais." }, moves: [{ name: "Cobrar Indicador", type: "Gestão", power: 90, kind: "dmg_debuff", stat: "atk" }, { name: "Revisão de Metas", type: "Processo", power: 80, kind: "dmg" }] }
+    Mateus: { name: "Mateus", types: ["Gestão"], base: { hp: 60, atk: 55, def: 55, spd: 55 }, jeitao: { name: "Pai da Clarinha", desc: "Chance de ataque duplo." }, moves: [{ name: "F2F Surpresa", type: "Gestão", power: 65, kind: "dmg" }, { name: "Adestrar Galinha", type: "Processo", power: 75, kind: "dmg_confuse" }] },
+    Eric: { name: "Eric", types: ["Processo"], base: { hp: 55, atk: 60, def: 50, spd: 60 }, jeitao: { name: "Rei do Sprint", desc: "Críticos garantidos." }, moves: [{ name: "Reduzir Setup", type: "Processo", power: 55, kind: "dmg" }, { name: "Termopar", type: "Social", power: 50, kind: "dmg_raise_spd" }] },
+    Daniel: { name: "Daniel", types: ["Tech"], base: { hp: 60, atk: 45, def: 60, spd: 45 }, jeitao: { name: "Gosta de conversa", desc: "Pode fazer o inimigo dormir." }, moves: [{ name: "Fazer Figurinha", type: "Tech", power: 45, kind: "dmg_confuse" }, { name: "Fazer brique", type: "Social", power: 50, kind: "dmg_skip" }] },
+    Edinei: { name: "Edinei", types: ["Processo"], base: { hp: 65, atk: 50, def: 55, spd: 50 }, jeitao: { name: "Bonitão", desc: "Recupera HP a cada turno." }, moves: [{ name: "Teste na Roller", type: "Processo", power: 55, kind: "dmg" }, { name: "Charme de Polaco", type: "Social", power: 35, kind: "dmg_debuff", stat: "atk" }] },
+    Guilherme: { name: "Guilherme", types: ["Processo"], base: { hp: 50, atk: 50, def: 50, spd: 70 }, jeitao: { name: "Pequeno Alvo", desc: "Maior chance de esquiva." }, moves: [{ name: "Guardar Dinheiro", type: "Processo", power: 50, kind: "dmg" }, { name: "Postergar um teste", type: "Tech", power: 60, kind: "dmg" }] },
+    Gabriel: { name: "Gabriel", types: ["Tech"], base: { hp: 55, atk: 55, def: 45, spd: 55 }, jeitao: { name: "Onde Eu Tava?", desc: "Chance de ignorar dano." }, moves: [{ name: "Dormir na Capão", type: "Tech", power: 35, kind: "dmg_debuff", stat: "spd" }, { name: "Bagunçar mesa", type: "Processo", power: 55, kind: "dmg_poison" }] },
+    Isis: { name: "Isis", types: ["Processo"], base: { hp: 60, atk: 50, def: 65, spd: 45 }, jeitao: { name: "Hora Extra", desc: "Sobrevive com 1 HP a golpe fatal." }, moves: [{ name: "Ajustar Receita DSS", type: "Processo", power: 55, kind: "dmg" }, { name: "Ajudar no SAP", type: "Tech", power: 40, kind: "dmg_debuff", stat: "def" }] },
+    Igor: { name: "Igor", types: ["Processo"], base: { hp: 50, atk: 60, def: 40, spd: 65 }, jeitao: { name: "Cafeína", desc: "Sempre ataca primeiro." }, moves: [{ name: "Tomar um Cafezinho", type: "Social", power: 50, kind: "dmg_raise_spd" }, { name: "Criar uma ODS", type: "Tech", power: 60, kind: "dmg" }] },
+    Paloma: { name: "Paloma", types: ["Social"], base: { hp: 60, atk: 45, def: 55, spd: 60 }, jeitao: { name: "Engagement", desc: "Reduz ataque do inimigo." }, moves: [{ name: "Dinâmica em grupo", type: "Social", power: 45, kind: "dmg" }, { name: "Mapa de Carreira", type: "Processo", power: 50, kind: "dmg_debuff", stat: "def" }] },
+    Leandro: { name: "Leandro", types: ["Gestão"], base: { hp: 140, atk: 75, def: 75, spd: 60 }, jeitao: { name: "O Chefe", desc: "Imune a ataques Sociais." }, moves: [{ name: "Cobrar Indicador", type: "Gestão", power: 90, kind: "dmg_debuff", stat: "atk" }, { name: "Apresentação Surpresa", type: "Processo", power: 80, kind: "dmg" }] }
 };
 
 const FEITOS_LIST = [
-    {id:"cafezinho", n:"Cofee da Sodexo", desc:"Recupere a equipe na Parada da Pizza."},
-    {id:"fds", n:"Trabalhar Final de Semana", desc:"Chegue até a etapa do Chefão Final."},
-    {id:"tomas", n:"Apresentação pro Tomas", desc:"Aprove os projetos e derrote o Leandro."},
-    {id:"ods", n:"Aprovar ODS", desc:"Use o ataque 'Criar ODS' do Igor em batalha."}
+    {id:"cafezinho", n:"Almoço no Sujinho", desc:"Recupere a equipa na Parada da Pizza no mapa."},
+    {id:"fds", n:"Trabalhar Fim de Semana", desc:"Sobreviva a todas as etapas e chegue no Chefe."},
+    {id:"tomas", n:"Apresentação pro Tomas", desc:"Vença o Leandro e aprove o projeto final!"},
+    {id:"ods", n:"Aprovar ODS", desc:"Use o ataque 'Criar ODS' do Igor em combate."}
 ];
 
 let run, P, E;
@@ -309,12 +544,31 @@ function say(txt) {
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
-function getFeitos() {
-    try {
-        return new Set(JSON.parse(localStorage.getItem('ppi_feitos') || '[]'));
-    } catch (e) {
-        return new Set();
+/* === SISTEMA DE CONQUISTAS E TOASTS === */
+function showToast(text) {
+    const t = document.getElementById('toast');
+    t.innerHTML = `🏆 NOVO FEITO DESBLOQUEADO!<br><br><span style="font-family:'Nunito',sans-serif; font-weight:800; font-size:15px; color:var(--accent-dk);">${text}</span>`;
+    t.style.display = 'block';
+    t.style.animation = 'none';
+    void t.offsetWidth; // trigger reflow
+    t.style.animation = 'slideDown 0.4s ease-out';
+    setTimeout(() => { t.style.display = 'none'; }, 5000);
+}
+
+function unlockFeito(id) {
+    let stored = new Set(JSON.parse(getLS('ppi_feitos', '[]')));
+    if (!stored.has(id)) {
+        stored.add(id);
+        setLS('ppi_feitos', JSON.stringify([...stored]));
+        if (typeof run !== 'undefined' && run && run.feitos) run.feitos.add(id);
+        
+        const feitoObj = FEITOS_LIST.find(f => f.id === id);
+        if (feitoObj) showToast(feitoObj.n);
     }
+}
+
+function getFeitos() {
+    return new Set(JSON.parse(getLS('ppi_feitos', '[]')));
 }
 
 function showScreen(id) {
@@ -353,10 +607,14 @@ function startRandomRun() {
         step: 0, 
         feitos: getFeitos(),
         auditDone: false,
-        rap10Done: false
+        rap10Done: false,
+        battlesWon: 0,
+        quizPoints: 0, // Novo sistema de pontuação por tempo
+        quizStartTime: 0
     };
     
     document.getElementById('selPhoto').style.backgroundImage = `url('${IMG[chosen]}')`;
+    document.getElementById('selPhoto').style.transform = getTransform(chosen, 'telaInicial', 1.1); 
     document.getElementById('selName').innerText = chosen.toUpperCase();
     document.getElementById('selDesc').innerText = `Jeitão: ${ROSTER[chosen].jeitao.name}. ${ROSTER[chosen].jeitao.desc}`;
     showScreen('selectionScreen');
@@ -378,7 +636,7 @@ function teamPreviewHTML() {
         const col = pct > 50 ? "var(--hp-green)" : pct > 20 ? "var(--hp-amber)" : "var(--hp-red)";
         return `
         <div class="mapt ${m.hp <= 0 ? "down" : ""}">
-            <div class="mapt-tk" style="background-image:url('${IMG[m.key]}')"></div>
+            <div class="mapt-tk" style="background-image:url('${IMG[m.key]}'); transform: ${getTransform(m.key, 'miniaturas')}"></div>
             <div class="mapt-hp"><div style="width:${pct}%; background:${col}"></div></div>
             <div class="mapt-nm">${m.hp}/${m.maxhp}</div>
         </div>`;
@@ -400,9 +658,9 @@ function showChoices() {
 
         <div class="pixel" style="font-size:11px; margin-bottom:12px; color:white; text-align:center;">NOVA PRIORIDADE DEFINIDA:</div>
         
-        <button class="btn" onclick="startBattle('${nextEnemyKey}')" style="display:flex; align-items:center; gap:12px; background:#fff; padding:15px;">
-            <div style="width:80px; height:80px; background-image:url('${IMG[nextEnemyKey]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter: drop-shadow(0 2px 0 rgba(0,0,0,.25));"></div>
-            <div>
+        <button class="btn" onclick="startBattle('${nextEnemyKey}')" style="display:flex; align-items:center; gap:12px; background:#fff; padding:8px 15px; overflow: hidden; margin-bottom:15px;">
+            <div style="width:75px; height:75px; background-image:url('${IMG[nextEnemyKey]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter: drop-shadow(0 2px 0 rgba(0,0,0,.25)); transform: ${getTransform(nextEnemyKey, 'mapaAdversario', 1.3)}; margin: -5px 0;"></div>
+            <div style="z-index: 2; flex:1;">
                 <div style="font-weight:900; font-size:16px;">${nextEnemy.name}</div>
                 <div class="tbadge t-${nextEnemy.types[0]}" style="margin-top:6px;">${nextEnemy.types[0]}</div>
             </div>
@@ -411,18 +669,23 @@ function showChoices() {
 
     if (!run.auditDone) {
         html += `
-        <button class="btn" onclick="startAudit()" style="margin-top:15px; background:#d9e6f5; border-color:#2f5480; text-align:center; padding:15px;">
-            <div style="font-weight:900; font-size:14px;">📋 AUDITORIA DO GEMBA</div>
-            <div style="font-size:11px; margin-top:5px; color:#666;">(Responda e ganhe status. Errar tira HP!)</div>
-        </button>`;
-    }
-
-    html += `
-        <button class="btn" onclick="pizzaHeal()" style="margin-top:15px; background:#f4d9cc; border-color:#d85a30; text-align:center; padding:15px;">
-            <div style="font-weight:900; font-size:14px;">🍕 PARADA DA PIZZA DO MARCELO</div>
-            <div style="font-size:11px; margin-top:5px; color:#666;">(Recupera o HP e avança a etapa sem dar XP)</div>
+        <button class="btn" onclick="startAudit()" style="background:#d9e6f5; border-color:#2f5480; text-align:left; padding:8px 15px; display:flex; align-items:center; gap:15px; margin-bottom:15px; overflow:hidden;">
+            <div style="width:70px; height:70px; background-image:url('${IMG.Roleta}'); background-size:contain; background-repeat:no-repeat; background-position:center; flex-shrink:0; transform: scale(1.3);"></div>
+            <div style="flex:1;">
+                <div style="font-weight:900; font-size:14px; color:#2f5480;">📋 SHOW DO MILHÃO</div>
+                <div style="font-size:11px; margin-top:3px; color:#555; line-height:1.2;">Responda e ganhe status. Errar tira HP!</div>
+            </div>
         </button>
-    `;
+        
+        <button class="btn" onclick="pizzaHeal()" style="background:#f4d9cc; border-color:#d85a30; text-align:left; padding:8px 15px; display:flex; align-items:center; gap:15px; overflow:hidden;">
+            <div style="width:70px; height:70px; background-image:url('${IMG.MarceloPizza}'); background-size:contain; background-repeat:no-repeat; background-position:center; flex-shrink:0; transform: scale(1.3);"></div>
+            <div style="flex:1;">
+                <div style="font-weight:900; font-size:14px; color:#993C1D;">🍕 PIZZA DO MARCELO</div>
+                <div style="font-size:11px; margin-top:3px; color:#666; line-height:1.2;">Recupera o HP e avança a etapa sem dar XP.</div>
+            </div>
+        </button>
+        `;
+    }
     
     document.getElementById('mapHeader').innerText = `ETAPA ${run.step + 1} DE 5 ANTES DO CHEFE`;
     document.getElementById('choiceList').innerHTML = html;
@@ -430,7 +693,7 @@ function showChoices() {
     if (run.step > 0 && Math.random() < 0.2 && !run.rap10Done) {
         run.rap10Done = true;
         run.team.forEach(m => { m.hp = Math.min(m.maxhp, m.hp + Math.round(m.maxhp * 0.3)); });
-        alert("Sorte grande! A equipe encontrou um Cofee da Sodexo esquecido na copa. Todos recuperaram 30% do HP!");
+        alert("Sorte grande! A equipa encontrou um Cofee da Sodexo esquecido na copa. Todos recuperaram 30% do HP!");
         document.querySelector('.map-team').innerHTML = teamPreviewHTML();
     }
     
@@ -443,7 +706,7 @@ function pizzaHeal() {
     run.step++; 
     run.auditDone = false; 
     run.rap10Done = false;
-    alert("A equipe comeu pizza do Marcelo e está 100% recuperada! (Porém, sem a experiência da batalha)");
+    alert("A equipa comeu pizza do Marcelo e está 100% recuperada! (Porém, sem a experiência da batalha)");
     showChoices(); 
 }
 
@@ -452,6 +715,7 @@ function startAudit() {
     const q = AUDIT_QUIZ[Math.floor(Math.random() * AUDIT_QUIZ.length)];
     
     document.getElementById('auditPhoto').style.backgroundImage = `url('${IMG[q.asker]}')`;
+    document.getElementById('auditPhoto').style.transform = getTransform(q.asker, 'telaInicial');
     document.getElementById('auditAsker').innerText = q.asker.toUpperCase() + " PERGUNTA:";
     document.getElementById('auditQuestion').innerText = q.q;
     
@@ -459,47 +723,90 @@ function startAudit() {
     let optsHtml = "";
     q.opts.forEach((opt, idx) => {
         optsHtml += `
-        <button class="btn" onclick="answerAudit(${idx}, ${q.ans})" style="text-align:left; font-size:13px; padding:15px; font-weight:700;">
+        <button class="btn opt-btn" id="optBtn${idx}" onclick="answerAudit(${idx}, ${q.ans})" style="text-align:left; font-size:13px; padding:15px; font-weight:700;">
             <strong style="color:var(--accent);">${labels[idx]})</strong> ${opt}
         </button>`;
     });
     
     document.getElementById('auditOptions').innerHTML = optsHtml;
     showScreen('auditScreen');
+    
+    // Inicia o cronómetro do Quiz!
+    run.quizStartTime = Date.now();
 }
 
-function answerAudit(selected, correct) {
+async function answerAudit(selected, correct) {
+    // Calcula o tempo decorrido em segundos
+    const timeElapsed = (Date.now() - run.quizStartTime) / 1000;
+    
+    const buttons = document.querySelectorAll('.opt-btn');
+    buttons.forEach(b => {
+        b.disabled = true;
+        b.style.pointerEvents = 'none';
+    });
+    
+    const selBtn = document.getElementById('optBtn' + selected);
+    const corBtn = document.getElementById('optBtn' + correct);
+
+    selBtn.classList.add('opt-selected');
+
+    await sleep(2500); 
+
+    selBtn.classList.remove('opt-selected');
+    
     if (selected === correct) {
+        selBtn.classList.add('opt-correct');
+    } else {
+        selBtn.classList.add('opt-wrong');
+        corBtn.classList.add('opt-correct');
+    }
+    
+    await sleep(2000); 
+    
+    if (selected === correct) {
+        // Pontuação: Base 1000. Perde 50 pts por segundo. Mínimo de 100 pts garantido.
+        let pointsEarned = Math.max(100, 1000 - Math.floor(timeElapsed * 50));
+        run.quizPoints += pointsEarned;
+        
         run.team.forEach(m => {
             if (m.hp > 0) {
                 m.hp = Math.min(m.maxhp, m.hp + Math.round(m.maxhp * 0.2));
                 m.atk += 5; m.def += 5; m.spd += 5;
             }
         });
-        alert("✅ Resposta Exata! A equipe ganhou moral e conhecimento: +20% HP e +5 em todos os atributos!");
+        document.getElementById('qrImage').style.backgroundImage = `url('${IMG.QuizWin}')`;
+        document.getElementById('qrTitle').innerText = "Parabéns, acertaste!";
+        document.getElementById('qrTitle').style.color = "var(--hp-green)";
+        document.getElementById('qrSub').innerText = "Já podes tomar um café da máquina do Marciano.";
+        
+        // Efeito com pontuação exibida
+        document.getElementById('qrEffect').innerHTML = `<strong style='color:var(--hp-green);'>+20% HP</strong> e <strong style='color:var(--hp-green);'>+5 stats</strong><br><br><strong style='color:#FFD700; font-size:16px;'>+${pointsEarned} Pts</strong> <span style='font-size:10px; color:#aaa;'>(Tempo: ${timeElapsed.toFixed(1)}s)</span>`;
     } else {
-        const labels = ["A", "B", "C", "D"];
         run.team.forEach(m => {
             if (m.hp > 0) {
                 m.hp = Math.max(1, m.hp - Math.round(m.maxhp * 0.1));
             }
         });
-        alert(`❌ Não Conformidade! A resposta correta era a ${labels[correct]}. A equipe ficou desmotivada e perdeu 10% de HP.`);
+        document.getElementById('qrImage').style.backgroundImage = `url('${IMG.QuizLose}')`;
+        document.getElementById('qrTitle').innerText = "Ihh, erraste!";
+        document.getElementById('qrTitle').style.color = "var(--hp-red)";
+        document.getElementById('qrSub').innerText = "Participa no próximo treinamento do Pacheco.";
+        document.getElementById('qrEffect').innerHTML = "<strong style='color:var(--hp-red);'>-10% HP</strong> para todos da equipa viva!";
     }
     
     run.auditDone = true; 
-    showChoices(); 
+    showScreen('quizResultScreen');
 }
 /* ===================================== */
 
 async function triggerOnEnter(mon, foe, targetId) {
     if(mon.jeitao.name === "Engajamento") {
         foe.stages["atk"] = Math.max(-6, foe.stages["atk"] - 1);
-        document.getElementById(targetId).classList.add('shake');
+        document.getElementById(targetId).classList.add('shake', 'flash');
         await say(`${mon.name.split(" ")[0]} ativou Engajamento! Ataque de ${foe.name.split(" ")[0]} caiu.`);
         renderBattle();
         await sleep(400);
-        document.getElementById(targetId).classList.remove('shake');
+        document.getElementById(targetId).classList.remove('shake', 'flash');
     }
 }
 
@@ -520,11 +827,14 @@ async function startBattle(key, overrideLevel = null) {
     E = { team: [makeMon(key, eLvl)], i: 0 };
     
     let eImgUrl = IMG[E.team[0].key];
+    let eKey = E.team[0].key;
+
     if(E.team[0].key === "Leandro" && key === "Leandro") {
         eImgUrl = IMG.LeandroBoss || IMG.Leandro; 
+        eKey = 'LeandroBoss';
     }
 
-    renderBattle(eImgUrl);
+    renderBattle(eImgUrl, eKey);
     
     if (key === "Leandro") {
         await say(`ANNOUNCEMENT! Leandro chegou no GEMBA!`);
@@ -542,7 +852,7 @@ async function startBattle(key, overrideLevel = null) {
 
 function act(s) { return s.team[s.i]; }
 
-function renderBattle(forceEnemyImg = null) {
+function renderBattle(forceEnemyImg = null, forceEnemyKey = null) {
     const p = act(P);
     const e = act(E);
     
@@ -551,11 +861,6 @@ function renderBattle(forceEnemyImg = null) {
         if(mon.status === 'confuso') return `<span class="status-tag st-confuso">CONF</span>`;
         return "";
     };
-
-    const matchup = CHART[p.types[0]][e.types[0]];
-    let matchupText = '<span style="color: #888; font-weight: 800;">(Combate Neutro)</span>';
-    if(matchup > 1) matchupText = '<span style="color: var(--hp-green); font-weight: 800;">(Você tem Vantagem)</span>';
-    if(matchup < 1) matchupText = '<span style="color: var(--hp-red); font-weight: 800;">(Você em Desvantagem)</span>';
 
     document.getElementById('plateE').innerHTML = `
         <div style="display:flex; justify-content:space-between; align-items:baseline; margin-bottom:4px;">
@@ -567,7 +872,6 @@ function renderBattle(forceEnemyImg = null) {
         </div>
         <div style="display:flex; align-items:center; gap:5px; margin-bottom:4px;">
             <span class="tbadge t-${e.types[0]}">${e.types[0]}</span>
-            <span style="font-size:8px;">${matchupText}</span>
         </div>
         <div class="hptrack" style="margin-bottom:2px;"><div class="hpfill" style="width:${(e.hp/e.maxhp)*100}%; background:${e.hp/e.maxhp > 0.5 ? 'var(--hp-green)' : e.hp/e.maxhp > 0.2 ? 'var(--hp-amber)' : 'var(--hp-red)'};"></div></div>
         <div style="font-size:9px; text-align:right; font-family:'Press Start 2P', monospace;">${e.hp}/${e.maxhp}</div>
@@ -590,14 +894,18 @@ function renderBattle(forceEnemyImg = null) {
     `;
     
     const eImg = forceEnemyImg ? forceEnemyImg : IMG[e.key];
-    document.getElementById('monE').innerHTML = `<div class="token" style="background-image:url('${eImg}')"></div>`;
-    document.getElementById('monP').innerHTML = `<div class="token" style="background-image:url('${IMG[p.key]}')"></div>`;
+    const eKey = forceEnemyKey ? forceEnemyKey : e.key;
+
+    document.getElementById('monE').innerHTML = `<div class="token" style="background-image:url('${eImg}'); transform: ${getTransform(eKey, 'batalhaRival')};"></div>`;
+    document.getElementById('monP').innerHTML = `<div class="token" style="background-image:url('${IMG[p.key]}'); transform: ${getTransform(p.key, 'batalhaVoce')};"></div>`;
 
     document.getElementById('teamStrip').innerHTML = run.team.map((m, idx) => 
-        `<div class="team-mini" style="background-image:url('${IMG[m.key]}'); ${m.hp <= 0 ? 'filter:grayscale(1) opacity(0.5);' : idx === P.i ? 'filter: drop-shadow(0 0 6px var(--accent)); transform: translateY(-3px);' : ''}"></div>`
+        `<div class="team-mini" style="background-image:url('${IMG[m.key]}'); ${m.hp <= 0 ? 'filter:grayscale(1) opacity(0.5);' : idx === P.i ? 'filter: drop-shadow(0 0 6px var(--accent)); transform: translateY(-3px);' : ''}"><div style="width:100%; height:100%; transform: ${getTransform(m.key, 'miniaturas')};"></div></div>`
     ).join('');
     
-    document.getElementById('enemyStrip').innerHTML = `<div class="team-mini" style="background-image:url('${eImg}'); border-color:var(--panel-line);"></div>`;
+    document.getElementById('enemyStrip').innerHTML = `<div class="team-mini" style="border-color:var(--panel-line);">
+        <div class="team-mini-img" style="background-image:url('${eImg}'); transform: ${getTransform(eKey, 'miniaturas')};"></div>
+    </div>`;
 }
 
 function showMenu() {
@@ -653,10 +961,12 @@ async function openSwitch(forced = false) {
         const hpColor = hpPct > 50 ? 'var(--hp-green)' : hpPct > 20 ? 'var(--hp-amber)' : 'var(--hp-red)';
 
         html += `
-        <button class="btn" ${isDead || isActive ? "disabled style='opacity:0.6'" : ""} style="grid-column: span 2; padding: 12px;" onclick="doSwitch(${idx}, ${forced})">
+        <button class="btn" ${isDead || isActive ? "disabled style='opacity:0.6'" : ""} style="grid-column: span 2; padding: 12px; overflow:hidden;" onclick="doSwitch(${idx}, ${forced})">
             <div style="display: flex; align-items: center; gap: 15px;">
-                <div style="width: 50px; height: 50px; background-image: url('${IMG[m.key]}'); background-size: contain; background-repeat: no-repeat; background-position: bottom center; ${bgFilter}"></div>
-                <div style="flex: 1; text-align: left;">
+                <div class="team-mini" style="border:none; border-radius:0; ${bgFilter}">
+                    <div class="team-mini-img" style="background-image: url('${IMG[m.key]}'); transform: ${getTransform(m.key, 'miniaturas')};"></div>
+                </div>
+                <div style="flex: 1; text-align: left; z-index:2;">
                     <div style="font-weight: 900; font-size: 15px; margin-bottom: 6px;">
                         ${m.name.split(" ")[0]} <span class="tbadge t-${m.types[0]}" style="font-size: 8px; margin-left: 6px;">${m.types[0]}</span>
                     </div>
@@ -718,30 +1028,36 @@ function calcDamage(a, d, move) {
     if(d.jeitao.name === "Alvo Pequeno" && Math.random() < 0.2) return {dmg:0, missed:true};
     if(d.jeitao.name === "Onde Eu Tava?" && Math.random() < 0.15) return {dmg:0, missed:true};
 
-    let base = (move.power * 1.2) + (eff(a,"atk") * 1.0) - (eff(d,"def") * 0.4);
-    base = Math.max(5, base); 
+    // FÓRMULA DE RPG CLÁSSICA COM RNG DE EMOÇÃO
+    let levelFactor = (2 * a.level / 5) + 2;
     
-    if(a.jeitao.name === "Pavio Curto" && a.hp < a.maxhp/2) base *= 1.5;
-
-    const stab = a.types.includes(move.type) ? 1.3 : 1;
+    const stab = a.types.includes(move.type) ? 1.5 : 1;
     let mult = CHART[move.type][d.types[0]];
     if(d.jeitao.name === "Visão Crítica" && move.type === "Processo") mult *= 0.5;
 
-    let crit = Math.random() < 0.08;
-    if(a.jeitao.name === "Faro para Problema") crit = true;
-
-    const rand = 0.95 + Math.random() * 0.05;
-    let dmg = Math.max(1, Math.round(base * stab * mult * (crit ? 1.5 : 1) * rand));
-
-    if (mult < 1) {
-        dmg = Math.max(20, Math.min(40, dmg));
-    } else if (mult > 1) {
-        dmg = Math.max(61, Math.min(80, dmg));
-    } else {
-        dmg = Math.max(41, Math.min(60, dmg));
+    // OPÇÃO A: Super Eficaz ignora 50% da defesa do inimigo
+    let defStat = eff(d, "def");
+    if (mult > 1) {
+        defStat *= 0.5; // Rasga-Armadura!
     }
 
-    return {dmg, mult, crit, missed:false};
+    let statRatio = eff(a, "atk") / defStat;
+    
+    let baseDmg = ((levelFactor * move.power * statRatio) / 50) + 2;
+
+    let crit = Math.random() < 0.15; // 15% chance of critical hit
+    if(a.jeitao.name === "Faro para Problema") crit = true;
+
+    // Variação de RNG entre 85% e 100% para não ser previsível
+    const rand = (Math.floor(Math.random() * 16) + 85) / 100;
+    
+    let dmg = baseDmg * stab * mult * (crit ? 1.5 : 1) * rand;
+
+    if(a.jeitao.name === "Pavio Curto" && a.hp < a.maxhp/2) dmg *= 1.5;
+    
+    dmg *= 2.8; // Fator de velocidade do jogo
+
+    return {dmg: Math.max(1, Math.round(dmg)), mult, crit, missed:false};
 }
 
 async function applyEffect(move, atk, def) {
@@ -751,29 +1067,30 @@ async function applyEffect(move, atk, def) {
     if(k === "debuff" || k === "dmg_debuff") { 
         if(move.stat) {
             def.stages[move.stat] = Math.max(-6, (def.stages[move.stat] || 0) - 1);
-            await say(`O atributo de ${def.name.split(" ")[0]} caiu!`); 
+            const nomeAtributo = move.stat === "atk" ? "Ataque" : move.stat === "def" ? "Defesa" : "Velocidade";
+            await say(`📉 O atributo ${nomeAtributo} de ${def.name.split(" ")[0]} caiu!`); 
         }
     }
-    if((k === "confuse" || k === "dmg_confuse") && !def.status && Math.random() < 0.5) { 
+    if((k === "confuse" || k === "dmg_confuse") && !def.status && Math.random() < 0.6) { 
         def.status = "confuso"; def.statusTurns = 2 + Math.floor(Math.random()*2); 
-        await say(`${def.name.split(" ")[0]} ficou confuso e se atrapalhou!`);
+        await say(`🌀 ${def.name.split(" ")[0]} ficou confuso e se atrapalhou!`);
     }
-    if(k === "dmg_poison" && !def.status && Math.random() < 0.45) { 
+    if(k === "dmg_poison" && !def.status && Math.random() < 0.6) { 
         def.status = "veneno"; 
-        await say(`${def.name.split(" ")[0]} perdeu HP por causa da sujeira na mesa!`);
+        await say(`☠️ ${def.name.split(" ")[0]} foi envenenado pela sujeira na mesa!`);
     }
-    if(k === "dmg_skip" && Math.random() < 0.35) { 
+    if(k === "dmg_skip" && Math.random() < 0.5) { 
         def.skip = true; 
-        await say(`${def.name.split(" ")[0]} perdeu a concentração para a próxima rodada!`);
+        await say(`💤 ${def.name.split(" ")[0]} perdeu a concentração e vai pular a rodada!`);
     }
     if(k === "dmg_raise_spd") { 
         atk.stages["spd"] = Math.min(6, (atk.stages["spd"] || 0) + 1);
-        await say(`A velocidade de ${atk.name.split(" ")[0]} subiu!`); 
+        await say(`⚡ A velocidade de ${atk.name.split(" ")[0]} subiu!`); 
     }
 }
 
 async function performMove(atk, def, move, targetId) {
-    if(atk.skip) { atk.skip = false; await say(`${atk.name.split(" ")[0]} perdeu a concentração para a próxima rodada!`); return; }
+    if(atk.skip) { atk.skip = false; await say(`💤 ${atk.name.split(" ")[0]} perdeu a concentração!`); return; }
 
     if(atk.status === "confuso") {
         atk.statusTurns--;
@@ -781,9 +1098,11 @@ async function performMove(atk, def, move, targetId) {
             const selfDmg = Math.max(1, Math.round(atk.maxhp * 0.07));
             atk.hp = Math.max(0, atk.hp - selfDmg);
             const myTargetId = targetId === 'monE' ? 'monP' : 'monE';
-            document.getElementById(myTargetId).classList.add('shake');
+            document.getElementById(myTargetId).classList.add('shake', 'flash');
             renderBattle();
-            await say(`${atk.name.split(" ")[0]} ficou confuso e se atrapalhou! Tirou ${selfDmg} de si mesmo.`);
+            await say(`🌀 ${atk.name.split(" ")[0]} ficou confuso e se atrapalhou! Tirou ${selfDmg} de si mesmo.`);
+            await sleep(400);
+            document.getElementById(myTargetId).classList.remove('shake', 'flash');
             if(atk.statusTurns <= 0) atk.status = null;
             return;
         }
@@ -794,7 +1113,7 @@ async function performMove(atk, def, move, targetId) {
 
     if(def.jeitao.name === "Gestor" && move.type === "Social") {
         document.getElementById(targetId).classList.add('shake');
-        await say(`${def.name.split(" ")[0]} não aprovou o ESign! (0 Dano)`);
+        await say(`🚫 ${def.name.split(" ")[0]} não aprovou o ESign! (0 Dano)`);
         await sleep(300);
         document.getElementById(targetId).classList.remove('shake');
         return;
@@ -814,29 +1133,28 @@ async function performMove(atk, def, move, targetId) {
             if(def.jeitao.name === "Hora Extra" && r.dmg >= def.hp && def.hp > 1 && !def.sturdyUsed) {
                 r.dmg = def.hp - 1;
                 def.sturdyUsed = true;
-                await say(`${def.name.split(" ")[0]} fez Hora Extra e segurou com 1 HP!`);
+                await say(`⏱️ ${def.name.split(" ")[0]} fez Hora Extra e segurou com 1 HP!`);
             }
 
             def.hp = Math.max(0, def.hp - r.dmg);
             totalDmg += r.dmg;
             
-            document.getElementById(targetId).classList.add('shake');
+            document.getElementById(targetId).classList.add('shake', 'flash');
             renderBattle();
             await sleep(400);
-            document.getElementById(targetId).classList.remove('shake');
+            document.getElementById(targetId).classList.remove('shake', 'flash');
         }
     }
 
     if(move.power > 0) {
         if(anyMiss && totalDmg === 0) {
-            await say(`O ataque falhou!`);
+            await say(`❌ O ataque falhou!`);
         } else if(totalDmg > 0) {
-            let msg = "";
-            if(lastMult > 1.1) msg += "Super eficaz! ";
-            else if(lastMult < 0.9 && lastMult > 0) msg += "Pouco efeito... ";
-            if(anyCrit) msg += "Crítico! ";
-            if(hits > 1) msg += "Automação ativada! Acertou 2x! ";
-            msg += `Tirou ${totalDmg} de HP de ${def.name.split(" ")[0]}.`;
+            let msg = `Tirou ${totalDmg} HP!`;
+            if(anyCrit) msg = `💥 CRÍTICO! ` + msg;
+            if(lastMult > 1.1) msg += ` Foi Super Eficaz!`;
+            else if(lastMult < 0.9 && lastMult > 0) msg += ` Pouco Efetivo...`;
+            if(hits > 1) msg += ` (Automação: Acertou 2x!)`;
             await say(msg);
         }
     }
@@ -852,19 +1170,24 @@ async function endOfTurn() {
             const cura = Math.round(char.maxhp * 0.05);
             char.hp = Math.min(char.maxhp, char.hp + cura);
             renderBattle();
-            await say(`${char.name.split(" ")[0]} recuperou HP pelo seu charme!`);
+            await say(`✨ ${char.name.split(" ")[0]} recuperou HP pelo seu charme!`);
         }
         if(char.status === "veneno") {
             const danoV = Math.round(char.maxhp * 0.08);
             char.hp = Math.max(0, char.hp - danoV);
             renderBattle();
-            await say(`${char.name.split(" ")[0]} perdeu HP por causa da sujeira na mesa!`);
+            await say(`☠️ ${char.name.split(" ")[0]} perdeu HP por causa da sujeira na mesa!`);
         }
     }
 }
 
 async function handleEnemyDefeat() {
     const e = act(E);
+    
+    if (e.key !== "Leandro") {
+        run.battlesWon++; // Computa a vitória se não for o chefe final
+    }
+
     await say(`${e.name.split(" ")[0]} foi superado na discussão!`);
     
     let leveledUp = false;
@@ -882,7 +1205,7 @@ async function handleEnemyDefeat() {
     });
 
     if (leveledUp) {
-        await say(`A equipe ganhou experiência na reunião! Todos subiram de Nível e os status aumentaram.`);
+        await say(`A equipa ganhou experiência na reunião! Todos subiram de Nível e os status aumentaram.`);
     }
 
     if (e.key === "Leandro") {
@@ -946,22 +1269,24 @@ function offerRecruit(defeatedKey) {
         }
 
         const cand = ROSTER[wild];
-        document.getElementById('recruitPhoto').innerHTML = `<div style="width: 100%; height: 100%; background-image:url('${IMG[wild]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter:drop-shadow(0 6px 0 rgba(0,0,0,.25));"></div>`;
+        document.getElementById('recruitPhoto').innerHTML = `<div style="width: 100%; height: 100%; background-image:url('${IMG[wild]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter:drop-shadow(0 6px 0 rgba(0,0,0,.25)); transform: ${getTransform(wild, 'telaInicial')};"></div>`;
         
         let html = ``;
         if (run.team.length < MAX_TEAM) {
             html += `<button class="btn" style="text-align:center; background:#4cae6a; color:white; padding: 18px; font-size: 15px;" onclick="catchDo('${wild}')">Aprovar no Processo Seletivo</button>`;
-            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:10px; padding: 15px;" onclick="resolveRecruit()">Manda pra outra área</button>`;
+            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:10px; padding: 15px;" onclick="resolveRecruit()">Manda para outra área</button>`;
         } else {
-            html += `<p style="color:var(--hp-red); font-size:12px; margin-bottom:15px;">Equipe cheia (5 Máx). Substituir quem?</p>`;
+            html += `<p style="color:var(--hp-red); font-size:12px; margin-bottom:15px;">Equipa cheia (5 Máx). Substituir quem?</p>`;
             run.team.forEach((m, idx) => {
                 html += `
-                <button class="btn" style="margin-bottom:8px; display:flex; align-items:center; gap:10px;" onclick="catchReplace(${idx}, '${wild}')">
-                    <div class="team-mini" style="background-image:url('${IMG[m.key]}')"></div>
-                    <div>Demitir ${m.name.split(" ")[0]} e Recrutar</div>
+                <button class="btn" style="margin-bottom:8px; display:flex; align-items:center; gap:10px; overflow:hidden;" onclick="catchReplace(${idx}, '${wild}')">
+                    <div class="team-mini" style="border:none; border-radius:0;">
+                        <div class="team-mini-img" style="background-image: url('${IMG[m.key]}'); transform: ${getTransform(m.key, 'miniaturas')};"></div>
+                    </div>
+                    <div style="z-index:2;">Demitir ${m.name.split(" ")[0]} e Recrutar</div>
                 </button>`;
             });
-            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:15px; padding: 15px;" onclick="resolveRecruit()">Manda pra outra área</button>`;
+            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:15px; padding: 15px;" onclick="resolveRecruit()">Manda para outra área</button>`;
         }
         
         document.getElementById('recruitOptions').innerHTML = html;
@@ -988,24 +1313,92 @@ function resolveRecruit() {
 }
 
 function showEndScreen(win) {
+    if (win) unlockFeito("tomas");
+
     showScreen('endScreen');
+
+    let score = 0;
+    let aliveCount = 0;
+    let extraLevels = 0;
+
+    run.team.forEach(m => {
+        if (m.hp > 0) {
+            aliveCount++;
+            extraLevels += Math.max(0, m.level - 5);
+        }
+    });
+
+    // Matemática Nova, focada na Performance!
+    score += run.battlesWon * 600;
+    score += run.quizPoints; // Adiciona os pontos adquiridos no Quiz
+    score += extraLevels * 200;
+    
+    if (win) {
+        score += 5000;
+        score += aliveCount * 1000;
+    }
+    
+    score += run.feitos.size * 500;
+
+    let rank = "D";
+    let rankName = "Estagiário";
+    let rankColor = "#aaa";
+
+    if (win && aliveCount === 5) { rank = "S+"; rankName = "CEO do PPI"; rankColor = "#FFD700"; }
+    else if (win && aliveCount >= 3) { rank = "S"; rankName = "Diretor Global"; rankColor = "#FFD700"; }
+    else if (win) { rank = "A"; rankName = "Gerente de Planta"; rankColor = "#4cae6a"; }
+    else if (run.step === 5) { rank = "B"; rankName = "Eng. Sênior"; rankColor = "#4cae6a"; }
+    else if (run.step >= 3) { rank = "C"; rankName = "Analista Pleno"; rankColor = "#e0a828"; }
+    else { rank = "D"; rankName = "Estagiário"; rankColor = "#d8442f"; }
+
+    let highScore = parseInt(getLS('ppi_highscore', '0'));
+    let isNewRecord = false;
+    if (score > highScore) {
+        highScore = score;
+        setLS('ppi_highscore', highScore.toString());
+        isNewRecord = true;
+    }
+
     const title = win ? "VOCÊ VENCEU!" : "PROJETO REPROVADO!";
-    const sub = win ? "Apresentou os projetos e subiu no sprint! Parabéns" : "Ligue pra controladoria e tente novamente.";
+    const sub = win ? "Apresentou os projetos e subiu no sprint! Parabéns" : "Liga para a controladoria e tenta novamente.";
     const color = win ? "var(--hp-green)" : "var(--hp-red)";
     
     let html = `
         <h1 class="pixel" style="color:${color}; font-size: 20px; line-height: 1.4;">${title}</h1>
         <p style="margin-top:15px; font-size:14px; font-weight:700;">${sub}</p>
         
-        <div style="background: var(--panel-line); border: 3px solid ${color}; border-radius: 12px; padding: 20px; margin-top: 30px;">
+        <div style="background: var(--panel-line); border: 3px solid ${color}; border-radius: 12px; padding: 20px; margin-top: 20px;">
+            
+            <div style="margin-bottom: 25px; padding-bottom: 20px; border-bottom: 1px dashed #555;">
+                <div style="font-size:10px; color:#aaa; margin-bottom: 5px;">RANK OFICIAL</div>
+                <div class="rank-badge" style="color:${rankColor}; font-size: 42px;">${rank}</div>
+                <div style="font-weight: 800; color: ${rankColor}; font-size: 14px;">${rankName}</div>
+                
+                <div style="margin-top: 15px; display: flex; justify-content: center; gap: 20px;">
+                    <div>
+                        <div style="font-size:8px; color:#aaa;">PONTOS PPI</div>
+                        <div style="font-family:'Press Start 2P', monospace; font-size: 12px; color: #fff; margin-top:5px;">${score}</div>
+                    </div>
+                    <div>
+                        <div style="font-size:8px; color:#aaa;">RECORDE</div>
+                        <div style="font-family:'Press Start 2P', monospace; font-size: 12px; color: ${isNewRecord ? 'var(--hp-green)' : '#fff'}; margin-top:5px;">${highScore}</div>
+                    </div>
+                </div>
+                ${isNewRecord ? `<div style="font-size:10px; color:var(--hp-green); font-weight:800; margin-top:10px;">🌟 NOVO RECORDE! 🌟</div>` : ''}
+            </div>
+
             <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-bottom: 20px;">
     `;
     
     run.team.forEach(m => {
+        const isDead = m.hp <= 0;
+        const opac = isDead ? "opacity:0.4; filter:grayscale(1);" : "";
         html += `
             <div style="display:flex; flex-direction:column; align-items:center; gap:5px;">
-                <div class="team-mini" style="width:50px; height:50px; background-image:url('${IMG[m.key]}'); border-color:${color}; border-width: 3px;"></div>
-                <div style="font-size:10px; font-weight:800;">${m.name.split(" ")[0]}</div>
+                <div class="team-mini" style="border-color:${color}; ${opac}">
+                    <div class="team-mini-img" style="background-image:url('${IMG[m.key]}'); transform: ${getTransform(m.key, 'miniaturas')};"></div>
+                </div>
+                <div style="font-size:10px; font-weight:800; border-top: 3px solid ${isDead ? '#555' : color}; width: 100%; text-align: center; padding-top: 5px; color:${isDead ? '#aaa' : '#fff'}">${m.name.split(" ")[0]}</div>
                 <div style="font-size:9px; color:#aaa;">Nv${m.level}</div>
             </div>
         `;
@@ -1013,56 +1406,50 @@ function showEndScreen(win) {
     
     html += `
             </div>
-            <div style="display:flex; justify-content:space-around; border-top: 1px solid #555; padding-top: 15px;">
+            <div style="display:flex; justify-content:space-around; border-top: 1px solid #555; padding-top: 15px; margin-bottom: 15px;">
                 <div>
                     <div style="font-size:9px; color:#aaa; margin-bottom:3px; text-transform:uppercase;">Progresso</div>
-                    <div style="font-weight:800; font-size:12px;">${win ? "Derrotou o Leandro" : `Parada ${run.step}/5`}</div>
+                    <div style="font-weight:800; font-size:12px;">${win ? "Chefão Derrotado" : `Etapa ${run.step}/5`}</div>
                 </div>
                 <div>
                     <div style="font-size:9px; color:#aaa; margin-bottom:3px; text-transform:uppercase;">Feitos</div>
-                    <div style="font-weight:800; font-size:12px;">${run.feitos.size}/4</div>
+                    <div style="font-weight:800; font-size:12px;">${getFeitos().size}/4</div>
                 </div>
             </div>
-            
-            <div style="text-align:left; margin-top:20px; font-size:11px;">
-    `;
-    
-    FEITOS_LIST.forEach(f => {
-        const got = run.feitos.has(f.id);
-        html += `<div style="margin-bottom:8px; opacity:${got?1:0.4};">
-            <span style="font-weight:800;">${got?'✅':'🔒'} ${f.n}</span><br>
-            <span style="font-size:9px; color:#aaa;">${f.desc}</span>
-        </div>`;
-    });
-    
-    html += `
+
+            <div style="background: rgba(255, 255, 255, 0.1); padding: 10px; border-radius: 8px;">
+                <div style="font-size: 14px;">📸 Tira um print e manda no grupo!</div>
             </div>
         </div>
         
-        <button class="ov-btn" style="margin-top:40px; font-size: 14px; padding: 15px;" onclick="location.reload()">NOVA JORNADA</button>
+        <button class="ov-btn" style="margin-top:30px; font-size: 14px; padding: 15px;" onclick="location.reload()">NOVA JORNADA</button>
     `;
     
     document.getElementById('endScreen').innerHTML = html;
 }
 
-function showFeitos() {
+function showFeitos(fromStart = false) {
     showScreen('feitosScreen');
     let html = `<h2 class="pixel" style="font-size:14px; margin-bottom:30px; color:white; text-align:center;">FEITOS DA JORNADA</h2>`;
     FEITOS_LIST.forEach(f => {
-        const got = run?.feitos?.has(f.id);
+        const got = getFeitos().has(f.id);
         html += `<div style="padding:15px; border-radius: 8px; background: ${got ? 'var(--accent)' : 'var(--panel-line)'}; color:white; margin-bottom: 10px; font-weight:800; box-shadow: 0 3px 0 rgba(0,0,0,0.2);">
             ${got?'🏆':'🔒'} ${f.n}<br>
             <span style="font-size:9px; font-weight:400; color:#ddd; margin-top: 4px; display:block;">${f.desc}</span>
         </div>`;
     });
-    html += `<button class="ov-btn" style="margin-top:30px;" onclick="showScreen('startScreen')">VOLTAR</button>`;
-    document.getElementById('feitosScreen').innerHTML = html;
-}
+    
+    let highScore = parseInt(getLS('ppi_highscore', '0'));
+    html += `
+        <div style="margin-top: 30px; padding:15px; border-radius: 8px; background: var(--panel-line); color:white; font-weight:800; text-align:center; border: 2px dashed #5a6b5f;">
+            <div style="font-size:10px; color:#aaa; margin-bottom:5px;">SEU RECORDE MÁXIMO</div>
+            <div style="font-family:'Press Start 2P', monospace; color:var(--hp-green); font-size:16px;">${highScore} PTS</div>
+        </div>
+    `;
 
-function unlockFeito(id) {
-    if (!run) return;
-    run.feitos.add(id);
-    localStorage.setItem('ppi_feitos', JSON.stringify([...run.feitos]));
+    const onClickAction = fromStart ? "showScreen('startScreen')" : "showChoices()";
+    html += `<button class="ov-btn" style="margin-top:30px;" onclick="${onClickAction}">VOLTAR</button>`;
+    document.getElementById('feitosScreen').innerHTML = html;
 }
 
 function startFinalBoss() {
