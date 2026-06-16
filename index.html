@@ -214,18 +214,24 @@
 <div id="toast" class="pixel"></div>
 
 <div id="game">
-    <!-- START SCREEN -->
-    <div id="startScreen" class="screen" style="padding:40px 20px; text-align:center; background:#26342b; overflow-y: auto; display: flex; justify-content: center;">
-        <h1 class="pixel" style="color:var(--accent); font-size:24px; margin-bottom:15px; line-height: 1.4;">JORNADA PPI</h1>
-        
-        <p style="margin-bottom:30px; font-weight:700; color:var(--panel); font-size: 16px;">Monte a equipe perfeita e prove o seu valor no projeto.</p>
+    <div id="startScreen" class="screen" style="padding:40px 20px; text-align:center; background:#26342b; overflow-y: auto; display: flex; align-items: center; justify-content: center;">
+        <div style="width: 100%; max-width: 320px;">
+            <h1 class="pixel" style="color:var(--accent); font-size:24px; margin-bottom:15px; line-height: 1.4;">JORNADA PPI</h1>
+            
+            <p style="margin-bottom:20px; font-weight:700; color:var(--panel); font-size: 16px;">Monte a equipe perfeita e prove o seu valor no projeto.</p>
 
-        <button class="ov-btn" onclick="startRandomRun()" style="font-size: 14px; padding: 15px; margin-bottom: 15px;">▶ INICIAR JORNADA</button>
-        <button class="ov-btn" style="background:#2f5480; margin-bottom: 15px;" onclick="showScreen('rulesScreen')">📜 REGRAS DO JOGO</button>
-        <button class="ov-btn" style="background:#41513f" onclick="showFeitos(true)">🏆 FEITOS & RANKING</button>
+            <div style="margin-bottom: 25px; text-align: center; width: 100%;">
+                <label class="pixel" style="font-size: 10px; color: #ddd; display: block; margin-bottom: 8px;">DIGITE SEU NOME</label>
+                <input type="text" id="inputNomeJogador" maxlength="15" placeholder="SEU NOME" style="width: 100%; padding: 15px; font-family: 'Press Start 2P', monospace; font-size: 12px; text-align: center; background: #1c2a22; color: #ffcc00; border: 3px solid #5a6b5f; border-radius: 10px; outline: none; text-transform: uppercase;">
+            </div>
+
+            <button class="ov-btn" onclick="startRandomRun()" style="font-size: 14px; padding: 15px; margin-bottom: 15px;">▶ INICIAR JORNADA</button>
+            <button class="ov-btn" style="background:#2f5480; margin-bottom: 15px;" onclick="showScreen('rulesScreen')">📜 REGRAS DO JOGO</button>
+            <button class="ov-btn" style="background:#41513f; margin-bottom: 15px;" onclick="showFeitos(true)">🏆 FEITOS & RANKING</button>
+            <button class="ov-btn" style="background:#e0a828; color:#1c2a22; border-color:#fff;" onclick="showLeaderboard()">👑 PLACAR GLOBAL</button>
+        </div>
     </div>
 
-    <!-- RULES SCREEN -->
     <div id="rulesScreen" class="screen" style="display:none; padding:30px 20px; text-align:left; background:#2f4034; color:white; overflow-y:auto;">
         <h2 class="pixel" style="font-size:16px; margin-bottom:20px; color:var(--accent); text-align:center;">📜 REGRAS & PONTUAÇÃO</h2>
         
@@ -255,7 +261,6 @@
         <button class="ov-btn" style="margin-top:20px;" onclick="showScreen('startScreen')">VOLTAR</button>
     </div>
 
-    <!-- SELECTION SCREEN -->
     <div id="selectionScreen" class="screen" style="display:none; padding: 30px; text-align: center; background: #2f4034; color: white; overflow-y:auto;">
         <h2 class="pixel" style="font-size:12px;">VOCÊ SELECIONOU:</h2>
         <div id="selPhoto" class="sel-photo"></div>
@@ -264,13 +269,11 @@
         <button class="ov-btn" onclick="showChoices()">CONTINUAR</button>
     </div>
 
-    <!-- MAP SCREEN -->
     <div id="mapScreen" class="screen" style="display:none; padding:30px 20px; background: #2f4034; overflow-y:auto;">
         <div class="pixel" id="mapHeader" style="font-size:12px; margin-bottom:20px; color:var(--accent); text-align: center;">ETAPA 1 DE 5 ANTES DO CHEFE</div>
         <div id="choiceList" style="display:flex; flex-direction:column; gap:15px;"></div>
     </div>
 
-    <!-- AUDIT SCREEN -->
     <div id="auditScreen" class="screen" style="display:none; padding:30px 20px; text-align:center; background:#2f4034; color:white; overflow-y:auto;">
         <h2 class="pixel" style="font-size:16px; margin-bottom:15px; color:var(--accent);">AUDITORIA SURPRESA</h2>
         <div id="auditPhoto" class="token" style="margin: 0 auto 10px; width: 160px; height: 160px;"></div>
@@ -281,7 +284,6 @@
         <div id="auditOptions" style="display:flex; flex-direction:column; gap:10px;"></div>
     </div>
     
-    <!-- QUIZ RESULT SCREEN -->
     <div id="quizResultScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; background:#2f4034; color:white; justify-content:center;">
         <div id="qrImage" style="width: 250px; height: 250px; margin: 0 auto 20px; background-size: contain; background-repeat: no-repeat; background-position: center; filter: drop-shadow(0 4px 0 rgba(0,0,0,.3));"></div>
         <h1 id="qrTitle" class="pixel" style="font-size: 20px; margin-bottom:15px; line-height: 1.4;">Resultado</h1>
@@ -292,7 +294,6 @@
         <button class="ov-btn" onclick="showChoices()">CONTINUAR A JORNADA</button>
     </div>
 
-    <!-- RECRUIT SCREEN -->
     <div id="recruitScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; background:#2f4034; color:white; overflow-y:auto;">
         <h2 class="pixel" style="font-size:16px; margin-bottom:30px; color:var(--accent);">RECRUTAMENTO PPI</h2>
         <div id="recruitPhoto" class="token" style="margin: 0 auto 20px; width: 180px; height: 180px;"></div>
@@ -300,7 +301,6 @@
         <div id="recruitOptions" style="display:flex; flex-direction:column; gap:12px;"></div>
     </div>
 
-    <!-- BATTLE SCREEN -->
     <div id="battleScreen" class="screen" style="display:none;">
         <div class="teamstrip" style="justify-content: space-between; background: #2a3a2f; border-bottom: 4px solid var(--panel-line); border-top: none; padding: 8px 15px;">
             <div class="pixel" style="color: white; font-size: 10px;">RIVAL</div>
@@ -322,9 +322,30 @@
         <div id="menu"></div>
     </div>
 
-    <!-- END & FEITOS SCREENS -->
     <div id="endScreen" class="screen feitos-scroll" style="display:none; padding:40px 20px; text-align:center; background:#1c2a22; color:white; overflow-y:auto;"></div>
+    
     <div id="feitosScreen" class="screen feitos-scroll" style="display:none; padding:30px 20px; background:#2f4034; overflow-y:auto;"></div>
+
+    <div id="leaderboardScreen" class="screen" style="display:none; padding:30px 20px; background:#1c2a22; color:white; overflow-y:auto;">
+        <h2 class="pixel" style="font-size:16px; margin-bottom:20px; color:var(--hp-amber); text-align:center;">🏆 TOP 10 SPRINT 🏆</h2>
+        
+        <div style="background: var(--panel-line); border: 3px solid #5a6b5f; border-radius: 12px; padding: 10px;">
+            <table style="width:100%; border-collapse: collapse; text-align: left; font-size: 13px;">
+                <thead>
+                    <tr style="border-bottom: 2px dashed #555; color: var(--hp-green);">
+                        <th style="padding: 10px 5px;">#</th>
+                        <th style="padding: 10px 5px;">NOME</th>
+                        <th style="padding: 10px 5px; text-align: right;">PTS</th>
+                    </tr>
+                </thead>
+                <tbody id="leaderboardBody">
+                    <tr><td colspan="3" style="text-align:center; padding: 15px;">Carregando fichas... 🪙</td></tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <button class="ov-btn" style="margin-top:20px; background:var(--accent);" onclick="showScreen('startScreen')">VOLTAR AO INÍCIO</button>
+    </div>
 </div>
 
 <script>
@@ -601,6 +622,20 @@ function getRandomEnemy() {
 }
 
 function startRandomRun() {
+    // --- NOVA VALIDAÇÃO DE NOME ---
+    const inputNome = document.getElementById('inputNomeJogador');
+    const nome = inputNome ? inputNome.value.trim().toUpperCase() : "";
+    
+    if (nome === "") {
+        alert("Atenção: Você precisa preencher o seu nome no crachá para jogar!");
+        if(inputNome) inputNome.focus();
+        return; // Interrompe a função aqui, o jogo não começa
+    }
+    
+    // Salva o nome no localStorage
+    setLS('ppi_playerName', nome);
+    // ------------------------------
+
     const chosen = getRandomEnemy();
     run = { 
         team: [makeMon(chosen, 5)], 
@@ -731,7 +766,7 @@ function startAudit() {
     document.getElementById('auditOptions').innerHTML = optsHtml;
     showScreen('auditScreen');
     
-    // Inicia o cronómetro do Quiz!
+    // Inicia o cronômetro do Quiz!
     run.quizStartTime = Date.now();
 }
 
@@ -1426,6 +1461,14 @@ function showEndScreen(win) {
     `;
     
     document.getElementById('endScreen').innerHTML = html;
+
+    // --- INTEGRAÇÃO DO PLACAR GLOBAL ---
+    if (score > 0) {
+        // Puxa o nome que foi salvo no início da partida
+        const nomeJogador = getLS('ppi_playerName', 'ANÔNIMO');
+        enviarPontuacao(nomeJogador, score);
+    }
+    // -----------------------------------
 }
 
 function showFeitos(fromStart = false) {
@@ -1459,6 +1502,62 @@ function startFinalBoss() {
     
     startBattle('Leandro', 12);
 }
+
+// --- FUNÇÕES DO PLACAR GLOBAL ---
+const API_URL_RANKING = "Https://script.google.com/macros/s/AKfycbySveIpuc2-gLNY82TfzeMIYxaLrh0t_s0xg_3_lU_ezto1_sKSl_oKblWqP3OfrYadGQ/exec";
+
+function showLeaderboard() {
+    showScreen('leaderboardScreen');
+    carregarRanking();
+}
+
+function carregarRanking() {
+    const tbody = document.getElementById("leaderboardBody");
+    tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 15px;">Conectando ao servidor... 🔌</td></tr>';
+
+    fetch(API_URL_RANKING)
+        .then(res => res.json())
+        .then(dados => {
+            tbody.innerHTML = "";
+            if(dados.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 15px;">Nenhum recorde ainda!</td></tr>';
+                return;
+            }
+            dados.forEach((jog, i) => {
+                let icone = i === 0 ? "🥇" : i === 1 ? "🥈" : i === 2 ? "🥉" : `${i+1}º`;
+                tbody.innerHTML += `
+                    <tr style="border-bottom: 1px solid #333;">
+                        <td style="padding: 12px 5px;">${icone}</td>
+                        <td style="padding: 12px 5px; font-weight: 800;">${jog.nome.toUpperCase()}</td>
+                        <td class="pixel" style="padding: 12px 5px; text-align: right; color: var(--hp-amber); font-size: 9px;">${jog.pontuacao}</td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            tbody.innerHTML = '<tr><td colspan="3" style="text-align:center; padding: 15px; color: var(--hp-red);">Erro ao carregar o ranking.</td></tr>';
+        });
+}
+
+function enviarPontuacao(nome, pontos) {
+    fetch(API_URL_RANKING, {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ nome: nome, pontuacao: pontos })
+    }).then(() => {
+        console.log("Pontuação salva na nuvem!");
+    });
+}
+
+// Carrega o nome do jogador salvo na memória assim que a página abre
+document.addEventListener('DOMContentLoaded', () => {
+    const nomeSalvo = getLS('ppi_playerName', '');
+    if (nomeSalvo !== '') {
+        document.getElementById('inputNomeJogador').value = nomeSalvo;
+    }
+});
 </script>
 
 </body>
