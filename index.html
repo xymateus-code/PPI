@@ -63,7 +63,7 @@
         #arena {
             position: relative; height: 300px;
             background: linear-gradient(var(--arena-sky) 0%, var(--arena-sky) 55%, var(--arena-ground) 55%, var(--arena-ground2) 100%);
-            overflow: hidden;
+            overflow: visible; /* <-- MUDAMOS AQUI para o texto não ser cortado */
         }
         .platform { position: absolute; width: 150px; height: 34px; border-radius: 50%; background: rgba(0,0,0,.16); }
         .plat-enemy { top: 110px; right: 24px; }
@@ -85,6 +85,26 @@
             width: 190px; height: 190px; 
             filter: drop-shadow(0 6px 0 rgba(0,0,0,.25)) drop-shadow(0 0 6px rgba(216,90,48,.6)); 
         } 
+
+        /* Textos Flutuantes de Dano */
+        .float-text {
+            position: absolute;
+            font-family: 'Press Start 2P', monospace;
+            font-size: 14px;
+            font-weight: 900;
+            pointer-events: none;
+            z-index: 100;
+            text-align: center;
+            text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000, 0 3px 0 rgba(0,0,0,0.5);
+            animation: floatUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+        }
+        @keyframes floatUp {
+            0% { opacity: 0; transform: translateY(10px) scale(0.5); }
+            15% { opacity: 1; transform: translateY(0px) scale(1.2); }
+            30% { transform: translateY(-10px) scale(1); }
+            80% { opacity: 1; transform: translateY(-30px) scale(1); }
+            100% { opacity: 0; transform: translateY(-40px) scale(1.1); }
+        }
 
         /* --- UI Elements --- */
         .plate {
@@ -214,12 +234,11 @@
 <div id="toast" class="pixel"></div>
 
 <div id="game">
-    <!-- START SCREEN -->
     <div id="startScreen" class="screen" style="padding:50px 20px; text-align:center; background:#26342b; overflow-y: auto; display: flex; align-items: center; justify-content: center;">
         <div style="width: 100%; max-width: 320px;">
             <h1 class="pixel" style="color:var(--accent); font-size:24px; margin-bottom:15px; line-height: 1.4;">JORNADA PPI</h1>
             
-            <p style="margin-bottom:20px; font-weight:700; color:var(--panel); font-size: 16px;">Monte a equipa perfeita e prove o seu valor no projeto.</p>
+            <p style="margin-bottom:20px; font-weight:700; color:var(--panel); font-size: 16px;">Monte a equipe perfeita e prove o seu valor no projeto.</p>
 
             <div style="margin-bottom: 25px; text-align: center; width: 100%;">
                 <label class="pixel" style="font-size: 10px; color: #ddd; display: block; margin-bottom: 8px;">DIGITE SEU NOME</label>
@@ -233,19 +252,18 @@
         </div>
     </div>
 
-    <!-- RULES SCREEN -->
     <div id="rulesScreen" class="screen" style="display:none; padding:30px 20px; text-align:left; background:#2f4034; color:white; overflow-y:auto;">
         <h2 class="pixel" style="font-size:16px; margin-bottom:20px; color:var(--accent); text-align:center;">📜 REGRAS & PONTUAÇÃO</h2>
         
         <div style="background: var(--panel-line); border: 2px solid #5a6b5f; border-radius: 12px; padding: 15px; margin-bottom: 20px; font-size: 13px; line-height: 1.5;">
-            <p style="margin-bottom:10px;"><strong>1. Trilha de 5 Etapas:</strong> Vença a equipa até chegar ao Chefão.</p>
+            <p style="margin-bottom:10px;"><strong>1. Trilha de 5 Etapas:</strong> Vença a equipe até chegar ao Chefão.</p>
             <p style="margin-bottom:10px;"><strong>2. Vantagem Tática:</strong><br> 
-               <span style="color:var(--t-processo); font-weight:bold;">⚙️Processo</span> vence <span style="color:var(--t-tech); font-weight:bold;">💻Tech</span><br>
-               <span style="color:var(--t-tech); font-weight:bold;">💻Tech</span> vence <span style="color:var(--t-social); font-weight:bold;">🤝Social</span><br>
-               <span style="color:var(--t-social); font-weight:bold;">🤝Social</span> vence <span style="color:var(--t-gestao); font-weight:bold;">📈Gestão</span><br>
-               <span style="color:var(--t-gestao); font-weight:bold;">📈Gestão</span> vence <span style="color:var(--t-processo); font-weight:bold;">⚙️Processo</span><br>
-               <span style="font-size:10px; color: var(--hp-amber);">*Golpes com vantagem quebram a defesa inimiga pela metade!*</span></p>
-            <p style="margin-bottom:0;"><strong>3. Nível Importa:</strong> Lutar dá pontos e experiência. Comer Pizza cura a equipa, mas <strong>não dá pontos nem nível!</strong> Cuidado para não chegar fraco no chefe.</p>
+                <span style="color:var(--t-processo); font-weight:bold;">⚙️Processo</span> vence <span style="color:var(--t-tech); font-weight:bold;">💻Tech</span><br>
+                <span style="color:var(--t-tech); font-weight:bold;">💻Tech</span> vence <span style="color:var(--t-social); font-weight:bold;">🤝Social</span><br>
+                <span style="color:var(--t-social); font-weight:bold;">🤝Social</span> vence <span style="color:var(--t-gestao); font-weight:bold;">📈Gestão</span><br>
+                <span style="color:var(--t-gestao); font-weight:bold;">📈Gestão</span> vence <span style="color:var(--t-processo); font-weight:bold;">⚙️Processo</span><br>
+                <span style="font-size:10px; color: var(--hp-amber);">*Golpes com vantagem quebram a defesa inimiga pela metade!*</span></p>
+            <p style="margin-bottom:0;"><strong>3. Nível Importa:</strong> Lutar dá pontos e experiência. Comer Pizza cura a equipe, mas <strong>não dá pontos nem nível!</strong> Cuidado para não chegar fraco no chefe.</p>
         </div>
 
         <div style="background: var(--panel-line); border: 2px solid #ffd700; border-radius: 12px; padding: 15px; font-size: 13px; line-height: 1.5;">
@@ -263,20 +281,23 @@
         <button class="ov-btn" style="margin-top:20px;" onclick="showScreen('startScreen'); SFX.click();">VOLTAR</button>
     </div>
 
-    <!-- SELECTION SCREEN -->
     <div id="selectionScreen" class="screen" style="display:none; padding: 30px 20px; text-align: center; background: #2f4034; color: white; overflow-y:auto;">
         <h2 class="pixel" style="font-size:12px; margin-bottom:20px; color:var(--accent);">ESCOLHA SEU LÍDER:</h2>
         <p style="font-size: 13px; margin-bottom: 25px; color: #ccc;">Escolha com sabedoria quem vai liderar este Sprint.</p>
         <div id="starterChoices" style="display:flex; flex-direction:column; gap:12px;"></div>
     </div>
 
-    <!-- MAP SCREEN -->
     <div id="mapScreen" class="screen" style="display:none; padding:30px 20px; background: #2f4034; overflow-y:auto;">
         <div class="pixel" id="mapHeader" style="font-size:12px; margin-bottom:20px; color:var(--accent); text-align: center;">ETAPA 1 DE 5 ANTES DO CHEFE</div>
         <div id="choiceList" style="display:flex; flex-direction:column; gap:15px;"></div>
     </div>
 
-    <!-- AUDIT SCREEN -->
+    <div id="itemScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; background:#2f4034; color:white; overflow-y:auto;">
+        <h2 class="pixel" style="font-size:16px; margin-bottom:25px; color:var(--hp-amber); text-shadow: 2px 2px 0 rgba(0,0,0,0.5);">RECOMPENSA DE SPRINT!</h2>
+        <p style="margin-bottom:30px; font-size:14px; font-weight:800; line-height: 1.4;">Encontrou uma melhoria no Gemba! Escolha um bónus:</p>
+        <div id="itemOptions" style="display:flex; flex-direction:column; gap:15px;"></div>
+    </div>
+
     <div id="auditScreen" class="screen" style="display:none; padding:30px 20px; text-align:center; background:#2f4034; color:white; overflow-y:auto;">
         <h2 class="pixel" style="font-size:16px; margin-bottom:15px; color:var(--accent);">AUDITORIA SURPRESA</h2>
         <div id="auditPhoto" class="token" style="margin: 0 auto 10px; width: 160px; height: 160px;"></div>
@@ -287,7 +308,6 @@
         <div id="auditOptions" style="display:flex; flex-direction:column; gap:10px;"></div>
     </div>
     
-    <!-- QUIZ RESULT SCREEN -->
     <div id="quizResultScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; background:#2f4034; color:white; justify-content:center;">
         <div id="qrImage" style="width: 250px; height: 250px; margin: 0 auto 20px; background-size: contain; background-repeat: no-repeat; background-position: center; filter: drop-shadow(0 4px 0 rgba(0,0,0,.3));"></div>
         <h1 id="qrTitle" class="pixel" style="font-size: 20px; margin-bottom:15px; line-height: 1.4;">Resultado</h1>
@@ -298,15 +318,13 @@
         <button class="ov-btn" onclick="showChoices(); SFX.click();">CONTINUAR A JORNADA</button>
     </div>
 
-    <!-- RECRUIT SCREEN -->
     <div id="recruitScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; background:#2f4034; color:white; overflow-y:auto;">
         <h2 class="pixel" style="font-size:16px; margin-bottom:30px; color:var(--accent);">RECRUTAMENTO PPI</h2>
         <div id="recruitPhoto" class="token" style="margin: 0 auto 20px; width: 180px; height: 180px;"></div>
-        <p id="recruitText" style="margin-bottom:40px; font-size:16px; font-weight:800;">O novato quer entrar na equipa!</p>
+        <div id="recruitText" style="margin-bottom:20px;"></div>
         <div id="recruitOptions" style="display:flex; flex-direction:column; gap:12px;"></div>
     </div>
 
-    <!-- BATTLE SCREEN -->
     <div id="battleScreen" class="screen" style="display:none;">
         <div class="teamstrip" style="justify-content: space-between; background: #2a3a2f; border-bottom: 4px solid var(--panel-line); border-top: none; padding: 8px 15px;">
             <div class="pixel" style="color: white; font-size: 10px;">RIVAL</div>
@@ -322,13 +340,12 @@
         </div>
         <div class="teamstrip" style="justify-content: space-between; background: #f0dfb6; padding: 8px 15px;">
             <div id="teamStrip" style="display: flex; gap: 5px;"></div>
-            <div class="pixel" style="color: var(--accent); font-size: 10px;">A SUA EQUIPA</div>
+            <div class="pixel" style="color: var(--accent); font-size: 10px;">A SUA equipe</div>
         </div>
         <div id="msgbox"><div id="msg">...</div></div>
         <div id="menu"></div>
     </div>
 
-    <!-- END & FEITOS SCREENS -->
     <div id="endScreen" class="screen feitos-scroll" style="display:none; padding:40px 20px; text-align:center; background:#1c2a22; color:white; overflow-y:auto;"></div>
     
     <div id="feitosScreen" class="screen feitos-scroll" style="display:none; padding:30px 20px; background:#2f4034; overflow-y:auto;"></div>
@@ -408,99 +425,85 @@ const SPRITE_CONFIG = {
         telaInicial:  { zoom: 1.3, x: 0, y: -65.0 },
         batalhaVoce:  { zoom: 1.2, x: -20.0, y: -50.0 },
         batalhaRival: { zoom: 1.2, x: 0, y: -60.0 },
-        miniaturas:   { zoom: 2, x: 0, y: -10 },
-        mapaAdversario: { zoom: 1.3, x: 0, y: -10 }
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
     },
     Barbara: {
         telaInicial:  { zoom: 1.5, x: 0, y: -90.0 },
         batalhaVoce:  { zoom: 1.1, x: -10, y: -40 },
         batalhaRival: { zoom: 1.2, x: 0, y: -50 },
-        miniaturas:   { zoom: 1.3, x: 0, y: -10 },
-        mapaAdversario: { zoom: 1.3, x: 0, y: -20 }
+        miniaturas:   { zoom: 1.3, x: 0, y: -10 }
     },
     Gabriel: {
         telaInicial:  { zoom: 1.0, x: 0, y: 0 },
         batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
         batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
-        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
     },
     Guilherme: {
         telaInicial:  { zoom: 1.0, x: 0, y: 0 },
         batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
         batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
-        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
     },
     Daniel: {
         telaInicial:  { zoom: 1.0, x: 0, y: 0 },
         batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
         batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
-        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
     },
     Eric: {
         telaInicial:  { zoom: 1.0, x: 0, y: 0 },
         batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
         batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
-        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
     },
     Edinei: {
         telaInicial:  { zoom: 1.0, x: 0, y: 0 },
         batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
         batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
-        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
     },
     Isis: {
         telaInicial:  { zoom: 1.0, x: 0, y: 0 },
         batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
         batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
-        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
     },
     Marcelo: {
         telaInicial:  { zoom: 1.0, x: 0, y: 0 },
         batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
         batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
-        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
     },
     Leonardo: {
         telaInicial:  { zoom: 1.0, x: 0, y: 0 },
         batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
         batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
-        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
     },
     Paloma: {
         telaInicial:  { zoom: 1.2, x: 0, y: -40.0 },
         batalhaVoce:  { zoom: 1.0, x: -10.0, y: -40.0 },
         batalhaRival: { zoom: 1.0, x: 0, y: -50.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
-        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
     },
     Mateus: {
         telaInicial:  { zoom: 1.0, x: 0, y: 0 },
         batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
         batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
-        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
     },
     Leandro: {
         telaInicial:  { zoom: 1.0, x: 0, y: 0 },
         batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
         batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
-        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
     },
     LeandroBoss: {
         telaInicial:  { zoom: 1.0, x: 0, y: 0 },
         batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
         batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 },
-        mapaAdversario: { zoom: 1.1, x: 0, y: 0 }
+        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
     }
 };
 
@@ -517,23 +520,72 @@ function getTransform(key, context, extraScale = 1.0) {
 const IMG = {
     Igor: "igor.png",
     Barbara: "barbara.png",
-    Gabriel: "Gabriel.png",
-    Guilherme: "Guilherme.png",
-    Daniel: "Daniel.png",
-    Eric: "Eric.png",
-    Edinei: "Edinei.png",
-    Isis: "Isis.png",
-    Marcelo: "Marcelo.png",
-    Leonardo: "Leonardo.png",
-    Paloma: "Paloma.png",
-    Mateus: "Mateus.png",
-    Leandro: "Leandro.png",
-    LeandroBoss: "Leandro_boss.png",
+    Gabriel: "gabriel.png",
+    Guilherme: "guilherme.png",
+    Daniel: "daniel.png",
+    Eric: "eric.png",
+    Edinei: "edinei.png",
+    Isis: "isis.png",
+    Marcelo: "marcelo.png",
+    Leonardo: "leonardo.png",
+    Paloma: "paloma.png",
+    Mateus: "mateus.png",
+    Leandro: "leandro.png",
+    LeandroBoss: "leandro_boss.png",
     MarceloPizza: "Marcelopizza.png",
     Roleta: "roleta.png",
     QuizWin: "quiz_win.png",
     QuizLose: "quiz_lose.png"
 };
+
+// --- LISTA DE ITENS (ESPOLIOS) ---
+const ITEMS = [
+    { id: "termopar", name: "Termopar do Eric", icon: "termopar.png", desc: "+15 Defesa (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) m.def += 15; }); } },
+    { id: "ods", name: "ODS do Daniel", icon: "ods.png", desc: "+15 Ataque (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) m.atk += 15; }); } },
+    { id: "festa_junina", name: "Festa Junina do Edinei", icon: "festa_junina.png", desc: "+15 Velocidade (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) m.spd += 15; }); } },
+    { id: "dinheiro", name: "Dinheiro do Guilherme", icon: "dinheiro.png", desc: "+50 Max HP (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) { m.maxhp += 50; m.hp += 50; } }); } },
+    { id: "coxilha", name: "Coxilha do Gabriel", icon: "coxilha.png", desc: "+30 Defesa (Apenas Líder)", effect: () => { act(P).def += 30; } },
+    { id: "galinha", name: "Galinha Adestrada do Mateus", icon: "galinha.png", desc: "+30 Ataque (Apenas Líder)", effect: () => { act(P).atk += 30; } },
+    { id: "cafe", name: "Café do Igor", icon: "cafe.png", desc: "+30 Velocidade (Apenas Líder)", effect: () => { act(P).spd += 30; } },
+    { id: "mala", name: "Mala Presa da Isis", icon: "mala.png", desc: "+80 Max HP (Apenas Líder)", effect: () => { act(P).maxhp += 80; act(P).hp += 80; } },
+    { id: "doce", name: "Doce de Leite da Barbara", icon: "doce_de_leite.png", desc: "+10 em Todos os Status (Apenas Líder)", effect: () => { let p = act(P); p.atk += 10; p.def += 10; p.spd += 10; } },
+    { id: "boina", name: "Boina do Marcelo", icon: "boina.png", desc: "+5 em Todos os Status (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) { m.atk += 5; m.def += 5; m.spd += 5; } }); } },
+    { id: "poi", name: "POI do Leonardo", icon: "poi.png", desc: "+1 Nível (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) { m.level++; m.maxhp += 15; m.hp += 15; m.atk += 5; m.def += 5; m.spd += 5; } }); } },
+    { id: "bingo", name: "Bingo da Palominha", icon: "bingo.png", desc: "Recupera 100% HP (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp > 0) m.hp = m.maxhp; }); } },
+    { id: "pao", name: "Pão de Queijo do Leandro", icon: "pao_de_queijo.png", desc: "Recupera 100% HP e +2 Níveis (Apenas Líder)", effect: () => { let p = act(P); p.hp = p.maxhp; p.level += 2; p.maxhp += 30; p.hp += 30; p.atk += 10; p.def += 10; p.spd += 10; } }
+];
+
+function offerItems() {
+    SFX.win(); 
+    const shuffled = [...ITEMS].sort(() => 0.5 - Math.random());
+    const options = shuffled.slice(0, 2);
+    
+    let html = '';
+    options.forEach(item => {
+        const itemIdx = ITEMS.findIndex(i => i.id === item.id);
+        html += `
+        <button class="btn" style="background:#e6dcc2; border-color:var(--panel-line); text-align:left; padding:15px; display:flex; align-items:center; gap:15px; margin-bottom:10px;" onclick="chooseItem(${itemIdx})">
+            <div style="width:60px; height:60px; background-image:url('${item.icon}'); background-size:contain; background-repeat:no-repeat; background-position:center; flex-shrink:0;"></div>
+            <div style="flex:1;">
+                <div style="font-weight:900; font-size:14px; color:var(--ink);">${item.name}</div>
+                <div style="font-size:11px; margin-top:5px; color:#555;">${item.desc}</div>
+            </div>
+        </button>
+        `;
+    });
+    
+    document.getElementById('itemOptions').innerHTML = html;
+    showScreen('itemScreen');
+}
+
+function chooseItem(idx) {
+    SFX.heal();
+    const item = ITEMS[idx];
+    item.effect();
+    alert(`Você pegou: ${item.name}!\nEfeito ativado: ${item.desc}`);
+    showChoices();
+}
+// -------------------------------------------------------------
 
 // --- PERGUNTAS DO QUIZ ---
 const AUDIT_QUIZ = [
@@ -550,7 +602,6 @@ const AUDIT_QUIZ = [
     { asker: "Daniel", q: "Quantas ODS são criadas por mês em CS?", opts: ["120", "94", "87", "160"], ans: 3 }
 ];
 
-// Corrigido para as regras do jogo: Processo vence Tech, Tech vence Social, Social vence Gestão, Gestão vence Processo
 const CHART = {
     Tech: { Tech: 1, Social: 2, Processo: 0.5, Gestão: 1 },
     Social: { Tech: 0.5, Social: 1, Processo: 1, Gestão: 2 },
@@ -559,28 +610,28 @@ const CHART = {
 };
 
 const ROSTER = {
-    Leonardo: { name: "Leonardo", types: ["Tech"], base: { hp: 60, atk: 50, def: 60, spd: 50 }, jeitao: { name: "Visão Analítica", desc: "Defesa bônus contra Processo." }, moves: [{ name: "Criar POI", type: "Tech", power: 55, kind: "dmg" }, { name: "Inserir Correia no SAP", type: "Processo", power: 65, kind: "dmg" }] },
-    Barbara: { name: "Barbara", types: ["Social"], base: { hp: 55, atk: 50, def: 50, spd: 60 }, jeitao: { name: "Poliglota", desc: "Chance de confundir o alvo." }, moves: [{ name: "Falar alemão", type: "Social", power: 45, kind: "dmg_confuse" }, { name: "Comer dodileiti", type: "Processo", power: 35, kind: "dmg_debuff", stat: "def" }] },
-    Marcelo: { name: "Marcelo", types: ["Processo"], base: { hp: 65, atk: 55, def: 60, spd: 45 }, jeitao: { name: "Pavio Curto", desc: "Dano sobe quando HP < 50%." }, moves: [{ name: "Usar boina", type: "Processo", power: 60, kind: "dmg" }, { name: "Stevie Wonder", type: "Gestão", power: 50, kind: "dmg_debuff", stat: "spd" }] },
-    Mateus: { name: "Mateus", types: ["Gestão"], base: { hp: 60, atk: 55, def: 55, spd: 55 }, jeitao: { name: "Pai da Clarinha", desc: "Chance de ataque duplo." }, moves: [{ name: "F2F Surpresa", type: "Gestão", power: 65, kind: "dmg" }, { name: "Adestrar Galinha", type: "Processo", power: 75, kind: "dmg_confuse" }] },
-    Eric: { name: "Eric", types: ["Processo"], base: { hp: 55, atk: 60, def: 50, spd: 60 }, jeitao: { name: "Rei do Sprint", desc: "Críticos garantidos." }, moves: [{ name: "Reduzir Setup", type: "Processo", power: 55, kind: "dmg" }, { name: "Termopar", type: "Social", power: 50, kind: "dmg_raise_spd" }] },
-    Daniel: { name: "Daniel", types: ["Tech"], base: { hp: 60, atk: 45, def: 60, spd: 45 }, jeitao: { name: "Gosta de conversa", desc: "Pode fazer o inimigo dormir." }, moves: [{ name: "Fazer Figurinha", type: "Tech", power: 45, kind: "dmg_confuse" }, { name: "Fazer brique", type: "Social", power: 50, kind: "dmg_skip" }] },
-    Edinei: { name: "Edinei", types: ["Processo"], base: { hp: 65, atk: 50, def: 55, spd: 50 }, jeitao: { name: "Bonitão", desc: "Recupera HP a cada turno." }, moves: [{ name: "Teste na Roller", type: "Processo", power: 55, kind: "dmg" }, { name: "Charme de Polaco", type: "Social", power: 35, kind: "dmg_debuff", stat: "atk" }] },
-    Guilherme: { name: "Guilherme", types: ["Processo"], base: { hp: 50, atk: 50, def: 50, spd: 70 }, jeitao: { name: "Pequeno Alvo", desc: "Maior chance de esquiva." }, moves: [{ name: "Guardar Dinheiro", type: "Processo", power: 50, kind: "dmg" }, { name: "Postergar um teste", type: "Tech", power: 60, kind: "dmg" }] },
-    Gabriel: { name: "Gabriel", types: ["Tech"], base: { hp: 55, atk: 55, def: 45, spd: 55 }, jeitao: { name: "Onde Eu Tava?", desc: "Chance de ignorar dano." }, moves: [{ name: "Dormir na Capão", type: "Tech", power: 35, kind: "dmg_debuff", stat: "spd" }, { name: "Bagunçar mesa", type: "Processo", power: 55, kind: "dmg_poison" }] },
-    Isis: { name: "Isis", types: ["Processo"], base: { hp: 60, atk: 50, def: 65, spd: 45 }, jeitao: { name: "Hora Extra", desc: "Sobrevive com 1 HP a golpe fatal." }, moves: [{ name: "Ajustar Receita DSS", type: "Processo", power: 55, kind: "dmg" }, { name: "Ajudar no SAP", type: "Tech", power: 40, kind: "dmg_debuff", stat: "def" }] },
-    Igor: { name: "Igor", types: ["Processo"], base: { hp: 50, atk: 60, def: 40, spd: 65 }, jeitao: { name: "Cafeína", desc: "Sempre ataca primeiro." }, moves: [{ name: "Tomar um Cafezinho", type: "Social", power: 50, kind: "dmg_raise_spd" }, { name: "Criar uma ODS", type: "Tech", power: 60, kind: "dmg" }] },
-    Paloma: { name: "Paloma", types: ["Social"], base: { hp: 60, atk: 45, def: 55, spd: 60 }, jeitao: { name: "Engagement", desc: "Reduz ataque do inimigo." }, moves: [{ name: "Dinâmica em grupo", type: "Social", power: 45, kind: "dmg" }, { name: "Mapa de Carreira", type: "Processo", power: 50, kind: "dmg_debuff", stat: "def" }] },
-    Leandro: { name: "Leandro", types: ["Gestão"], base: { hp: 125, atk: 75, def: 75, spd: 60 }, jeitao: { name: "O Chefe", desc: "Resiste a ataques Sociais em vez de ter fraqueza." }, moves: [{ name: "Cobrar Indicador", type: "Gestão", power: 90, kind: "dmg_debuff", stat: "atk" }, { name: "Apresentação Surpresa", type: "Processo", power: 80, kind: "dmg" }] }
+    Leonardo: { name: "Leonardo", types: ["Tech"], base: { hp: 60, atk: 50, def: 60, spd: 50 }, jeitao: { name: "Visão Analítica", desc: "Defesa bônus contra Processo." }, moves: [{ name: "Criar POI", type: "Tech", power: 55, acc: 0.95, kind: "dmg" }, { name: "Inserir Correia no SAP", type: "Processo", power: 65, acc: 0.85, kind: "dmg" }] },
+    Barbara: { name: "Barbara", types: ["Social"], base: { hp: 55, atk: 50, def: 50, spd: 60 }, jeitao: { name: "Poliglota", desc: "Chance de confundir o alvo." }, moves: [{ name: "Falar alemão", type: "Social", power: 45, acc: 1.0, kind: "dmg_confuse" }, { name: "Comer dodileiti", type: "Processo", power: 35, acc: 1.0, kind: "dmg_debuff", stat: "def" }] },
+    Marcelo: { name: "Marcelo", types: ["Processo"], base: { hp: 65, atk: 55, def: 60, spd: 45 }, jeitao: { name: "Pavio Curto", desc: "Dano sobe quando HP < 50%." }, moves: [{ name: "Usar boina", type: "Processo", power: 60, acc: 0.90, kind: "dmg" }, { name: "Stevie Wonder", type: "Gestão", power: 50, acc: 1.0, kind: "dmg_debuff", stat: "spd" }] },
+    Mateus: { name: "Mateus", types: ["Gestão"], base: { hp: 60, atk: 55, def: 55, spd: 55 }, jeitao: { name: "Pai da Clarinha", desc: "Chance de ataque duplo." }, moves: [{ name: "F2F Surpresa", type: "Gestão", power: 65, acc: 0.85, kind: "dmg" }, { name: "Adestrar Galinha", type: "Processo", power: 75, acc: 0.80, kind: "dmg_confuse" }] },
+    Eric: { name: "Eric", types: ["Processo"], base: { hp: 55, atk: 60, def: 50, spd: 60 }, jeitao: { name: "Rei do Sprint", desc: "Críticos garantidos." }, moves: [{ name: "Reduzir Setup", type: "Processo", power: 55, acc: 0.95, kind: "dmg" }, { name: "Termopar", type: "Social", power: 50, acc: 1.0, kind: "dmg_raise_spd" }] },
+    Daniel: { name: "Daniel", types: ["Tech"], base: { hp: 60, atk: 45, def: 60, spd: 45 }, jeitao: { name: "Gosta de conversa", desc: "Pode fazer o inimigo dormir." }, moves: [{ name: "Fazer Figurinha", type: "Tech", power: 45, acc: 1.0, kind: "dmg_confuse" }, { name: "Fazer brique", type: "Social", power: 50, acc: 1.0, kind: "dmg_skip" }] },
+    Edinei: { name: "Edinei", types: ["Processo"], base: { hp: 65, atk: 50, def: 55, spd: 50 }, jeitao: { name: "Bonitão", desc: "Recupera HP a cada turno." }, moves: [{ name: "Teste na Roller", type: "Processo", power: 55, acc: 0.95, kind: "dmg" }, { name: "Charme de Polaco", type: "Social", power: 35, acc: 1.0, kind: "dmg_debuff", stat: "atk" }] },
+    Guilherme: { name: "Guilherme", types: ["Processo"], base: { hp: 50, atk: 50, def: 50, spd: 70 }, jeitao: { name: "Pequeno Alvo", desc: "Maior chance de esquiva." }, moves: [{ name: "Guardar Dinheiro", type: "Processo", power: 50, acc: 1.0, kind: "dmg" }, { name: "Postergar um teste", type: "Tech", power: 60, acc: 0.90, kind: "dmg" }] },
+    Gabriel: { name: "Gabriel", types: ["Tech"], base: { hp: 55, atk: 55, def: 45, spd: 55 }, jeitao: { name: "Onde Eu Tava?", desc: "Chance de ignorar dano." }, moves: [{ name: "Dormir na Capão", type: "Tech", power: 35, acc: 1.0, kind: "dmg_debuff", stat: "spd" }, { name: "Bagunçar mesa", type: "Processo", power: 55, acc: 0.90, kind: "dmg_poison" }] },
+    Isis: { name: "Isis", types: ["Processo"], base: { hp: 60, atk: 50, def: 65, spd: 45 }, jeitao: { name: "Hora Extra", desc: "Sobrevive com 1 HP a golpe fatal." }, moves: [{ name: "Ajustar Receita DSS", type: "Processo", power: 55, acc: 0.95, kind: "dmg" }, { name: "Ajudar no SAP", type: "Tech", power: 40, acc: 1.0, kind: "dmg_debuff", stat: "def" }] },
+    Igor: { name: "Igor", types: ["Processo"], base: { hp: 50, atk: 60, def: 40, spd: 65 }, jeitao: { name: "Cafeína", desc: "Sempre ataca primeiro." }, moves: [{ name: "Tomar um Cafezinho", type: "Social", power: 50, acc: 1.0, kind: "dmg_raise_spd" }, { name: "Criar uma ODS", type: "Tech", power: 60, acc: 0.90, kind: "dmg" }] },
+    Paloma: { name: "Paloma", types: ["Social"], base: { hp: 60, atk: 45, def: 55, spd: 60 }, jeitao: { name: "Engagement", desc: "Reduz ataque do inimigo." }, moves: [{ name: "Dinâmica em grupo", type: "Social", power: 45, acc: 1.0, kind: "dmg" }, { name: "Mapa de Carreira", type: "Processo", power: 50, acc: 1.0, kind: "dmg_debuff", stat: "def" }] },
+    Leandro: { name: "Leandro", types: ["Gestão"], base: { hp: 125, atk: 75, def: 75, spd: 60 }, jeitao: { name: "O Chefe", desc: "Resiste a ataques Sociais em vez de ter fraqueza." }, moves: [{ name: "Cobrar Indicador", type: "Gestão", power: 90, acc: 0.75, kind: "dmg_debuff", stat: "atk" }, { name: "Apresentação Surpresa", type: "Processo", power: 80, acc: 0.85, kind: "dmg" }] }
 };
 
 const FEITOS_LIST = [
-    {id:"cafezinho", n:"Almoço no Sujinho", desc:"Recupere a equipa na Parada da Pizza no mapa."},
+    {id:"cafezinho", n:"Almoço no Sujinho", desc:"Recupere a equipe na Parada da Pizza."},
     {id:"fds", n:"Trabalhar Fim de Semana", desc:"Sobreviva a todas as etapas e chegue ao Chefe."},
     {id:"tomas", n:"Apresentação pro Tomas", desc:"Vença o Leandro e aprove o projeto final!"},
     {id:"ods", n:"Aprovar ODS", desc:"Use o ataque 'Criar uma ODS' do Igor em combate."},
-    {id:"estrategista", n:"Estrategista", desc:"Troque de membro da equipa a meio de uma batalha."},
-    {id:"sorte", n:"Sorte Grande", desc:"Encontre o café da Sodexo esquecido na copa."},
+    {id:"estrategista", n:"Estrategista", desc:"Troque de membro da equipe a meio de uma batalha."},
+    {id:"sorte", n:"Sorte Grande", desc:"Encontre o café esquecido na copa no meio do mapa."},
     {id:"critico", n:"Na Mosca!", desc:"Acerte um golpe crítico num adversário."},
     {id:"genio", n:"Génio do Gemba", desc:"Acerte em 2 perguntas da Auditoria na mesma jornada."},
     {id:"quiz_master", n:"Mestre do Gemba", desc:"Acerte uma pergunta da Auditoria em menos de 3 segundos."}
@@ -590,6 +641,7 @@ let run, P, E;
 const TOTAL_STEPS = 5;
 const MAX_TEAM = 5;
 let _tw = null;
+let recruitResolve = null;
 
 function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
@@ -614,6 +666,47 @@ function say(txt) {
 
 function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
 
+// --- FUNÇÕES CORRIGIDAS ADICIONADAS AQUI ---
+function eff(mon, stat) {
+    let val = mon[stat];
+    let stage = mon.stages[stat] || 0;
+    let mult = stage >= 0 ? (2 + stage) / 2 : 2 / (2 - Math.abs(stage));
+    return Math.floor(val * mult);
+}
+
+// Cria os textos flutuantes de dano e acerto crítico na arena
+function spawnFloatingText(text, color, targetId, delay = 0) {
+    setTimeout(() => {
+        const arena = document.getElementById('arena');
+        if (!arena) return;
+        
+        const el = document.createElement('div');
+        el.className = 'float-text';
+        el.style.color = color;
+        el.innerText = text;
+        el.style.zIndex = "999"; // Força para ficar acima dos cards de HP
+        
+        // Posiciona diretamente na arena em vez de dentro do container do personagem
+        if (targetId === 'monE') {
+            // Se for no Rival, flutua do lado direito
+            el.style.top = '40px';
+            el.style.right = '85px';
+        } else {
+            // Se for na sua equipe, flutua do lado esquerdo
+            el.style.bottom = '100px';
+            el.style.left = '95px';
+        }
+        
+        arena.appendChild(el);
+        
+        // Remove o elemento após a duração da animação no CSS
+        setTimeout(() => {
+            if(el.parentNode) el.remove();
+        }, 1200);
+    }, delay);
+}
+// -------------------------------------------
+
 /* === SISTEMA DE CONQUISTAS E TOASTS === */
 function showToast(text) {
     const t = document.getElementById('toast');
@@ -626,7 +719,10 @@ function showToast(text) {
 }
 
 function unlockFeito(id) {
-    let stored = new Set(JSON.parse(getLS('ppi_feitos', '[]')));
+    let stored;
+    try { stored = new Set(JSON.parse(getLS('ppi_feitos', '[]'))); } 
+    catch(e) { stored = new Set(); }
+    
     if (!stored.has(id)) {
         stored.add(id);
         setLS('ppi_feitos', JSON.stringify([...stored]));
@@ -634,14 +730,15 @@ function unlockFeito(id) {
         
         const feitoObj = FEITOS_LIST.find(f => f.id === id);
         if (feitoObj) {
-            SFX.win(); // Efeito sonoro de conquista
+            SFX.win(); 
             showToast(feitoObj.n);
         }
     }
 }
 
 function getFeitos() {
-    return new Set(JSON.parse(getLS('ppi_feitos', '[]')));
+    try { return new Set(JSON.parse(getLS('ppi_feitos', '[]'))); } 
+    catch(e) { return new Set(); }
 }
 
 function showScreen(id) {
@@ -687,7 +784,6 @@ function showStarterSelection() {
     initAudio();
     SFX.click();
 
-    // Escolhe 3 líderes aleatórios para iniciar
     const available = Object.keys(ROSTER).filter(k => k !== "Leandro");
     const shuffled = available.sort(() => 0.5 - Math.random());
     const options = shuffled.slice(0, 3);
@@ -716,12 +812,15 @@ function chooseStarter(chosen) {
         team: [makeMon(chosen, 5)], 
         step: 0, 
         feitos: getFeitos(),
-        auditDone: false,
-        rap10Done: false,
+        eventDone: false,
+        currentEvents: null,
         battlesWon: 0,
         quizPoints: 0, 
         quizStartTime: 0,
-        quizWon: 0
+        quizWon: 0,
+        pizzasEaten: 0,
+        recruitsAccepted: 0,
+        deaths: 0
     };
     showChoices();
 }
@@ -755,13 +854,29 @@ function showChoices() {
         return;
     }
 
-    const nextEnemyKey = getRandomEnemy();
+    // Se não houver um inimigo definido para esta etapa, sorteia um e salva no estado
+    if (!run.nextEnemyKey) {
+        run.nextEnemyKey = getRandomEnemy();
+    }
+    
+    const nextEnemyKey = run.nextEnemyKey;
     const nextEnemy = ROSTER[nextEnemyKey];
+
+    if (!run.currentEvents) {
+        let pool = ['treino', 'pizza', 'quiz', 'recrutar'];
+        
+        const availableRecruits = Object.keys(ROSTER).filter(k => k !== "Leandro" && !run.team.some(m => m.key === k));
+        if (availableRecruits.length === 0) {
+            pool = pool.filter(e => e !== 'recrutar');
+        }
+        
+        pool.sort(() => 0.5 - Math.random());
+        run.currentEvents = pool.slice(0, 2);
+    }
 
     let html = `
         <div class="map-track">${progressTrackHTML()}</div>
         <div class="map-team">${teamPreviewHTML()}</div>
-
         <div class="pixel" style="font-size:11px; margin-bottom:12px; color:white; text-align:center;">NOVA REUNIÃO AGENDADA:</div>
         
         <button class="btn" onclick="SFX.click(); startBattle('${nextEnemyKey}')" style="display:flex; align-items:center; gap:12px; background:#fff; padding:8px 15px; overflow: hidden; margin-bottom:15px;">
@@ -773,50 +888,97 @@ function showChoices() {
         </button>
     `;
 
-    if (!run.auditDone) {
-        html += `
-        <button class="btn" onclick="startAudit()" style="background:#d9e6f5; border-color:#2f5480; text-align:left; padding:8px 15px; display:flex; align-items:center; gap:15px; margin-bottom:15px; overflow:hidden;">
-            <div style="width:70px; height:70px; background-image:url('${IMG.Roleta}'); background-size:contain; background-repeat:no-repeat; background-position:center; flex-shrink:0; transform: scale(1.3);"></div>
-            <div style="flex:1;">
-                <div style="font-weight:900; font-size:14px; color:#2f5480;">📋 SPRINT DO MILHÃO</div>
-                <div style="font-size:11px; margin-top:3px; color:#555; line-height:1.2;">Responda rápido para ganhar mais pontos e status!</div>
-            </div>
-        </button>
+    if (!run.eventDone) {
+        html += `<div class="pixel" style="font-size:11px; margin: 15px 0 10px; color:var(--hp-amber); text-align:center;">OU PREPARE-SE ANTES (Escolha 1):</div>`;
         
-        <button class="btn" onclick="pizzaHeal()" style="background:#f4d9cc; border-color:#d85a30; text-align:left; padding:8px 15px; display:flex; align-items:center; gap:15px; overflow:hidden;">
-            <div style="width:70px; height:70px; background-image:url('${IMG.MarceloPizza}'); background-size:contain; background-repeat:no-repeat; background-position:center; flex-shrink:0; transform: scale(1.3);"></div>
-            <div style="flex:1;">
-                <div style="font-weight:900; font-size:14px; color:#993C1D;">🍕 PIZZA DO MARCELO</div>
-                <div style="font-size:11px; margin-top:3px; color:#666; line-height:1.2;">Recupera o HP e avança a etapa sem dar XP.</div>
-            </div>
-        </button>
-        `;
+        run.currentEvents.forEach(ev => {
+            if (ev === 'treino') {
+                html += `
+                <button class="btn" onclick="doTreino()" style="background:#f5e6d9; border-color:#80352f; text-align:left; padding:8px 15px; display:flex; align-items:center; gap:15px; margin-bottom:10px; overflow:hidden;">
+                    <div style="width:70px; height:70px; background-image:url('${IMG.Guilherme}'); background-size:contain; background-repeat:no-repeat; background-position:center; flex-shrink:0; transform: scale(1.3);"></div>
+                    <div style="flex:1;">
+                        <div style="font-weight:900; font-size:14px; color:#80352f;">🏋️ TREINAMENTO DO PACHEQUINHO</div>
+                        <div style="font-size:11px; margin-top:3px; color:#555; line-height:1.2;">-10% HP, mas ganham 1 Nível e +10 Ataque!</div>
+                    </div>
+                </button>`;
+            }
+            else if (ev === 'pizza') {
+                html += `
+                <button class="btn" onclick="doPizza()" style="background:#f4d9cc; border-color:#d85a30; text-align:left; padding:8px 15px; display:flex; align-items:center; gap:15px; margin-bottom:10px; overflow:hidden;">
+                    <div style="width:70px; height:70px; background-image:url('${IMG.MarceloPizza}'); background-size:contain; background-repeat:no-repeat; background-position:center; flex-shrink:0; transform: scale(1.3);"></div>
+                    <div style="flex:1;">
+                        <div style="font-weight:900; font-size:14px; color:#993C1D;">🍕 PIZZA DO MARCELO</div>
+                        <div style="font-size:11px; margin-top:3px; color:#666; line-height:1.2;">Recupera 100% do HP da equipe toda.</div>
+                    </div>
+                </button>`;
+            }
+            else if (ev === 'quiz') {
+                html += `
+                <button class="btn" onclick="startAudit()" style="background:#d9e6f5; border-color:#2f5480; text-align:left; padding:8px 15px; display:flex; align-items:center; gap:15px; margin-bottom:10px; overflow:hidden;">
+                    <div style="width:70px; height:70px; background-image:url('${IMG.Roleta}'); background-size:contain; background-repeat:no-repeat; background-position:center; flex-shrink:0; transform: scale(1.3);"></div>
+                    <div style="flex:1;">
+                        <div style="font-weight:900; font-size:14px; color:#2f5480;">📋 SPRINT DO MILHÃO</div>
+                        <div style="font-size:11px; margin-top:3px; color:#555; line-height:1.2;">Responda rápido para ganhar pontos e status!</div>
+                    </div>
+                </button>`;
+            }
+            else if (ev === 'recrutar') {
+                html += `
+                <button class="btn" onclick="startMapRecruit()" style="background:#d9f5d9; border-color:#2f803c; text-align:left; padding:8px 15px; display:flex; align-items:center; gap:15px; margin-bottom:10px; overflow:hidden;">
+                    <div style="width:70px; height:70px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size: 32px; border-radius: 50%; background: rgba(255,255,255,0.4); border: 2px solid #2f803c;">🤝</div>
+                    <div style="flex:1;">
+                        <div style="font-weight:900; font-size:14px; color:#2f803c;">👥 PROCESSO SELETIVO</div>
+                        <div style="font-size:11px; margin-top:3px; color:#555; line-height:1.2;">Entreviste um talento e adicione-o à equipe!</div>
+                    </div>
+                </button>`;
+            }
+        });
     }
     
     document.getElementById('mapHeader').innerText = `ETAPA ${run.step + 1} DE 5 ANTES DO CHEFE`;
     document.getElementById('choiceList').innerHTML = html;
     
-    if (run.step > 0 && Math.random() < 0.2 && !run.rap10Done) {
-        run.rap10Done = true;
+    // Evento aleatório super raro
+    if (run.step > 0 && !run.eventDone && Math.random() < 0.1) {
+        run.eventDone = true; 
         SFX.heal();
         run.team.forEach(m => { m.hp = Math.min(m.maxhp, m.hp + Math.round(m.maxhp * 0.25)); });
-        unlockFeito("sorte"); // Feito do evento aleatório
-        alert("Sorte grande! A equipa encontrou um Cofee da Sodexo esquecido na copa. Todos recuperaram 25% do HP!");
+        unlockFeito("sorte"); 
+        alert("Sorte grande! A equipe encontrou um Cofee da Sodexo esquecido na copa. Todos recuperaram 25% do HP!");
         document.querySelector('.map-team').innerHTML = teamPreviewHTML();
     }
     
     showScreen('mapScreen');
 }
-
-function pizzaHeal() {
+// --- FUNÇÕES DOS EVENTOS DO MAPA ---
+// --- FUNÇÕES DOS EVENTOS DO MAPA ---
+function doPizza() {
     SFX.heal();
-    run.team.forEach(m => m.hp = m.maxhp); 
+    run.pizzasEaten++;
+    
+    // CORREÇÃO: Removemos o if(m.hp > 0) para que a pizza reviva quem desmaiou
+    run.team.forEach(m => { 
+        m.hp = m.maxhp; 
+    }); 
+    
     unlockFeito("cafezinho");
-    run.step++; 
-    run.auditDone = false; 
-    run.rap10Done = false;
-    alert("A equipa comeu pizza do Marcelo e está 100% recuperada! (Porém, sem a experiência da batalha)");
+    run.eventDone = true; 
+    alert("A equipe comeu pizza do Marcelo e está 100% recuperada! (Agora é hora de ir para a reunião)");
     showChoices(); 
+}
+
+function doTreino() {
+    SFX.crit();
+    run.team.forEach(m => {
+        if(m.hp > 0) {
+            m.hp = Math.max(1, m.hp - Math.round(m.hp * 0.10));
+            m.level += 1;
+            m.atk += 10;
+        }
+    });
+    run.eventDone = true;
+    alert("Treino exaustivo com o Pachequinho! Perderam 10% de HP por cansaço, mas subiram 1 Nível e ganharam +10 de Ataque.");
+    showChoices();
 }
 
 /* === LÓGICA DO SHOW DO MILHÃO PPI === */
@@ -904,22 +1066,165 @@ async function answerAudit(selected, correct) {
         document.getElementById('qrTitle').innerText = "Ihh, errou!";
         document.getElementById('qrTitle').style.color = "var(--hp-red)";
         document.getElementById('qrSub').innerText = "Participe do próximo treinamento do Pachequinho.";
-        document.getElementById('qrEffect').innerHTML = "<strong style='color:var(--hp-red);'>-15% HP</strong> para todos da equipa viva!";
+        document.getElementById('qrEffect').innerHTML = "<strong style='color:var(--hp-red);'>-15% HP</strong> para todos da equipe viva!";
     }
     
-    run.auditDone = true; 
+    run.eventDone = true; 
     showScreen('quizResultScreen');
 }
-/* ===================================== */
 
+/* === RECRUTAMENTO DE MAPA E PÓS-BATALHA === */
+
+function startMapRecruit() {
+    SFX.click();
+    const available = Object.keys(ROSTER).filter(k => k !== "Leandro" && !run.team.some(m => m.key === k));
+    if(available.length === 0) {
+        alert("Não há mais talentos disponíveis no Gemba!");
+        run.eventDone = true;
+        showChoices();
+        return;
+    }
+    const wild = available[Math.floor(Math.random() * available.length)];
+    const cand = ROSTER[wild];
+    const candLvl = 5 + run.step;
+    const candMon = makeMon(wild, candLvl); 
+    
+    document.getElementById('recruitPhoto').innerHTML = `<div style="width: 100%; height: 100%; background-image:url('${IMG[wild]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter:drop-shadow(0 6px 0 rgba(0,0,0,.25)); transform: ${getTransform(wild, 'telaInicial')};"></div>`;
+    
+    document.getElementById('recruitText').innerHTML = `
+        <div style="background:var(--panel-line); border:3px solid #5a6b5f; border-radius:12px; padding:15px; text-align:left;">
+            <div style="font-weight:900; font-size:16px; color:var(--accent); text-align:center; margin-bottom:15px;">${candMon.name.toUpperCase()} <span style="font-size:10px; color:#aaa;">(Nv${candLvl})</span></div>
+            <div style="display:flex; justify-content:space-around; margin-bottom:15px; font-size:12px; font-family:'Press Start 2P', monospace;">
+                <div style="text-align:center;"><div style="color:var(--hp-green); font-size:8px; margin-bottom:4px;">HP</div>${candMon.maxhp}</div>
+                <div style="text-align:center;"><div style="color:var(--hp-red); font-size:8px; margin-bottom:4px;">ATK</div>${candMon.atk}</div>
+                <div style="text-align:center;"><div style="color:var(--hp-amber); font-size:8px; margin-bottom:4px;">DEF</div>${candMon.def}</div>
+                <div style="text-align:center;"><div style="color:#7ec8c2; font-size:8px; margin-bottom:4px;">SPD</div>${candMon.spd}</div>
+            </div>
+            <div style="border-top:1px dashed #555; padding-top:12px;">
+                <span style="font-size:10px; color:#aaa; font-weight:800;">Passiva:</span><br>
+                <strong style="color:white; font-size:14px; display:inline-block; margin:4px 0;">${cand.jeitao.name}</strong><br>
+                <span style="font-size:11px; color:#ccc; line-height:1.4;">${cand.jeitao.desc}</span>
+            </div>
+        </div>
+    `;
+    
+    let html = ``;
+    if (run.team.length < MAX_TEAM) {
+        html += `<button class="btn" style="text-align:center; background:#4cae6a; color:white; padding: 18px; font-size: 15px;" onclick="catchDo('${wild}')">Aprovar no Processo Seletivo</button>`;
+        html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:10px; padding: 15px;" onclick="resolveRecruit()">Rejeitar Candidato</button>`;
+    } else {
+        html += `<p style="color:var(--hp-red); font-size:12px; margin-bottom:15px;">equipe cheia (5 Máx). Substituir quem?</p>`;
+        run.team.forEach((m, idx) => {
+            html += `
+            <button class="btn" style="margin-bottom:8px; display:flex; align-items:center; gap:10px; overflow:hidden;" onclick="catchReplace(${idx}, '${wild}')">
+                <div class="team-mini" style="border:none; border-radius:0;">
+                    <div class="team-mini-img" style="background-image: url('${IMG[m.key]}'); transform: ${getTransform(m.key, 'miniaturas')};"></div>
+                </div>
+                <div style="z-index:2;">Demitir ${m.name.split(" ")[0]} e Recrutar</div>
+            </button>`;
+        });
+        html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:15px; padding: 15px;" onclick="resolveRecruit()">Rejeitar Candidato</button>`;
+    }
+    
+    document.getElementById('recruitOptions').innerHTML = html;
+    showScreen('recruitScreen');
+}
+
+function offerRecruit(defeatedKey) {
+    return new Promise(res => {
+        recruitResolve = res;
+        
+        let wild = defeatedKey; 
+        if(run.team.some(m => m.key === wild)) {
+            const available = Object.keys(ROSTER).filter(k => k !== "Leandro" && !run.team.some(m => m.key === k));
+            if(available.length === 0) return resolveRecruit(); 
+            wild = available[Math.floor(Math.random() * available.length)];
+        }
+
+        const cand = ROSTER[wild];
+        const candLvl = 5 + run.step;
+        const candMon = makeMon(wild, candLvl); 
+        
+        document.getElementById('recruitPhoto').innerHTML = `<div style="width: 100%; height: 100%; background-image:url('${IMG[wild]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter:drop-shadow(0 6px 0 rgba(0,0,0,.25)); transform: ${getTransform(wild, 'telaInicial')};"></div>`;
+        
+        document.getElementById('recruitText').innerHTML = `
+            <div style="background:var(--panel-line); border:3px solid #5a6b5f; border-radius:12px; padding:15px; text-align:left;">
+                <div style="font-weight:900; font-size:16px; color:var(--accent); text-align:center; margin-bottom:15px;">${candMon.name.toUpperCase()} <span style="font-size:10px; color:#aaa;">(Nv${candLvl})</span></div>
+                <div style="display:flex; justify-content:space-around; margin-bottom:15px; font-size:12px; font-family:'Press Start 2P', monospace;">
+                    <div style="text-align:center;"><div style="color:var(--hp-green); font-size:8px; margin-bottom:4px;">HP</div>${candMon.maxhp}</div>
+                    <div style="text-align:center;"><div style="color:var(--hp-red); font-size:8px; margin-bottom:4px;">ATK</div>${candMon.atk}</div>
+                    <div style="text-align:center;"><div style="color:var(--hp-amber); font-size:8px; margin-bottom:4px;">DEF</div>${candMon.def}</div>
+                    <div style="text-align:center;"><div style="color:#7ec8c2; font-size:8px; margin-bottom:4px;">SPD</div>${candMon.spd}</div>
+                </div>
+                <div style="border-top:1px dashed #555; padding-top:12px;">
+                    <span style="font-size:10px; color:#aaa; font-weight:800;">Passiva:</span><br>
+                    <strong style="color:white; font-size:14px; display:inline-block; margin:4px 0;">${cand.jeitao.name}</strong><br>
+                    <span style="font-size:11px; color:#ccc; line-height:1.4;">${cand.jeitao.desc}</span>
+                </div>
+            </div>
+        `;
+        
+        let html = ``;
+        if (run.team.length < MAX_TEAM) {
+            html += `<button class="btn" style="text-align:center; background:#4cae6a; color:white; padding: 18px; font-size: 15px;" onclick="catchDo('${wild}')">Aprovar no Processo Seletivo</button>`;
+            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:10px; padding: 15px;" onclick="resolveRecruit()">Rejeitar Candidato</button>`;
+        } else {
+            html += `<p style="color:var(--hp-red); font-size:12px; margin-bottom:15px;">equipe cheia (5 Máx). Substituir quem?</p>`;
+            run.team.forEach((m, idx) => {
+                html += `
+                <button class="btn" style="margin-bottom:8px; display:flex; align-items:center; gap:10px; overflow:hidden;" onclick="catchReplace(${idx}, '${wild}')">
+                    <div class="team-mini" style="border:none; border-radius:0;">
+                        <div class="team-mini-img" style="background-image: url('${IMG[m.key]}'); transform: ${getTransform(m.key, 'miniaturas')};"></div>
+                    </div>
+                    <div style="z-index:2;">Demitir ${m.name.split(" ")[0]} e Recrutar</div>
+                </button>`;
+            });
+            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:15px; padding: 15px;" onclick="resolveRecruit()">Rejeitar Candidato</button>`;
+        }
+        
+        document.getElementById('recruitOptions').innerHTML = html;
+        showScreen('recruitScreen');
+    });
+}
+
+function catchDo(wild) {
+    SFX.click();
+    run.recruitsAccepted++;
+    run.team.push(makeMon(wild, 5 + run.step)); 
+    resolveRecruit();
+}
+
+function catchReplace(idx, wild) {
+    SFX.click();
+    run.recruitsAccepted++;
+    run.team[idx] = makeMon(wild, 5 + run.step);
+    resolveRecruit();
+}
+
+function resolveRecruit() {
+    SFX.click();
+    // Trava de segurança para impedir duplo clique
+    document.getElementById('recruitOptions').innerHTML = ""; 
+    
+    if (typeof recruitResolve === 'function') {
+        let res = recruitResolve;
+        recruitResolve = null;
+        res();
+    } else {
+        run.eventDone = true; 
+        showChoices();
+    }
+}
+
+// --- FUNÇÕES DE BATALHA ---
 async function triggerOnEnter(mon, foe, targetId) {
     if(mon.jeitao.name === "Engagement") {
         foe.stages["atk"] = Math.max(-6, foe.stages["atk"] - 1);
-        document.getElementById(targetId).classList.add('shake', 'flash');
+        document.getElementById(targetId).classList.add('shake');
         await say(`${mon.name.split(" ")[0]} ativou Engagement! Ataque de ${foe.name.split(" ")[0]} caiu.`);
         renderBattle();
         await sleep(400);
-        document.getElementById(targetId).classList.remove('shake', 'flash');
+        document.getElementById(targetId).classList.remove('shake');
     }
 }
 
@@ -1019,12 +1324,15 @@ function renderBattle(forceEnemyImg = null, forceEnemyKey = null) {
     document.getElementById('monP').innerHTML = `<div class="token" style="background-image:url('${IMG[p.key]}'); transform: ${getTransform(p.key, 'batalhaVoce')};"></div>`;
 
     document.getElementById('teamStrip').innerHTML = run.team.map((m, idx) => 
-        `<div class="team-mini" style="background-image:url('${IMG[m.key]}'); ${m.hp <= 0 ? 'filter:grayscale(1) opacity(0.5);' : idx === P.i ? 'filter: drop-shadow(0 0 6px var(--accent)); transform: translateY(-3px);' : ''}"><div style="width:100%; height:100%; transform: ${getTransform(m.key, 'miniaturas')};"></div></div>`
+        `<div class="team-mini" style="border-color:var(--panel-line); ${m.hp <= 0 ? 'filter:grayscale(1) opacity(0.5);' : idx === P.i ? 'filter: drop-shadow(0 0 6px var(--accent)); transform: translateY(-3px);' : ''}">
+            <div class="team-mini-img" style="background-image:url('${IMG[m.key]}'); transform: ${getTransform(m.key, 'miniaturas')};"></div>
+        </div>`
     ).join('');
     
-    document.getElementById('enemyStrip').innerHTML = `<div class="team-mini" style="border-color:var(--panel-line);">
-        <div class="team-mini-img" style="background-image:url('${eImg}'); transform: ${getTransform(eKey, 'miniaturas')};"></div>
-    </div>`;
+    document.getElementById('enemyStrip').innerHTML = `
+        <div class="team-mini" style="border-color:var(--panel-line);">
+            <div class="team-mini-img" style="background-image:url('${eImg}'); transform: ${getTransform(eKey, 'miniaturas')};"></div>
+        </div>`;
 }
 
 function showMenu() {
@@ -1039,7 +1347,6 @@ function showMenu() {
         
         if(m.power > 0) {
             let mult = CHART[m.type][e.types[0]];
-            // Resistência do Chefe
             if(e.jeitao.name === "O Chefe" && m.type === "Social") mult = 0.5;
 
             if(mult > 1) { effClass = "eff-strong"; effText = "Forte x" + mult; }
@@ -1126,7 +1433,10 @@ async function doSwitch(idx, forced = false) {
         await performMove(e, act(P), eMove, 'monP');
         await endOfTurn();
         
+        // No final da função doSwitch(idx, forced = false):
+    // ...
         if (act(P).hp <= 0) {
+            run.deaths++;
             SFX.lose();
             const nextIdx = run.team.findIndex(m => m.hp > 0);
             if(nextIdx !== -1) {
@@ -1137,7 +1447,7 @@ async function doSwitch(idx, forced = false) {
             }
         } else if (act(E).hp <= 0) {
             SFX.win();
-            handleEnemyDefeat();
+            await handleEnemyDefeat(); // <- Garanta que este 'await' está aqui!
         } else {
             showMenu();
         }
@@ -1146,48 +1456,52 @@ async function doSwitch(idx, forced = false) {
     }
 }
 
-const STAGE_MULT = [2/8, 2/7, 2/6, 2/5, 2/4, 2/3, 2/2, 3/2, 4/2, 5/2, 6/2, 7/2, 8/2]; 
-function eff(mon, stat) { return mon[stat] * STAGE_MULT[Math.max(0, Math.min(12, (mon.stages[stat] || 0) + 6))]; }
-
 function calcDamage(a, d, move) {
+    // 1. Verificação de Precisão do Golpe (Risco vs Recompensa)
+    const accuracy = move.acc !== undefined ? move.acc : 1.0;
+    if (Math.random() > accuracy) return {dmg: 0, missed: true};
+
+    // 2. Passivas de Esquiva
     if(d.jeitao.name === "Pequeno Alvo" && Math.random() < 0.2) return {dmg:0, missed:true};
     if(d.jeitao.name === "Onde Eu Tava?" && Math.random() < 0.15) return {dmg:0, missed:true};
 
-    // FÓRMULA DE RPG CLÁSSICA COM RNG DE EMOÇÃO
-    let levelFactor = (2 * a.level / 5) + 2;
+    // 3. Fator de Nível
+    const levelFactor = (2 * a.level / 5) + 2;
+
+    // 4. Status Efetivos
+    const atkStat = eff(a, "atk");
+    const defStat = eff(d, "def");
+
+    // 5. Multiplicadores de Tipagem e STAB
+    const stab = a.types.includes(move.type) ? 1.3 : 1;
+    let mult = CHART[move.type]?.[d.types[0]] ?? 1;
     
-    const stab = a.types.includes(move.type) ? 1.5 : 1;
-    let mult = CHART[move.type][d.types[0]];
-    
-    // Passivas de Resistência e Fraqueza
+    // Passivas de Resiliência do Inimigo
     if(d.jeitao.name === "Visão Analítica" && move.type === "Processo") mult *= 0.5;
-    if(d.jeitao.name === "O Chefe" && move.type === "Social") mult = 0.5; // O Chefe resiste à sua fraqueza Social em vez de bloqueá-la
-    
-    let statRatio = eff(a, "atk") / eff(d, "def");
-    let baseDmg = ((levelFactor * move.power * statRatio) / 50) + 2;
+    if(d.jeitao.name === "O Chefe" && move.type === "Social") mult = 0.5;
 
-    let crit = Math.random() < 0.15; // 15% chance of critical hit
+    // 6. Fórmula Base Dinâmica (Matemática por Divisão)
+    let baseDmg = ((levelFactor * move.power * (atkStat / defStat)) / 5) + 5;
+
+    // 7. Acerto Crítico
+    let crit = Math.random() < 0.15; 
     if(a.jeitao.name === "Rei do Sprint") crit = true;
+    const critMult = crit ? 1.5 : 1;
 
-    // Variação de RNG entre 85% e 100% para não ser previsível
-    const rand = (Math.floor(Math.random() * 16) + 85) / 100;
+    // 8. Fator de Sorte (RNG de 85% a 100%)
+    const rng = 0.85 + (Math.random() * 0.15);
     
-    let dmg = baseDmg * stab * mult * (crit ? 1.5 : 1) * rand;
+    // 9. Passivas de Ataque do Jogador
+    let passiveMult = 1;
+    if(a.jeitao.name === "Pavio Curto" && a.hp < a.maxhp / 2) passiveMult = 1.5;
 
-    if(a.jeitao.name === "Pavio Curto" && a.hp < a.maxhp/2) dmg *= 1.5;
-    
-    dmg *= 2.8; // Fator de velocidade do jogo
+    // 10. Cálculo Final
+    let dmg = Math.round(baseDmg * stab * mult * critMult * passiveMult * rng);
 
-    // Cap global para manter o jogo equilibrado sem OHKOs injustos
-    if (mult < 1) {
-        dmg = Math.max(20, Math.min(40, dmg));
-    } else if (mult > 1) {
-        dmg = Math.max(61, Math.min(80, dmg));
-    } else {
-        dmg = Math.max(41, Math.min(60, dmg));
-    }
+    // Garante que todo golpe que acerte cause pelo menos 1 de dano
+    dmg = Math.max(1, dmg);
 
-    return {dmg: Math.max(1, Math.round(dmg)), mult, crit, missed:false};
+    return {dmg, mult, crit, missed:false};
 }
 
 async function applyEffect(move, atk, def) {
@@ -1218,7 +1532,6 @@ async function applyEffect(move, atk, def) {
         await say(`⚡ A velocidade de ${atk.name.split(" ")[0]} subiu!`); 
     }
 
-    // Passiva do Daniel
     if (atk.jeitao.name === "Gosta de conversa" && Math.random() < 0.2 && !def.skip && def.hp > 0) {
         def.skip = true;
         await say(`💤 A conversa de ${atk.name.split(" ")[0]} fez o inimigo dormir e perder a rodada!`);
@@ -1234,12 +1547,15 @@ async function performMove(atk, def, move, targetId) {
             const selfDmg = Math.max(1, Math.round(atk.maxhp * 0.07));
             atk.hp = Math.max(0, atk.hp - selfDmg);
             const myTargetId = targetId === 'monE' ? 'monP' : 'monE';
-            document.getElementById(myTargetId).classList.add('shake', 'flash');
+            document.getElementById(myTargetId).classList.add('shake');
             SFX.hit();
+            
+            spawnFloatingText(`-${selfDmg}`, '#fff', myTargetId, 0);
+
             renderBattle();
             await say(`🌀 ${atk.name.split(" ")[0]} ficou confuso e se atrapalhou! Tirou ${selfDmg} de si mesmo.`);
             await sleep(400);
-            document.getElementById(myTargetId).classList.remove('shake', 'flash');
+            document.getElementById(myTargetId).classList.remove('shake');
             if(atk.statusTurns <= 0) atk.status = null;
             return;
         }
@@ -1247,6 +1563,14 @@ async function performMove(atk, def, move, targetId) {
     }
 
     await say(`${atk.name.split(" ")[0]} usou ${move.name}!`);
+
+    if(def.jeitao.name === "O Chefe" && move.type === "Social") {
+        document.getElementById(targetId).classList.add('shake');
+        await say(`🚫 ${def.name.split(" ")[0]} não aprovou o ESign! (0 Dano)`);
+        await sleep(300);
+        document.getElementById(targetId).classList.remove('shake');
+        return;
+    }
 
     let hits = (atk.jeitao.name === "Pai da Clarinha" && Math.random() < 0.35) ? 2 : 1;
     let totalDmg = 0, anyCrit = false, lastMult = 1, anyMiss = false;
@@ -1268,14 +1592,20 @@ async function performMove(atk, def, move, targetId) {
             def.hp = Math.max(0, def.hp - r.dmg);
             totalDmg += r.dmg;
             
-            document.getElementById(targetId).classList.add('shake', 'flash');
+            document.getElementById(targetId).classList.add('shake');
             if(r.crit) {
                 SFX.crit();
                 unlockFeito('critico'); 
             } else SFX.hit();
+
+            spawnFloatingText(`-${r.dmg}`, '#fff', targetId, 0);
+            if(r.crit) spawnFloatingText("CRÍTICO!", "#FFD700", targetId, 200);
+            if(lastMult > 1.1) spawnFloatingText("SUPER EFICAZ!", "#4cae6a", targetId, 400);
+            else if(lastMult < 0.9 && lastMult > 0) spawnFloatingText("POUCO EFETIVO", "#d8442f", targetId, 400);
+
             renderBattle();
-            await sleep(400);
-            document.getElementById(targetId).classList.remove('shake', 'flash');
+            await sleep(600);
+            document.getElementById(targetId).classList.remove('shake');
         }
     }
 
@@ -1316,7 +1646,7 @@ async function endOfTurn() {
 }
 
 async function handleEnemyDefeat() {
-    const e = act(E);
+   const e = act(E);
     
     if (e.key !== "Leandro") {
         run.battlesWon++; 
@@ -1330,7 +1660,7 @@ async function handleEnemyDefeat() {
             m.level += 1;
             const hpGain = Math.round(m.maxhp * 0.15); 
             m.maxhp += hpGain;
-            m.hp = Math.min(m.maxhp, m.hp + hpGain + Math.round(m.maxhp * 0.20)); // Cura extra de 20% ao subir de nível
+            m.hp = Math.min(m.maxhp, m.hp + hpGain + Math.round(m.maxhp * 0.20)); 
             m.atk = Math.round(m.atk * 1.15);
             m.def = Math.round(m.def * 1.15);
             m.spd = Math.round(m.spd * 1.15);
@@ -1339,13 +1669,19 @@ async function handleEnemyDefeat() {
     });
 
     if (leveledUp) {
-        await say(`A equipa ganhou experiência na reunião! Todos subiram de Nível e recuperaram parte da energia.`);
+        await say(`A equipe ganhou experiência na reunião! Todos subiram de Nível e recuperaram parte da energia.`);
     }
 
     if (e.key === "Leandro") {
         showEndScreen(true);
     } else {
         await offerRecruit(e.key);
+        
+        run.step++;
+        run.eventDone = false;
+        run.currentEvents = null;
+        run.nextEnemyKey = null; // CORREÇÃO: Reseta o inimigo para que a próxima etapa sorteie um novo
+        showChoices();
     }
 }
 
@@ -1382,6 +1718,7 @@ async function useMove(idx) {
         SFX.win();
         await handleEnemyDefeat();
     } else if (act(P).hp <= 0) {
+        run.deaths++;
         SFX.lose();
         const nextIdx = run.team.findIndex(m => m.hp > 0);
         if(nextIdx !== -1) {
@@ -1395,67 +1732,19 @@ async function useMove(idx) {
     }
 }
 
-let recruitResolve;
-function offerRecruit(defeatedKey) {
-    return new Promise(res => {
-        recruitResolve = res;
-        
-        let wild = defeatedKey; 
-        if(run.team.some(m => m.key === wild)) {
-            const available = Object.keys(ROSTER).filter(k => k !== "Leandro" && !run.team.some(m => m.key === k));
-            if(available.length === 0) return resolveRecruit(); 
-            wild = available[Math.floor(Math.random() * available.length)];
-        }
-
-        const cand = ROSTER[wild];
-        document.getElementById('recruitPhoto').innerHTML = `<div style="width: 100%; height: 100%; background-image:url('${IMG[wild]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter:drop-shadow(0 6px 0 rgba(0,0,0,.25)); transform: ${getTransform(wild, 'telaInicial')};"></div>`;
-        
-        let html = ``;
-        if (run.team.length < MAX_TEAM) {
-            html += `<button class="btn" style="text-align:center; background:#4cae6a; color:white; padding: 18px; font-size: 15px;" onclick="catchDo('${wild}')">Aprovar no Processo Seletivo</button>`;
-            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:10px; padding: 15px;" onclick="resolveRecruit()">Manda para outra área</button>`;
-        } else {
-            html += `<p style="color:var(--hp-red); font-size:12px; margin-bottom:15px;">Equipa cheia (5 Máx). Substituir quem?</p>`;
-            run.team.forEach((m, idx) => {
-                html += `
-                <button class="btn" style="margin-bottom:8px; display:flex; align-items:center; gap:10px; overflow:hidden;" onclick="catchReplace(${idx}, '${wild}')">
-                    <div class="team-mini" style="border:none; border-radius:0;">
-                        <div class="team-mini-img" style="background-image: url('${IMG[m.key]}'); transform: ${getTransform(m.key, 'miniaturas')};"></div>
-                    </div>
-                    <div style="z-index:2;">Demitir ${m.name.split(" ")[0]} e Recrutar</div>
-                </button>`;
-            });
-            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:15px; padding: 15px;" onclick="resolveRecruit()">Manda para outra área</button>`;
-        }
-        
-        document.getElementById('recruitOptions').innerHTML = html;
-        showScreen('recruitScreen');
-    });
-}
-
-function catchDo(wild) {
-    SFX.click();
-    run.team.push(makeMon(wild, 5 + run.step)); 
-    resolveRecruit();
-}
-
-function catchReplace(idx, wild) {
-    SFX.click();
-    run.team[idx] = makeMon(wild, 5 + run.step);
-    resolveRecruit();
-}
-
-function resolveRecruit() {
-    SFX.click();
-    run.step++;
-    run.auditDone = false; 
-    run.rap10Done = false; 
-    showChoices();
-    recruitResolve();
-}
-
 function showEndScreen(win) {
-    if (win) unlockFeito("tomas");
+    if (win) {
+        unlockFeito("tomas");
+        if (run.deaths === 0) unlockFeito("perfect");
+        
+        let countVivos = 0;
+        run.team.forEach(m => { if (m.hp > 0) countVivos++; });
+        if (countVivos === 5 && run.team.length === 5) unlockFeito("full_team");
+        if (run.recruitsAccepted === 0 && run.team.length === 1) unlockFeito("solo");
+        if (run.pizzasEaten === 0) unlockFeito("no_pizza");
+    }
+
+    showScreen('endScreen');
 
     let score = 0;
     let aliveCount = 0;
@@ -1502,7 +1791,7 @@ function showEndScreen(win) {
     }
 
     const title = win ? "VOCÊ VENCEU!" : "PROJETO REPROVADO!";
-    const sub = win ? "Apresentou os projetos e subiu no sprint! Parabéns" : "Liga para a controladoria e tenta novamente.";
+    const sub = win ? "Apresentou os projetos e subiu no sprint! Parabéns" : "Ligue pra controladoria e tente novamente.";
     const color = win ? "var(--hp-green)" : "var(--hp-red)";
     
     let html = `
