@@ -1801,7 +1801,7 @@ async function useMove(idx) {
     }
 }
 
-function showEndScreen(win) {
+async function showEndScreen(win) { // <-- Adicionado 'async' aqui
     if (win) {
         unlockFeito("tomas");
         if (run.deaths === 0) unlockFeito("perfect");
@@ -1842,24 +1842,33 @@ function showEndScreen(win) {
     score += (run.feitosNovos || 0) * 500;
     score = Math.max(0, score); 
 
-    let rank = "D";
-    let rankName = "Estagiário";
-    let rankColor = "#aaa";
-
-    if (win && aliveCount === MAX_TEAM) { rank = "S+"; rankName = "CEO do PPI"; rankColor = "#FFD700"; }
-    else if (win && aliveCount >= 2) { rank = "S"; rankName = "Diretor Global"; rankColor = "#FFD700"; }
-    else if (win) { rank = "A"; rankName = "Gerente de Planta"; rankColor = "#4cae6a"; }
-    else if (run.step === 5) { rank = "B"; rankName = "Eng. Sênior"; rankColor = "#4cae6a"; }
-    else if (run.step >= 3) { rank = "C"; rankName = "Analista Pleno"; rankColor = "#e0a828"; }
-    else { rank = "D"; rankName = "Estagiário"; rankColor = "#d8442f"; }
-
-    let highScore = parseInt(getLS('ppi_highscore', '0'));
+    // === NOVA LÓGICA DE RECORDE GLOBAL ===
+    let highScore = 0;
     let isNewRecord = false;
+
+    try {
+        // Busca a lista atualizada do servidor do Google Sheets
+        const res = await fetch(API_URL_RANKING);
+        const dados = await res.json();
+        
+        if (dados && dados.length > 0) {
+            // Encontra a maior pontuação gravada na planilha
+            highScore = Math.max(...dados.map(j => j.pontuacao));
+        }
+    } catch (e) {
+        console.error("Erro ao buscar ranking global, usando local:", e);
+        // Fallback: se a internet falhar, usa o recorde do navegador
+        highScore = parseInt(getLS('ppi_highscore', '0'));
+    }
+
+    // Se a pontuação atual for maior que o recorde do servidor
     if (score > highScore) {
         highScore = score;
-        setLS('ppi_highscore', highScore.toString());
         isNewRecord = true;
+        // Salva localmente também por segurança
+        setLS('ppi_highscore', score.toString());
     }
+    // =====================================
 
     const title = win ? "VOCÊ VENCEU!" : "PROJETO REPROVADO!";
     const sub = win ? "Apresentou os projetos e subiu no sprint! Parabéns" : "Ligue pra controladoria e tente novamente.";
@@ -1881,9 +1890,9 @@ function showEndScreen(win) {
                         <div style="font-size:8px; color:#aaa;">PONTOS PPI</div>
                         <div style="font-family:'Press Start 2P', monospace; font-size: 12px; color: #fff; margin-top:5px;">${score}</div>
                     </div>
-                    <div>
-                        <div style="font-size:8px; color:#aaa;">RECORDE</div>
-                        <div style="font-family:'Press Start 2P', monospace; font-size: 12px; color: ${isNewRecord ? 'var(--hp-green)' : '#fff'}; margin-top:5px;">${highScore}</div>
+                   <div>
+                         <div style="font-size:8px; color:#aaa;">RECORDE GLOBAL</div>
+                          <div style="font-family:'Press Start 2P', monospace; font-size: 12px; color: ${isNewRecord ? 'var(--hp-green)' : '#fff'}; margin-top:5px;">${highScore}</div>
                     </div>
                 </div>
                 ${isNewRecord ? `<div style="font-size:10px; color:var(--hp-green); font-weight:800; margin-top:10px;">🌟 NOVO RECORDE! 🌟</div>` : ''}
