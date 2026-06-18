@@ -526,18 +526,18 @@ function getTransform(key, context, extraScale = 1.0) {
 const IMG = {
     Igor: "igor.png",
     Barbara: "barbara.png",
-    Gabriel: "gabriel.png",
-    Guilherme: "guilherme.png",
-    Daniel: "daniel.png",
-    Eric: "eric.png",
-    Edinei: "edinei.png",
-    Isis: "isis.png",
-    Marcelo: "marcelo.png",
-    Leonardo: "leonardo.png",
+    Gabriel: "Gabriel.png",
+    Guilherme: "Guilherme.png",
+    Daniel: "Daniel.png",
+    Eric: "Eric.png",
+    Edinei: "Edinei.png",
+    Isis: "Isis.png",
+    Marcelo: "Marcelo.png",
+    Leonardo: "Leonardo.png",
     Paloma: "paloma.png",
-    Mateus: "mateus.png",
-    Leandro: "leandro.png",
-    LeandroBoss: "leandro_boss.png",
+    Mateus: "Mateus.png",
+    Leandro: "Leandro.png",
+    LeandroBoss: "Leandro_boss.png",
     LeandroFuria: "leandro_furia.png",
     MarceloPizza: "Marcelopizza.png",
     Roleta: "roleta.png",
@@ -659,25 +659,38 @@ const TOTAL_STEPS = 5;
 const MAX_TEAM = 3;
 let _tw = null;
 let recruitResolve = null;
+let skipText = false; // <-- ADICIONE ESTA LINHA AQUI
 
 function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
-function setMsg(t) {
-    if (_tw) { clearInterval(_tw); _tw = null; }
-    const el = document.getElementById("msg");
-    let i = 0;
-    el.innerHTML = '<span class="cur">▼</span>';
-    _tw = setInterval(() => {
-        i++;
-        el.innerHTML = esc(t.slice(0, i)) + '<span class="cur">▼</span>';
-        if (i >= t.length) { clearInterval(_tw); _tw = null; }
-    }, 25);
-}
+function setMsg(t) {} // Mantemos vazia só por segurança, caso algo ainda a chame
 
 function say(txt) {
     return new Promise(res => {
-        setMsg(txt);
-        setTimeout(res, txt.length * 25 + 900);
+        if (_tw) { clearInterval(_tw); _tw = null; }
+        const el = document.getElementById("msg");
+        let i = 0;
+        skipText = false; // Reseta o pulo a cada nova mensagem
+        el.innerHTML = '<span class="cur">▼</span>';
+        
+        _tw = setInterval(() => {
+            if (skipText) {
+                // Se o jogador clicou, joga o texto inteiro de uma vez
+                el.innerHTML = esc(txt) + '<span class="cur">▼</span>';
+                clearInterval(_tw);
+                _tw = null;
+                setTimeout(res, 500); // Pausa curtinha para ele conseguir ler
+                return;
+            }
+            // Se não clicou, continua digitando letra por letra
+            i++;
+            el.innerHTML = esc(txt.slice(0, i)) + '<span class="cur">▼</span>';
+            if (i >= txt.length) { 
+                clearInterval(_tw); 
+                _tw = null; 
+                setTimeout(res, 900); 
+            }
+        }, 25);
     });
 }
 
@@ -1659,11 +1672,10 @@ async function performMove(atk, def, move, targetId) {
         document.getElementById('arena').style.background = "linear-gradient(#5a2a2a 0%, #3a1515 55%, #220b0b 55%, #110000 100%)";
         document.getElementById(targetId).classList.add('flash');
 
-        const heal = Math.round(def.maxhp * 0.15); 
+        const heal = Math.round(def.maxhp * 0.10); // Reduzido para 10%
         def.hp = Math.min(def.maxhp, def.hp + heal);
         def.stages["atk"] = Math.min(6, (def.stages["atk"] || 0) + 1);
-        def.stages["def"] = Math.min(6, (def.stages["def"] || 0) + 1);
-        def.stages["spd"] = Math.min(6, (def.stages["spd"] || 0) + 1);
+        // Buffs de DEF e SPD removidos para evitar o bloqueio total de dano e evasão
 
         renderBattle(); 
         
@@ -1671,7 +1683,7 @@ async function performMove(atk, def, move, targetId) {
         document.getElementById(targetId).classList.remove('flash');
 
         await say(`⚠️ A DIRETORIA NÃO GOSTOU DOS NÚMEROS!`);
-        await say(`📈 Leandro entrou em FÚRIA! Recuperou ${heal} HP e seus atributos dispararam!`);
+        await say(`📈 Leandro entrou em FÚRIA! Recuperou HP e seus atributos dispararam!`);
     }
 }
 
@@ -1707,13 +1719,20 @@ async function handleEnemyDefeat() {
     let leveledUp = false;
     run.team.forEach(m => {
         if(m.hp > 0) {
-            m.level += 1;
-            const hpGain = Math.round(m.maxhp * 0.15); 
-            m.maxhp += hpGain;
+           m.level += 1;
+            const data = ROSTER[m.key];
+            const boost = 1 + (m.level - 5) * 0.15;
+            
+            const novoMaxHp = Math.round((data.base.hp * 2.5 + 40) * boost);
+            const hpGain = novoMaxHp - m.maxhp;
+            
+            m.maxhp = novoMaxHp;
+            m.atk = Math.round(data.base.atk * boost);
+            m.def = Math.round(data.base.def * boost);
+            m.spd = Math.round(data.base.spd * boost);
+            
+            // Recupera o HP ganho pelo nível + 20% do HP máximo como bônus de cura
             m.hp = Math.min(m.maxhp, m.hp + hpGain + Math.round(m.maxhp * 0.20)); 
-            m.atk = Math.round(m.atk * 1.15);
-            m.def = Math.round(m.def * 1.15);
-            m.spd = Math.round(m.spd * 1.15);
             leveledUp = true;
         }
     });
@@ -1998,10 +2017,17 @@ function enviarPontuacao(nome, pontos) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
+    // Carrega o nome salvo
     const nomeSalvo = getLS('ppi_playerName', '');
     if (nomeSalvo !== '') {
         const inputEl = document.getElementById('inputNomeJogador');
         if (inputEl) inputEl.value = nomeSalvo;
+    }
+    
+    // Adiciona a função de pular texto ao clicar na caixa de mensagens
+    const msgBox = document.getElementById('msgbox');
+    if(msgBox) {
+        msgBox.addEventListener('click', () => { skipText = true; });
     }
 });
 </script>
