@@ -220,7 +220,7 @@
         .flash { animation: flash 0.3s 1; }
         
         .cur{display:inline-block; margin-left:5px; color:var(--accent); transform:translateY(1px); animation:blink .85s steps(1) infinite;}
-        @keyframes blink{50%{opacity:0;}}
+        @keyframes blink{50%{opacity:0;} 100%{opacity:1;}}
 
         .feitos-scroll::-webkit-scrollbar { width: 6px; }
         .feitos-scroll::-webkit-scrollbar-track { background: transparent; }
@@ -421,96 +421,21 @@ function setLS(key, val) {
 
 // --- CONFIGURAÇÃO DE SPRITES INDIVIDUAIS ---
 const SPRITE_CONFIG = {
-    Igor: {
-        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
-        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
-        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
-    },
-    Barbara: {
-        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
-        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
-        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
-    },
-    Gabriel: {
-        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
-        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
-        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
-    },
-    Guilherme: {
-        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
-        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
-        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
-    },
-    Daniel: {
-        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
-        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
-        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
-    },
-    Eric: {
-        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
-        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
-        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
-    },
-    Edinei: {
-        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
-        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
-        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
-    },
-    Isis: {
-        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
-        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
-        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
-    },
-    Marcelo: {
-        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
-        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
-        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
-    },
-    Leonardo: {
-        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
-        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
-        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
-    },
-    Paloma: {
-        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
-        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
-        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
-    },
-    Mateus: {
-        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
-        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
-        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
-    },
-    Leandro: {
-        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
-        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
-        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
-    },
-    LeandroBoss: {
-        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
-        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
-        batalhaRival: { zoom: 0.7, x: 0, y: -30.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
-    },
-    LeandroFuria: {
-        telaInicial:  { zoom: 1.0, x: 0, y: 0 },
-        batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 },
-        batalhaRival: { zoom: 0.8, x: 0, y: -40.0 },
-        miniaturas:   { zoom: 1.0, x: 0, y: 0 }
-    }
+    Igor: { telaInicial:  { zoom: 1.0, x: 0, y: 0 }, batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 }, batalhaRival: { zoom: 0.7, x: 0, y: -30.0 }, miniaturas:   { zoom: 1.0, x: 0, y: 0 } },
+    Barbara: { telaInicial:  { zoom: 1.0, x: 0, y: 0 }, batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 }, batalhaRival: { zoom: 0.7, x: 0, y: -30.0 }, miniaturas:   { zoom: 1.0, x: 0, y: 0 } },
+    Gabriel: { telaInicial:  { zoom: 1.0, x: 0, y: 0 }, batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 }, batalhaRival: { zoom: 0.7, x: 0, y: -30.0 }, miniaturas:   { zoom: 1.0, x: 0, y: 0 } },
+    Guilherme: { telaInicial:  { zoom: 1.0, x: 0, y: 0 }, batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 }, batalhaRival: { zoom: 0.7, x: 0, y: -30.0 }, miniaturas:   { zoom: 1.0, x: 0, y: 0 } },
+    Daniel: { telaInicial:  { zoom: 1.0, x: 0, y: 0 }, batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 }, batalhaRival: { zoom: 0.7, x: 0, y: -30.0 }, miniaturas:   { zoom: 1.0, x: 0, y: 0 } },
+    Eric: { telaInicial:  { zoom: 1.0, x: 0, y: 0 }, batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 }, batalhaRival: { zoom: 0.7, x: 0, y: -30.0 }, miniaturas:   { zoom: 1.0, x: 0, y: 0 } },
+    Edinei: { telaInicial:  { zoom: 1.0, x: 0, y: 0 }, batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 }, batalhaRival: { zoom: 0.7, x: 0, y: -30.0 }, miniaturas:   { zoom: 1.0, x: 0, y: 0 } },
+    Isis: { telaInicial:  { zoom: 1.0, x: 0, y: 0 }, batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 }, batalhaRival: { zoom: 0.7, x: 0, y: -30.0 }, miniaturas:   { zoom: 1.0, x: 0, y: 0 } },
+    Marcelo: { telaInicial:  { zoom: 1.0, x: 0, y: 0 }, batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 }, batalhaRival: { zoom: 0.7, x: 0, y: -30.0 }, miniaturas:   { zoom: 1.0, x: 0, y: 0 } },
+    Leonardo: { telaInicial:  { zoom: 1.0, x: 0, y: 0 }, batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 }, batalhaRival: { zoom: 0.7, x: 0, y: -30.0 }, miniaturas:   { zoom: 1.0, x: 0, y: 0 } },
+    Paloma: { telaInicial:  { zoom: 1.0, x: 0, y: 0 }, batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 }, batalhaRival: { zoom: 0.7, x: 0, y: -30.0 }, miniaturas:   { zoom: 1.0, x: 0, y: 0 } },
+    Mateus: { telaInicial:  { zoom: 1.0, x: 0, y: 0 }, batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 }, batalhaRival: { zoom: 0.7, x: 0, y: -30.0 }, miniaturas:   { zoom: 1.0, x: 0, y: 0 } },
+    Leandro: { telaInicial:  { zoom: 1.0, x: 0, y: 0 }, batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 }, batalhaRival: { zoom: 0.7, x: 0, y: -30.0 }, miniaturas:   { zoom: 1.0, x: 0, y: 0 } },
+    LeandroBoss: { telaInicial:  { zoom: 1.0, x: 0, y: 0 }, batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 }, batalhaRival: { zoom: 0.7, x: 0, y: -30.0 }, miniaturas:   { zoom: 1.0, x: 0, y: 0 } },
+    LeandroFuria: { telaInicial:  { zoom: 1.0, x: 0, y: 0 }, batalhaVoce:  { zoom: 0.7, x: -10.0, y: 0 }, batalhaRival: { zoom: 0.8, x: 0, y: -40.0 }, miniaturas:   { zoom: 1.0, x: 0, y: 0 } }
 };
 
 function getTransform(key, context, extraScale = 1.0) {
@@ -524,25 +449,11 @@ function getTransform(key, context, extraScale = 1.0) {
 
 // --- BANCO DE IMAGENS ---
 const IMG = {
-    Igor: "igor.png",
-    Barbara: "barbara.png",
-    Gabriel: "Gabriel.png",
-    Guilherme: "Guilherme.png",
-    Daniel: "Daniel.png",
-    Eric: "Eric.png",
-    Edinei: "Edinei.png",
-    Isis: "Isis.png",
-    Marcelo: "Marcelo.png",
-    Leonardo: "Leonardo.png",
-    Paloma: "paloma.png",
-    Mateus: "Mateus.png",
-    Leandro: "Leandro.png",
-    LeandroBoss: "Leandro_boss.png",
-    LeandroFuria: "leandro_furia.png",
-    MarceloPizza: "Marcelopizza.png",
-    Roleta: "roleta.png",
-    QuizWin: "quiz_win.png",
-    QuizLose: "quiz_lose.png"
+    Igor: "igor.png", Barbara: "barbara.png", Gabriel: "Gabriel.png", Guilherme: "Guilherme.png",
+    Daniel: "Daniel.png", Eric: "Eric.png", Edinei: "Edinei.png", Isis: "Isis.png", Marcelo: "Marcelo.png",
+    Leonardo: "Leonardo.png", Paloma: "paloma.png", Mateus: "Mateus.png", Leandro: "Leandro.png",
+    LeandroBoss: "Leandro_boss.png", LeandroFuria: "leandro_furia.png", MarceloPizza: "Marcelopizza.png",
+    Roleta: "roleta.png", QuizWin: "quiz_win.png", QuizLose: "quiz_lose.png"
 };
 
 // --- LISTA DE ITENS (ESPOLIOS) ---
@@ -551,19 +462,14 @@ const ITEMS = [
     { id: "ods", name: "ODS do Daniel", icon: "ods.png", desc: "+15 Ataque (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) m.atk += 15; }); } },
     { id: "festa_junina", name: "Festa Junina do Edinei", icon: "festa_junina.png", desc: "+15 Velocidade (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) m.spd += 15; }); } },
     { id: "dinheiro", name: "Dinheiro do Guilherme", icon: "dinheiro.png", desc: "+50 Max HP (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) { m.maxhp += 50; m.hp += 50; } }); } },
-    
-    // CORREÇÕES ABAIXO: Trocado act(P) por run.team[0] para funcionar no mapa
     { id: "coxilha", name: "Coxilha do Gabriel", icon: "coxilha.png", desc: "+30 Defesa (Apenas Líder)", effect: () => { run.team[0].def += 30; } },
     { id: "galinha", name: "Galinha Adestrada do Mateus", icon: "galinha.png", desc: "+30 Ataque (Apenas Líder)", effect: () => { run.team[0].atk += 30; } },
     { id: "cafe", name: "Café do Igor", icon: "cafe.png", desc: "+30 Velocidade (Apenas Líder)", effect: () => { run.team[0].spd += 30; } },
     { id: "mala", name: "Mala Presa da Isis", icon: "mala.png", desc: "+80 Max HP (Apenas Líder)", effect: () => { run.team[0].maxhp += 80; run.team[0].hp += 80; } },
     { id: "doce", name: "Doce de Leite da Barbara", icon: "doce_de_leite.png", desc: "+10 em Todos os Status (Apenas Líder)", effect: () => { let p = run.team[0]; p.atk += 10; p.def += 10; p.spd += 10; } },
-    
     { id: "boina", name: "Boina do Marcelo", icon: "boina.png", desc: "+5 em Todos os Status (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) { m.atk += 5; m.def += 5; m.spd += 5; } }); } },
     { id: "poi", name: "POI do Leonardo", icon: "poi.png", desc: "+1 Nível (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) { m.level++; m.maxhp += 15; m.hp += 15; m.atk += 5; m.def += 5; m.spd += 5; } }); } },
     { id: "bingo", name: "Bingo da Palominha", icon: "bingo.png", desc: "Recupera 100% HP (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp > 0) m.hp = m.maxhp; }); } },
-    
-    // CORREÇÃO: Pão de queijo ajustado para o Líder
     { id: "pao", name: "Pão de Queijo do Leandro", icon: "pao_de_queijo.png", desc: "Recupera 100% HP e +2 Níveis (Apenas Líder)", effect: () => { let p = run.team[0]; p.hp = p.maxhp; p.level += 2; p.maxhp += 30; p.hp += 30; p.atk += 10; p.def += 10; p.spd += 10; } }
 ];
 
@@ -596,7 +502,7 @@ function chooseItem(idx) {
     item.effect();
     alert(`Você pegou: ${item.name}!\nEfeito ativado: ${item.desc}`);
     
-    run.eventDone = true; // CORREÇÃO: Avisa o jogo que a rodada de evento acabou!
+    run.eventDone = true; 
     showChoices();
 }
 
@@ -635,7 +541,7 @@ const ROSTER = {
     Isis: { name: "Isis", types: ["Processo"], base: { hp: 60, atk: 50, def: 65, spd: 45 }, jeitao: { name: "Hora Extra", desc: "Sobrevive com 1 HP a golpe fatal." }, moves: [{ name: "Ajustar Receita DSS", type: "Processo", power: 55, acc: 0.95, kind: "dmg" }, { name: "Ajudar no SAP", type: "Tech", power: 40, acc: 1.0, kind: "dmg_debuff", stat: "def" }] },
     Igor: { name: "Igor", types: ["Processo"], base: { hp: 50, atk: 60, def: 40, spd: 65 }, jeitao: { name: "Cafeína", desc: "Sempre ataca primeiro." }, moves: [{ name: "Tomar um Cafezinho", type: "Social", power: 50, acc: 1.0, kind: "dmg_raise_spd" }, { name: "Criar uma ODS", type: "Tech", power: 60, acc: 0.90, kind: "dmg" }] },
     Paloma: { name: "Paloma", types: ["Social"], base: { hp: 60, atk: 45, def: 55, spd: 60 }, jeitao: { name: "Engagement", desc: "Reduz ataque do inimigo." }, moves: [{ name: "Dinâmica em grupo", type: "Social", power: 45, acc: 1.0, kind: "dmg" }, { name: "Mapa de Carreira", type: "Processo", power: 50, acc: 1.0, kind: "dmg_debuff", stat: "def" }] },
-  Leandro: { name: "Leandro", types: ["Gestão"], base: { hp: 125, atk: 75, def: 75, spd: 60 }, jeitao: { name: "O Chefe", desc: "Resiste a ataques Sociais (Não aprova ESign)." }, moves: [{ name: "Cobrar Indicador", type: "Gestão", power: 90, acc: 0.75, kind: "dmg_debuff", stat: "atk" }, { name: "Apresentação Surpresa", type: "Processo", power: 80, acc: 0.85, kind: "dmg" }] }
+    Leandro: { name: "Leandro", types: ["Gestão"], base: { hp: 125, atk: 75, def: 75, spd: 60 }, jeitao: { name: "O Chefe", desc: "Resiste a ataques Sociais (Não aprova ESign)." }, moves: [{ name: "Cobrar Indicador", type: "Gestão", power: 65, acc: 0.75, kind: "dmg_debuff", stat: "atk" }, { name: "Apresentação Surpresa", type: "Processo", power: 65, acc: 0.85, kind: "dmg" }] }
 };
 
 const FEITOS_LIST = [
@@ -659,30 +565,28 @@ const TOTAL_STEPS = 5;
 const MAX_TEAM = 3;
 let _tw = null;
 let recruitResolve = null;
-let skipText = false; // <-- ADICIONE ESTA LINHA AQUI
+let skipText = false; 
 
 function esc(s) { return String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
 
-function setMsg(t) {} // Mantemos vazia só por segurança, caso algo ainda a chame
+function setMsg(t) {} 
 
 function say(txt) {
     return new Promise(res => {
         if (_tw) { clearInterval(_tw); _tw = null; }
         const el = document.getElementById("msg");
         let i = 0;
-        skipText = false; // Reseta o pulo a cada nova mensagem
+        skipText = false; 
         el.innerHTML = '<span class="cur">▼</span>';
         
         _tw = setInterval(() => {
             if (skipText) {
-                // Se o jogador clicou, joga o texto inteiro de uma vez
                 el.innerHTML = esc(txt) + '<span class="cur">▼</span>';
                 clearInterval(_tw);
                 _tw = null;
-                setTimeout(res, 500); // Pausa curtinha para ele conseguir ler
+                setTimeout(res, 500); 
                 return;
             }
-            // Se não clicou, continua digitando letra por letra
             i++;
             el.innerHTML = esc(txt.slice(0, i)) + '<span class="cur">▼</span>';
             if (i >= txt.length) { 
@@ -784,7 +688,7 @@ function makeMon(key, lvl = 5) {
         key, name: data.name, hp: maxhp, maxhp, 
         atk, def, spd, 
         level: lvl, types: data.types, moves: data.moves, jeitao: data.jeitao,
-        stages: {atk: 0, def: 0, spd: 0}, status: null, statusTurns: 0, skip: false, sturdyUsed: false
+        stages: {atk: 0, def: 0, spd: 0}, status: null, statusTurns: 0, skip: false, sturdyUsed: false, nextMove: null
     };
 }
 
@@ -1353,6 +1257,12 @@ function renderBattle(forceEnemyImg = null, forceEnemyKey = null) {
 function showMenu() {
     const p = act(P);
     const e = act(E);
+    
+    // Gera a intenção do inimigo antecipadamente para o sistema de Telegraph
+    if (!e.nextMove && e.hp > 0) {
+        e.nextMove = e.moves[Math.floor(Math.random() * e.moves.length)];
+    }
+
     let html = "";
     
     p.moves.forEach((m, idx) => {
@@ -1393,6 +1303,13 @@ function showMenu() {
     }
     
     document.getElementById('menu').innerHTML = html;
+
+    // Atualiza a caixa de mensagem com o aviso tático (Telegraph System)
+    if (e.key === "Leandro" && e.nextMove && e.nextMove.name === "Cobrar Indicador") {
+        document.getElementById('msg').innerHTML = `<span style="color:var(--hp-red); font-weight:800; font-size:13px; text-shadow: 1px 1px 0 #000; animation: blink 1s infinite;">⚠️ ALERTA: Leandro vai Cobrar os Indicadores! ⚠️</span>`;
+    } else {
+        document.getElementById('msg').innerHTML = `O que ${p.name.split(" ")[0]} vai fazer?`;
+    }
 }
 
 async function openSwitch(forced = false) {
@@ -1445,7 +1362,10 @@ async function doSwitch(idx, forced = false) {
     
     if (!forced) {
         const e = act(E);
-        const eMove = e.moves[Math.floor(Math.random()*e.moves.length)];
+        // Consome a intenção telegrafada
+        const eMove = e.nextMove || e.moves[Math.floor(Math.random()*e.moves.length)];
+        e.nextMove = null; 
+        
         await performMove(e, act(P), eMove, 'monP');
         await endOfTurn();
         
@@ -1481,15 +1401,14 @@ function calcDamage(a, d, move) {
 
     // 3. Fator de Nível
     const levelFactor = (2 * a.level / 5) + 2;
-    // ... RESTO DA FUNÇÃO CONTINUA IGUAL ...
     const atkStat = eff(a, "atk");
     const defStat = eff(d, "def");
 
     const stab = a.types.includes(move.type) ? 1.5 : 1;
     let mult = CHART[move.type]?.[d.types[0]] ?? 1;
     
-   if(d.jeitao.name === "Visão Analítica" && move.type === "Processo") mult *= 0.5;
-    if(d.jeitao.name === "O Chefe" && move.type === "Social") mult *= 0.5; // <-- COLOQUE ESTA LINHA DE VOLTA
+    if(d.jeitao.name === "Visão Analítica" && move.type === "Processo") mult *= 0.5;
+    if(d.jeitao.name === "O Chefe" && move.type === "Social") mult *= 0.5; 
 
     let baseDmg = ((levelFactor * move.power * (atkStat / defStat)) / 5) + 5;
 
@@ -1514,6 +1433,13 @@ function calcDamage(a, d, move) {
     }
 
     let dmg = Math.round(baseDmg * stab * mult * critMult * passiveMult * rng);
+    
+    // TETO DE DANO ESTRUTURAL (Camada 2 - Garante que ninguém morre de OHKO)
+    const tetoDeDano = Math.round(d.maxhp * 0.45);
+    if (dmg > tetoDeDano) {
+        dmg = tetoDeDano;
+    }
+
     dmg = Math.max(1, dmg);
 
     return {dmg, mult, crit, missed:false, clarinha};
@@ -1709,7 +1635,7 @@ async function endOfTurn() {
 
 async function handleEnemyDefeat() {
    const e = act(E);
-    
+   
     if (e.key !== "Leandro") {
         run.battlesWon++; 
     }
@@ -1767,14 +1693,16 @@ async function useMove(idx) {
     else if (e.jeitao.name === "Cafeína" && p.jeitao.name !== "Cafeína") pFirst = false;
     else pFirst = eff(p,"spd") >= eff(e,"spd");
     
+    // Consome a intenção telegrafada
+    const eMove = e.nextMove || e.moves[Math.floor(Math.random()*e.moves.length)];
+    e.nextMove = null; 
+
     if (pFirst) {
         await performMove(p, e, move, 'monE');
         if (e.hp > 0) {
-            const eMove = e.moves[Math.floor(Math.random()*e.moves.length)];
             await performMove(e, p, eMove, 'monP');
         }
     } else {
-        const eMove = e.moves[Math.floor(Math.random()*e.moves.length)];
         await performMove(e, p, eMove, 'monP');
         if (p.hp > 0) {
             await performMove(p, e, move, 'monE');
@@ -1801,7 +1729,7 @@ async function useMove(idx) {
     }
 }
 
-async function showEndScreen(win) { // <-- Adicionado 'async' aqui
+async function showEndScreen(win) { 
     if (win) {
         unlockFeito("tomas");
         if (run.deaths === 0) unlockFeito("perfect");
@@ -1813,6 +1741,12 @@ async function showEndScreen(win) { // <-- Adicionado 'async' aqui
         if (run.pizzasEaten === 0) unlockFeito("no_pizza");
     }
 
+    // TELA DE CARREGAMENTO PARA EVITAR TELA PRETA VAZIA ENQUANTO BUSCA OS DADOS
+    document.getElementById('endScreen').innerHTML = `
+        <div style="display:flex; height:100%; width:100%; align-items:center; justify-content:center; flex-direction:column;">
+            <h2 class="pixel" style="color:var(--hp-amber); font-size:16px; margin-bottom: 20px; text-align:center; line-height:1.5;">Calculando<br>Resultado...</h2>
+            <div class="cur" style="font-size:30px;">⌛</div>
+        </div>`;
     showScreen('endScreen');
 
     let score = 0;
@@ -1842,33 +1776,37 @@ async function showEndScreen(win) { // <-- Adicionado 'async' aqui
     score += (run.feitosNovos || 0) * 500;
     score = Math.max(0, score); 
 
-    // === NOVA LÓGICA DE RECORDE GLOBAL ===
+    let rank = "D";
+    let rankName = "Estagiário";
+    let rankColor = "#aaa";
+
+    if (win && aliveCount === MAX_TEAM) { rank = "S+"; rankName = "CEO do PPI"; rankColor = "#FFD700"; }
+    else if (win && aliveCount >= 2) { rank = "S"; rankName = "Diretor Global"; rankColor = "#FFD700"; }
+    else if (win) { rank = "A"; rankName = "Gerente de Planta"; rankColor = "#4cae6a"; }
+    else if (run.step === 5) { rank = "B"; rankName = "Eng. Sênior"; rankColor = "#4cae6a"; }
+    else if (run.step >= 3) { rank = "C"; rankName = "Analista Pleno"; rankColor = "#e0a828"; }
+    else { rank = "D"; rankName = "Estagiário"; rankColor = "#d8442f"; }
+
     let highScore = 0;
     let isNewRecord = false;
 
     try {
-        // Busca a lista atualizada do servidor do Google Sheets
         const res = await fetch(API_URL_RANKING);
         const dados = await res.json();
         
         if (dados && dados.length > 0) {
-            // Encontra a maior pontuação gravada na planilha
             highScore = Math.max(...dados.map(j => j.pontuacao));
         }
     } catch (e) {
         console.error("Erro ao buscar ranking global, usando local:", e);
-        // Fallback: se a internet falhar, usa o recorde do navegador
         highScore = parseInt(getLS('ppi_highscore', '0'));
     }
 
-    // Se a pontuação atual for maior que o recorde do servidor
     if (score > highScore) {
         highScore = score;
         isNewRecord = true;
-        // Salva localmente também por segurança
         setLS('ppi_highscore', score.toString());
     }
-    // =====================================
 
     const title = win ? "VOCÊ VENCEU!" : "PROJETO REPROVADO!";
     const sub = win ? "Apresentou os projetos e subiu no sprint! Parabéns" : "Ligue pra controladoria e tente novamente.";
@@ -1937,7 +1875,6 @@ async function showEndScreen(win) { // <-- Adicionado 'async' aqui
     `;
     
     document.getElementById('endScreen').innerHTML = html;
-    showScreen('endScreen');
 
     if (score > 0) {
         const nomeJogador = getLS('ppi_playerName', 'ANÔNIMO');
@@ -1972,7 +1909,7 @@ function showFeitos(fromStart = false) {
 function startFinalBoss() {
     unlockFeito("fds");
     run.team.forEach(m => { m.status = null; });
-    startBattle('Leandro', 12);
+    startBattle('Leandro', 10);
 }
 
 // --- FUNÇÕES DO PLACAR GLOBAL ---
