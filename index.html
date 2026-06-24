@@ -1459,7 +1459,7 @@ async function performMove(atk, def, move, targetId) {
             }
             if(r.visaoTrig) {
                 spawnFloatingText("DEFENDEU!", "#4ea37d", targetId, 0);
-                await say(`🛡️ A Visão Analítica de ${def.name.split(" ")[0]} anulou metade do dano do processo!`);
+                await say(`🛡️ Um roteiro da Linha V do ${def.name.split(" ")[0]} anulou metade do dano do processo!`);
             }
 
             def.hp = Math.max(0, def.hp - r.dmg);
