@@ -1670,37 +1670,45 @@ async function showEndScreen(win) {
         </div>`;
     showScreen('endScreen');
 
-    let score = 0; let aliveCount = 0; let extraLevels = 0;
+    // --- CÁLCULO DE PONTOS COM DETALHAMENTO ---
+    let aliveCount = 0; let extraLevels = 0;
 
     run.team.forEach(m => {
         if (m.hp > 0) { aliveCount++; extraLevels += Math.max(0, m.level - 5); }
     });
 
-    score += run.battlesWon * 600;
-    score += run.quizPoints; 
-    score += extraLevels * 200;
+    let ptsBattles = run.battlesWon * 600;
+    let ptsQuiz = run.quizPoints; 
+    let ptsLevels = extraLevels * 200;
     
+    let ptsWin = 0;
+    let ptsSurvivors = 0;
+    let ptsProtagonista = 0;
     let bonusProtagonista = false;
 
     if (win) {
-        score += 5000;
-        score += aliveCount * 1000;
+        ptsWin = 5000;
+        ptsSurvivors = aliveCount * 1000;
         SFX.win();
 
         const nomeJogador = getLS('ppi_playerName', '').trim().toUpperCase();
         const temXara = run.team.some(m => m.hp > 0 && m.key.toUpperCase() === nomeJogador);
 
         if (temXara) {
-            score += 2500; 
+            ptsProtagonista = 2500; 
             bonusProtagonista = true;
             unlockFeito("protagonista"); 
         }
     } else { SFX.lose(); }
     
-    score -= run.deaths * 300; 
-    score += (run.pontosFeitosNovos || 0);
+    let ptsDeaths = run.deaths * 300; 
+    let ptsFeitos = (run.pontosFeitosNovos || 0);
+
+    // Soma Total
+    let score = ptsBattles + ptsQuiz + ptsLevels + ptsWin + ptsSurvivors + ptsProtagonista + ptsFeitos - ptsDeaths;
     score = Math.max(0, score);
 
+    // --- DEFINIÇÃO DO RANK ---
     let rank = "D"; let rankName = "Estagiário"; let rankColor = "#aaa";
 
     if (win && aliveCount === MAX_TEAM) { rank = "S+"; rankName = "CEO do PPI"; rankColor = "#FFD700"; }
@@ -1710,6 +1718,7 @@ async function showEndScreen(win) {
     else if (run.step >= 3) { rank = "C"; rankName = "Analista Pleno"; rankColor = "#e0a828"; }
     else { rank = "D"; rankName = "Estagiário"; rankColor = "#d8442f"; }
 
+    // --- RECORDE GLOBAL ---
     let highScore = parseInt(getLS('ppi_highscore', '0'));
     let isNewRecord = false;
 
@@ -1728,6 +1737,33 @@ async function showEndScreen(win) {
     const sub = win ? "Apresentou os projetos e subiu no sprint! Parabéns" : "Ligue pra controladoria e tente novamente.";
     const color = win ? "var(--hp-green)" : "var(--hp-red)";
     
+    // --- MONTANDO A CAIXA DE DETALHAMENTO DE PONTOS ---
+    let detalheHtml = `<div style="background: rgba(0,0,0,0.25); border-radius: 8px; padding: 12px; margin-bottom: 25px; font-size: 12px; text-align: left;">`;
+    detalheHtml += `<div style="color:#aaa; font-size:9px; margin-bottom:8px; text-align:center; font-weight:800; text-transform:uppercase;">Detalhamento de Pontos</div>`;
+    
+    // Função auxiliar para criar as linhas só se o valor for maior que 0
+    const addRow = (label, val, isNeg = false) => {
+        if(val === 0) return '';
+        const c = isNeg ? 'var(--hp-red)' : 'var(--hp-green)';
+        const sign = isNeg ? '-' : '+';
+        return `<div style="display:flex; justify-content:space-between; margin-bottom:6px; border-bottom: 1px dotted #444; padding-bottom: 3px;">
+            <span style="color:#ddd; font-weight:700;">${label}</span>
+            <strong style="color:${c}; font-family:'Press Start 2P', monospace; font-size:9px; margin-top:2px;">${sign}${Math.abs(val)}</strong>
+        </div>`;
+    };
+
+    detalheHtml += addRow("Batalhas Vencidas", ptsBattles);
+    detalheHtml += addRow("Níveis da Equipe", ptsLevels);
+    detalheHtml += addRow("Show do Milhão", ptsQuiz);
+    detalheHtml += addRow("Feitos Atingidos", ptsFeitos);
+    if(win) detalheHtml += addRow("Derrotar o Chefão", ptsWin);
+    if(win) detalheHtml += addRow("Bônus Sobrevivência", ptsSurvivors);
+    if(bonusProtagonista) detalheHtml += addRow("Bônus de Protagonista", ptsProtagonista);
+    detalheHtml += addRow("Membros Caídos", ptsDeaths, true);
+    
+    detalheHtml += `</div>`;
+
+    // --- HTML FINAL DA TELA ---
     let html = `
         <h1 class="pixel" style="color:${color}; font-size: 20px; line-height: 1.4;">${title}</h1>
         <p style="margin-top:15px; font-size:14px; font-weight:700;">${sub}</p>
@@ -1745,6 +1781,9 @@ async function showEndScreen(win) {
                 ${isNewRecord ? `<div style="font-size:10px; color:var(--hp-green); font-weight:800; margin-top:10px;">🌟 NOVO RECORDE! 🌟</div>` : ''}
                 ${bonusProtagonista ? `<div style="font-size:10px; color:var(--hp-amber); font-weight:800; margin-top:10px; padding: 5px; border: 2px dashed var(--hp-amber); border-radius: 6px; animation: optBlink 0.5s infinite alternate;">👑 BÔNUS DE PROTAGONISTA (+2500 PTS) 👑</div>` : ''}
             </div>
+            
+            ${detalheHtml}
+
             <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-bottom: 20px;">
     `;
     
