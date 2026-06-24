@@ -202,6 +202,27 @@
 <div id="toast" class="pixel"></div>
 
 <div id="game">
+
+    <div id="qte-overlay" style="display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 9999; background: rgba(0,0,0,0.65); flex-direction: column; justify-content: center; align-items: center; user-select: none; touch-action: manipulation; backdrop-filter: blur(2px);">
+        <div id="qte-attack" style="display: none; width: 85%; flex-direction: column; align-items: center; gap: 15px;">
+            <div id="qte-atk-feedback" class="pixel" style="color: white; font-size: 18px; text-shadow: 2px 2px 0 #000; height: 24px;">ATAQUE!</div>
+            <div style="width: 100%; height: 28px; background: #111; border: 3px solid #fff; border-radius: 8px; position: relative; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.5);">
+                <div id="qte-target-zone" style="height: 100%; background: var(--hp-green, #4cae6a); position: absolute; top: 0;"></div>
+                <div id="qte-cursor" style="width: 6px; height: 100%; background: #fff; position: absolute; top: 0; box-shadow: 0 0 8px #fff; z-index: 5;"></div>
+            </div>
+            <div style="font-size: 11px; color: #fff; margin-top: 10px; font-weight: 800; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 6px;">TOQUE NA TELA PARA ACERTAR</div>
+        </div>
+
+        <div id="qte-defense" style="display: none; flex-direction: column; align-items: center; gap: 20px;">
+            <div id="qte-def-feedback" class="pixel" style="color: white; font-size: 18px; text-shadow: 2px 2px 0 #000; height: 24px;">DEFENDA!</div>
+            <div style="position: relative; width: 120px; height: 120px;">
+                <div style="position: absolute; width: 100%; height: 100%; border: 4px solid #fff; border-radius: 50%; box-shadow: inset 0 0 10px rgba(255,255,255,0.3); z-index: 2; box-sizing: border-box;"></div>
+                <div id="qte-circle-inner" style="position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; background: var(--hp-amber, #FFD700); border-radius: 50%; transform: translate(-50%, -50%) scale(0); opacity: 0.8; z-index: 1;"></div>
+            </div>
+            <div style="font-size: 11px; color: #fff; margin-top: 10px; font-weight: 800; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 6px;">TOQUE QUANDO PREENCHER</div>
+        </div>
+    </div>
+
     <div id="customModal" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:10000; align-items:center; justify-content:center; padding: 20px; backdrop-filter: blur(2px);">
         <div style="background:var(--panel); border:5px solid var(--panel-line); border-radius:12px; padding:25px 20px; text-align:center; max-width:90%; width: 320px; box-shadow: 0 10px 0 rgba(0,0,0,0.4); animation: popIn 0.2s ease-out;">
             <div id="modalText" style="font-size:14px; font-weight:800; line-height:1.5; color:var(--ink); margin-bottom:25px;"></div>
@@ -625,6 +646,136 @@ function showModal(text, callback) {
     };
 }
 
+// --- SISTEMA DE HABILIDADE (QTE) ---
+function playAttackMinigame(attackPower) {
+    return new Promise((resolve) => {
+        const overlay = document.getElementById('qte-overlay');
+        const atkUI = document.getElementById('qte-attack');
+        const targetZone = document.getElementById('qte-target-zone');
+        const cursor = document.getElementById('qte-cursor');
+        const feedback = document.getElementById('qte-atk-feedback');
+
+        overlay.style.display = 'flex';
+        atkUI.style.display = 'flex';
+        document.getElementById('qte-defense').style.display = 'none';
+        feedback.innerText = "ATAQUE!";
+        feedback.style.color = "white";
+
+        let zoneWidth = Math.max(15, 60 - (attackPower * 0.4)); 
+        targetZone.style.width = zoneWidth + '%';
+        
+        let zoneLeft = Math.random() * (100 - zoneWidth);
+        targetZone.style.left = zoneLeft + '%';
+
+        let cursorPos = 0;
+        let speed = 2.5; 
+        let direction = 1;
+        let animationId;
+        let active = true;
+
+        function animate() {
+            if (!active) return;
+            cursorPos += speed * direction;
+            if (cursorPos >= 100 || cursorPos <= 0) direction *= -1; 
+            
+            cursor.style.left = cursorPos + '%';
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function finishAction(mult, text, color) {
+            active = false;
+            cancelAnimationFrame(animationId);
+            feedback.innerText = text;
+            feedback.style.color = color;
+            overlay.onpointerdown = null; 
+            
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                atkUI.style.display = 'none';
+                resolve(mult);
+            }, 700); 
+        }
+
+        overlay.onpointerdown = () => {
+            if (!active) return;
+            const cursorCenter = cursorPos;
+            const zoneStart = zoneLeft;
+            const zoneEnd = zoneLeft + zoneWidth;
+            
+            if (cursorCenter >= zoneStart && cursorCenter <= zoneEnd) {
+                finishAction(1.0, "PERFEITO!", "var(--hp-green)");
+            } else if (cursorCenter >= zoneStart - 10 && cursorCenter <= zoneEnd + 10) {
+                finishAction(0.7, "BOM!", "var(--hp-amber)");
+            } else {
+                finishAction(0.4, "FRACO!", "var(--hp-red)");
+            }
+        };
+
+        animationId = requestAnimationFrame(animate);
+    });
+}
+
+function playDefenseMinigame() {
+    return new Promise((resolve) => {
+        const overlay = document.getElementById('qte-overlay');
+        const defUI = document.getElementById('qte-defense');
+        const innerCircle = document.getElementById('qte-circle-inner');
+        const feedback = document.getElementById('qte-def-feedback');
+
+        overlay.style.display = 'flex';
+        defUI.style.display = 'flex';
+        document.getElementById('qte-attack').style.display = 'none';
+        feedback.innerText = "PREPARE-SE!";
+        feedback.style.color = "white";
+
+        let scale = 0;
+        let animationId;
+        let active = true;
+
+        function animate() {
+            if (!active) return;
+            scale += 0.020; 
+            innerCircle.style.transform = `translate(-50%, -50%) scale(${scale})`;
+
+            if (scale > 1.2) {
+                finishAction(1.0, "TARDE DEMAIS!", "var(--hp-red)");
+            } else {
+                animationId = requestAnimationFrame(animate);
+            }
+        }
+
+        function finishAction(mult, text, color) {
+            active = false;
+            cancelAnimationFrame(animationId);
+            feedback.innerText = text;
+            feedback.style.color = color;
+            overlay.onpointerdown = null;
+            
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                defUI.style.display = 'none';
+                innerCircle.style.transform = `translate(-50%, -50%) scale(0)`;
+                resolve(mult);
+            }, 700);
+        }
+
+        overlay.onpointerdown = () => {
+            if (!active) return;
+            if (scale >= 0.85 && scale <= 1.05) {
+                finishAction(0.5, "DEFESA PERFEITA!", "var(--hp-green)"); 
+            } else {
+                finishAction(1.0, "MUITO CEDO!", "var(--hp-red)"); 
+            }
+        };
+
+        setTimeout(() => {
+            if(!active) return; 
+            feedback.innerText = "DEFENDA!";
+            animationId = requestAnimationFrame(animate);
+        }, 300);
+    });
+}
+
 function makeMon(key, lvl = 5) {
     const data = ROSTER[key];
     const boost = 1 + (lvl - 5) * 0.15;
@@ -1041,62 +1192,6 @@ function offerRecruit(defeatedKey) {
             </div>
         `;
         
-        let html = ``;
-        if (run.team.length < MAX_TEAM) {
-            html += `<button class="btn" style="text-align:center; background:#4cae6a; color:white; padding: 18px; font-size: 15px;" onclick="catchDo('${wild}')">Aprovar no Processo Seletivo</button>`;
-            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:10px; padding: 15px;" onclick="resolveRecruit()">Rejeitar Candidato</button>`;
-        } else {
-            html += `<p style="color:var(--hp-red); font-size:12px; margin-bottom:15px;">equipe cheia (${MAX_TEAM} Máx). Substituir quem?</p>`;
-            run.team.forEach((m, idx) => {
-                html += `
-                <button class="btn" style="margin-bottom:8px; display:flex; align-items:center; gap:10px; overflow:hidden;" onclick="catchReplace(${idx}, '${wild}')">
-                    <div class="team-mini" style="border:none; border-radius:0;">
-                        <div class="team-mini-img" style="background-image: url('${IMG[m.key]}'); transform: ${getTransform(m.key, 'miniaturas')};"></div>
-                    </div>
-                    <div style="z-index:2;">Demitir ${m.name.split(" ")[0]} e recrutar ${candMon.name.toUpperCase()}</div>
-                </button>`;
-            });
-            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:15px; padding: 15px;" onclick="resolveRecruit()">Rejeitar Candidato</button>`;
-        }
-        document.getElementById('recruitOptions').innerHTML = html;
-        showScreen('recruitScreen');
-    });
-}
-
-function offerRecruit(defeatedKey) {
-    return new Promise(res => {
-        recruitResolve = res;
-        let wild = defeatedKey; 
-        if(run.team.some(m => m.key === wild)) {
-            const available = Object.keys(ROSTER).filter(k => k !== "Leandro" && !run.team.some(m => m.key === k));
-            if(available.length === 0) return resolveRecruit(); 
-            wild = available[Math.floor(Math.random() * available.length)];
-        }
-
-        const cand = ROSTER[wild];
-        const candLvl = 5 + run.step;
-        const candMon = makeMon(wild, candLvl); 
-        
-        document.getElementById('recruitPhoto').innerHTML = `<div style="width: 100%; height: 100%; background-image:url('${IMG[wild]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter:drop-shadow(0 6px 0 rgba(0,0,0,.25)); transform: ${getTransform(wild, 'telaInicial')};"></div>`;
-        
-        document.getElementById('recruitText').innerHTML = `
-            <div style="background:var(--panel-line); border:3px solid #5a6b5f; border-radius:12px; padding:15px; text-align:left;">
-                <div style="color:var(--hp-amber); font-weight:800; font-size:12px; margin-bottom:5px; text-align:center; font-family:'Press Start 2P', monospace;">ATENÇÃO:</div>
-                <div style="font-weight:900; font-size:16px; color:#fff; text-align:center; margin-bottom:15px;">${candMon.name.toUpperCase()} QUER SE JUNTAR AO TIME DE PPI!</div>
-                <div style="display:flex; justify-content:space-around; margin-bottom:15px; font-size:12px; font-family:'Press Start 2P', monospace;">
-                    <div style="text-align:center;"><div style="color:var(--hp-green); font-size:8px; margin-bottom:4px;">HP</div>${candMon.maxhp}</div>
-                    <div style="text-align:center;"><div style="color:var(--hp-red); font-size:8px; margin-bottom:4px;">ATK</div>${candMon.atk}</div>
-                    <div style="text-align:center;"><div style="color:var(--hp-amber); font-size:8px; margin-bottom:4px;">DEF</div>${candMon.def}</div>
-                    <div style="text-align:center;"><div style="color:#7ec8c2; font-size:8px; margin-bottom:4px;">SPD</div>${candMon.spd}</div>
-                </div>
-                <div style="border-top:1px dashed #555; padding-top:12px;">
-                    <span style="font-size:10px; color:#aaa; font-weight:800;">Passiva:</span><br>
-                    <strong style="color:white; font-size:14px; display:inline-block; margin:4px 0;">${cand.jeitao.name}</strong><br>
-                    <span style="font-size:11px; color:#ccc; line-height:1.4;">${cand.jeitao.desc}</span>
-                </div>
-            </div>
-        `;
-        
         let html = '';
         if (run.team.length < MAX_TEAM) {
             html += `<button class="btn" style="text-align:center; background:#4cae6a; color:white; padding: 18px; font-size: 15px;" onclick="catchDo('${wild}')">Aprovar no Processo Seletivo</button>`;
@@ -1118,7 +1213,7 @@ function offerRecruit(defeatedKey) {
         showScreen('recruitScreen');
     });
 }
-    
+
 function catchDo(wild) {
     SFX.click();
     run.recruitsAccepted++;
@@ -1329,6 +1424,7 @@ async function doSwitch(idx, forced = false) {
     P.i = idx; renderBattle();
     await say(`Vai, ${act(P).name.split(" ")[0]}!`);
     await triggerOnEnter(act(P), act(E), 'monE');
+    
     if (!forced) {
         const e = act(E);
         const eMove = e.nextMove || e.moves[Math.floor(Math.random()*e.moves.length)];
@@ -1443,7 +1539,8 @@ async function performMove(atk, def, move, targetId) {
     let missMsg = `❌ O ataque falhou!`;
 
     if(def.hp > 0 && move.power > 0) {
-        const r = calcDamage(atk, def, move);
+        let r = calcDamage(atk, def, move);
+        
         if(r.missed) { 
             anyMiss = true; if(r.missText) missMsg = r.missText; 
             if(r.esquivaPassiva) {
@@ -1451,6 +1548,16 @@ async function performMove(atk, def, move, targetId) {
                 spawnFloatingText("ESQUIVOU!", "#7ec8c2", defId, 0);
             }
         } else {
+            // === INTEGRAÇÃO DO QTE AQUI ===
+            let qteMultiplier = 1.0;
+            if (targetId === 'monE') {
+                qteMultiplier = await playAttackMinigame(move.power);
+            } else if (targetId === 'monP') {
+                qteMultiplier = await playDefenseMinigame();
+            }
+            r.dmg = Math.max(1, Math.round(r.dmg * qteMultiplier));
+            // ===============================
+
             lastMult = r.mult; if(r.crit) anyCrit = true; if(r.clarinha) clarinhaTrig = true;
             if(def.jeitao.name === "Hora Extra" && r.dmg >= def.hp && def.hp > 1 && !def.sturdyUsed) {
                 r.dmg = def.hp - 1; def.sturdyUsed = true;
@@ -1670,7 +1777,6 @@ async function showEndScreen(win) {
         </div>`;
     showScreen('endScreen');
 
-    // --- CÁLCULO DE PONTOS COM DETALHAMENTO ---
     let aliveCount = 0; let extraLevels = 0;
 
     run.team.forEach(m => {
@@ -1681,22 +1787,18 @@ async function showEndScreen(win) {
     let ptsQuiz = run.quizPoints; 
     let ptsLevels = extraLevels * 200;
     
-    let ptsWin = 0;
-    let ptsSurvivors = 0;
-    let ptsProtagonista = 0;
+    let ptsWin = 0; let ptsSurvivors = 0; let ptsProtagonista = 0;
     let bonusProtagonista = false;
 
     if (win) {
-        ptsWin = 5000;
-        ptsSurvivors = aliveCount * 1000;
+        ptsWin = 5000; ptsSurvivors = aliveCount * 1000;
         SFX.win();
 
         const nomeJogador = getLS('ppi_playerName', '').trim().toUpperCase();
         const temXara = run.team.some(m => m.hp > 0 && m.key.toUpperCase() === nomeJogador);
 
         if (temXara) {
-            ptsProtagonista = 2500; 
-            bonusProtagonista = true;
+            ptsProtagonista = 2500; bonusProtagonista = true;
             unlockFeito("protagonista"); 
         }
     } else { SFX.lose(); }
@@ -1704,11 +1806,9 @@ async function showEndScreen(win) {
     let ptsDeaths = run.deaths * 300; 
     let ptsFeitos = (run.pontosFeitosNovos || 0);
 
-    // Soma Total
     let score = ptsBattles + ptsQuiz + ptsLevels + ptsWin + ptsSurvivors + ptsProtagonista + ptsFeitos - ptsDeaths;
     score = Math.max(0, score);
 
-    // --- DEFINIÇÃO DO RANK ---
     let rank = "D"; let rankName = "Estagiário"; let rankColor = "#aaa";
 
     if (win && aliveCount === MAX_TEAM) { rank = "S+"; rankName = "CEO do PPI"; rankColor = "#FFD700"; }
@@ -1718,7 +1818,6 @@ async function showEndScreen(win) {
     else if (run.step >= 3) { rank = "C"; rankName = "Analista Pleno"; rankColor = "#e0a828"; }
     else { rank = "D"; rankName = "Estagiário"; rankColor = "#d8442f"; }
 
-    // --- RECORDE GLOBAL ---
     let highScore = parseInt(getLS('ppi_highscore', '0'));
     let isNewRecord = false;
 
@@ -1737,7 +1836,6 @@ async function showEndScreen(win) {
     const sub = win ? "Apresentou os projetos e subiu no sprint! Parabéns" : "Ligue pra controladoria e tente novamente.";
     const color = win ? "var(--hp-green)" : "var(--hp-red)";
     
-    // --- MONTANDO A CAIXA DE DETALHAMENTO DE PONTOS ---
     let detalheHtml = `<div style="background: rgba(0,0,0,0.3); border: 2px solid #3a4a3f; border-radius: 8px; padding: 15px; margin-bottom: 25px; font-size: 12px; text-align: left;">`;
     detalheHtml += `<div style="color:#aaa; font-size:10px; margin-bottom:12px; text-align:center; font-weight:900; text-transform:uppercase; letter-spacing: 1px;">Detalhamento de Pontos</div>`;
     
@@ -1767,7 +1865,6 @@ async function showEndScreen(win) {
 
     detalheHtml += linhasHtml + `</div>`;
 
-    // --- HTML FINAL DA TELA ---
     let html = `
         <h1 class="pixel" style="color:${color}; font-size: 20px; line-height: 1.4;">${title}</h1>
         <p style="margin-top:15px; font-size:14px; font-weight:700;">${sub}</p>
