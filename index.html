@@ -1738,30 +1738,34 @@ async function showEndScreen(win) {
     const color = win ? "var(--hp-green)" : "var(--hp-red)";
     
     // --- MONTANDO A CAIXA DE DETALHAMENTO DE PONTOS ---
-    let detalheHtml = `<div style="background: rgba(0,0,0,0.25); border-radius: 8px; padding: 12px; margin-bottom: 25px; font-size: 12px; text-align: left;">`;
-    detalheHtml += `<div style="color:#aaa; font-size:9px; margin-bottom:8px; text-align:center; font-weight:800; text-transform:uppercase;">Detalhamento de Pontos</div>`;
+    let detalheHtml = `<div style="background: rgba(0,0,0,0.3); border: 2px solid #3a4a3f; border-radius: 8px; padding: 15px; margin-bottom: 25px; font-size: 12px; text-align: left;">`;
+    detalheHtml += `<div style="color:#aaa; font-size:10px; margin-bottom:12px; text-align:center; font-weight:900; text-transform:uppercase; letter-spacing: 1px;">Detalhamento de Pontos</div>`;
     
-    // Função auxiliar para criar as linhas só se o valor for maior que 0
+    let temPontos = false;
     const addRow = (label, val, isNeg = false) => {
         if(val === 0) return '';
+        temPontos = true;
         const c = isNeg ? 'var(--hp-red)' : 'var(--hp-green)';
         const sign = isNeg ? '-' : '+';
-        return `<div style="display:flex; justify-content:space-between; margin-bottom:6px; border-bottom: 1px dotted #444; padding-bottom: 3px;">
+        return `<div style="display:flex; justify-content:space-between; margin-bottom:8px; border-bottom: 1px dotted #444; padding-bottom: 4px;">
             <span style="color:#ddd; font-weight:700;">${label}</span>
             <strong style="color:${c}; font-family:'Press Start 2P', monospace; font-size:9px; margin-top:2px;">${sign}${Math.abs(val)}</strong>
         </div>`;
     };
 
-    detalheHtml += addRow("Batalhas Vencidas", ptsBattles);
-    detalheHtml += addRow("Níveis da Equipe", ptsLevels);
-    detalheHtml += addRow("Show do Milhão", ptsQuiz);
-    detalheHtml += addRow("Feitos Atingidos", ptsFeitos);
-    if(win) detalheHtml += addRow("Derrotar o Chefão", ptsWin);
-    if(win) detalheHtml += addRow("Bônus Sobrevivência", ptsSurvivors);
-    if(bonusProtagonista) detalheHtml += addRow("Bônus de Protagonista", ptsProtagonista);
-    detalheHtml += addRow("Membros Caídos", ptsDeaths, true);
-    
-    detalheHtml += `</div>`;
+    let linhasHtml = "";
+    linhasHtml += addRow("Batalhas Vencidas", ptsBattles);
+    linhasHtml += addRow("Níveis da Equipe", ptsLevels);
+    linhasHtml += addRow("Show do Milhão", ptsQuiz);
+    linhasHtml += addRow("Feitos Alcançados", ptsFeitos);
+    if(win) linhasHtml += addRow("Derrotar o Chefão", ptsWin);
+    if(win) linhasHtml += addRow("Bônus Sobrevivência", ptsSurvivors);
+    if(bonusProtagonista) linhasHtml += addRow("Bônus Protagonista", ptsProtagonista);
+    linhasHtml += addRow("Membros Caídos", ptsDeaths, true);
+
+    if(!temPontos) linhasHtml = `<div style="text-align:center; color:#888; font-size:11px; font-style:italic;">Nenhum ponto registrado</div>`;
+
+    detalheHtml += linhasHtml + `</div>`;
 
     // --- HTML FINAL DA TELA ---
     let html = `
@@ -1818,7 +1822,7 @@ async function showEndScreen(win) {
         enviarPontuacao(nomeJogador, score);
     }
 }
-
+    
 function showFeitos(fromStart = false) {
     showScreen('feitosScreen');
     let html = `<h2 class="pixel" style="font-size:14px; margin-bottom:30px; color:white; text-align:center;">FEITOS DA JORNADA</h2>`;
