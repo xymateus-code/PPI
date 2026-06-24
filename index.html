@@ -1063,6 +1063,62 @@ function offerRecruit(defeatedKey) {
     });
 }
 
+function offerRecruit(defeatedKey) {
+    return new Promise(res => {
+        recruitResolve = res;
+        let wild = defeatedKey; 
+        if(run.team.some(m => m.key === wild)) {
+            const available = Object.keys(ROSTER).filter(k => k !== "Leandro" && !run.team.some(m => m.key === k));
+            if(available.length === 0) return resolveRecruit(); 
+            wild = available[Math.floor(Math.random() * available.length)];
+        }
+
+        const cand = ROSTER[wild];
+        const candLvl = 5 + run.step;
+        const candMon = makeMon(wild, candLvl); 
+        
+        document.getElementById('recruitPhoto').innerHTML = `<div style="width: 100%; height: 100%; background-image:url('${IMG[wild]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter:drop-shadow(0 6px 0 rgba(0,0,0,.25)); transform: ${getTransform(wild, 'telaInicial')};"></div>`;
+        
+        document.getElementById('recruitText').innerHTML = `
+            <div style="background:var(--panel-line); border:3px solid #5a6b5f; border-radius:12px; padding:15px; text-align:left;">
+                <div style="color:var(--hp-amber); font-weight:800; font-size:12px; margin-bottom:5px; text-align:center; font-family:'Press Start 2P', monospace;">ATENÇÃO:</div>
+                <div style="font-weight:900; font-size:16px; color:#fff; text-align:center; margin-bottom:15px;">${candMon.name.toUpperCase()} QUER SE JUNTAR AO TIME DE PPI!</div>
+                <div style="display:flex; justify-content:space-around; margin-bottom:15px; font-size:12px; font-family:'Press Start 2P', monospace;">
+                    <div style="text-align:center;"><div style="color:var(--hp-green); font-size:8px; margin-bottom:4px;">HP</div>${candMon.maxhp}</div>
+                    <div style="text-align:center;"><div style="color:var(--hp-red); font-size:8px; margin-bottom:4px;">ATK</div>${candMon.atk}</div>
+                    <div style="text-align:center;"><div style="color:var(--hp-amber); font-size:8px; margin-bottom:4px;">DEF</div>${candMon.def}</div>
+                    <div style="text-align:center;"><div style="color:#7ec8c2; font-size:8px; margin-bottom:4px;">SPD</div>${candMon.spd}</div>
+                </div>
+                <div style="border-top:1px dashed #555; padding-top:12px;">
+                    <span style="font-size:10px; color:#aaa; font-weight:800;">Passiva:</span><br>
+                    <strong style="color:white; font-size:14px; display:inline-block; margin:4px 0;">${cand.jeitao.name}</strong><br>
+                    <span style="font-size:11px; color:#ccc; line-height:1.4;">${cand.jeitao.desc}</span>
+                </div>
+            </div>
+        `;
+        
+        let html = '';
+        if (run.team.length < MAX_TEAM) {
+            html += `<button class="btn" style="text-align:center; background:#4cae6a; color:white; padding: 18px; font-size: 15px;" onclick="catchDo('${wild}')">Aprovar no Processo Seletivo</button>`;
+            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:10px; padding: 15px;" onclick="resolveRecruit()">Rejeitar Candidato</button>`;
+        } else {
+            html += `<p style="color:var(--hp-red); font-size:12px; margin-bottom:15px;">Equipe cheia (${MAX_TEAM} Máx). Substituir quem?</p>`;
+            run.team.forEach((m, idx) => {
+                html += `
+                <button class="btn" style="margin-bottom:8px; display:flex; align-items:center; gap:10px; overflow:hidden;" onclick="catchReplace(${idx}, '${wild}')">
+                    <div class="team-mini" style="border:none; border-radius:0;">
+                        <div class="team-mini-img" style="background-image: url('${IMG[m.key]}'); transform: ${getTransform(m.key, 'miniaturas')};"></div>
+                    </div>
+                    <div style="z-index:2;">Demitir ${m.name.split(" ")[0]} e recrutar</div>
+                </button>`;
+            });
+            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:15px; padding: 15px;" onclick="resolveRecruit()">Rejeitar Candidato</button>`;
+        }
+        document.getElementById('recruitOptions').innerHTML = html;
+        showScreen('recruitScreen');
+    });
+}
+    
 function catchDo(wild) {
     SFX.click();
     run.recruitsAccepted++;
