@@ -234,6 +234,18 @@
 <div id="toast" class="pixel"></div>
 
 <div id="game">
+    <style>
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+    </style>
+    <div id="customModal" style="display:none; position:absolute; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.75); z-index:10000; align-items:center; justify-content:center; padding: 20px; backdrop-filter: blur(2px);">
+        <div style="background:var(--panel); border:5px solid var(--panel-line); border-radius:12px; padding:25px 20px; text-align:center; max-width:90%; width: 320px; box-shadow: 0 10px 0 rgba(0,0,0,0.4); animation: popIn 0.2s ease-out;">
+            <div id="modalText" style="font-size:14px; font-weight:800; line-height:1.5; color:var(--ink); margin-bottom:25px;"></div>
+            <button id="modalBtn" class="ov-btn" style="padding:15px; font-size:14px;">OK</button>
+        </div>
+    </div>
     <div id="startScreen" class="screen" style="padding:50px 20px; text-align:center; background:#26342b; overflow-y: auto; display: flex; align-items: center; justify-content: center;">
         <div style="width: 100%; max-width: 320px;">
             <h1 class="pixel" style="color:var(--accent); font-size:24px; margin-bottom:15px; line-height: 1.4;">JORNADA PPI</h1>
@@ -317,6 +329,8 @@
         </div>
         <button class="ov-btn" onclick="showChoices(); SFX.click();">CONTINUAR A JORNADA</button>
     </div>
+
+   <div id="victoryScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; background:#2f4034; color:white; overflow-y:auto; flex-direction:column; justify-content:center; align-items:center;"></div>
 
     <div id="recruitScreen" class="screen" style="display:none; padding:40px 20px; text-align:center; background:#2f4034; color:white; overflow-y:auto;">
         <h2 class="pixel" style="font-size:16px; margin-bottom:30px; color:var(--accent);">RECRUTAMENTO PPI</h2>
@@ -500,10 +514,10 @@ function chooseItem(idx) {
     SFX.heal();
     const item = ITEMS[idx];
     item.effect();
-    alert(`Você pegou: ${item.name}!\nEfeito ativado: ${item.desc}`);
-    
+    showModal(`🎁 Você pegou: <strong>${item.name}</strong>!<br><br>Efeito ativado: <span style='color:var(--hp-green);'>${item.desc}</span>`, () => {
     run.eventDone = true; 
     showChoices();
+});
 }
 
 // --- PERGUNTAS DO QUIZ ---
@@ -532,7 +546,7 @@ const ROSTER = {
     Leonardo: { name: "Leonardo", types: ["Tech"], base: { hp: 60, atk: 50, def: 60, spd: 50 }, jeitao: { name: "Visão Analítica", desc: "Defesa bônus contra Processo." }, moves: [{ name: "Criar POI", type: "Tech", power: 55, acc: 0.95, kind: "dmg" }, { name: "Inserir Correia no SAP", type: "Processo", power: 65, acc: 0.85, kind: "dmg" }] },
     Barbara: { name: "Barbara", types: ["Social"], base: { hp: 55, atk: 50, def: 50, spd: 60 }, jeitao: { name: "Poliglota", desc: "Chance de confundir o alvo." }, moves: [{ name: "Falar alemão", type: "Social", power: 45, acc: 1.0, kind: "dmg_confuse" }, { name: "Comer dodileiti", type: "Processo", power: 35, acc: 1.0, kind: "dmg_debuff", stat: "def" }] },
     Marcelo: { name: "Marcelo", types: ["Processo"], base: { hp: 65, atk: 55, def: 60, spd: 45 }, jeitao: { name: "Pavio Curto", desc: "Dano sobe quando HP < 50%." }, moves: [{ name: "Usar boina", type: "Processo", power: 60, acc: 0.90, kind: "dmg" }, { name: "Stevie Wonder", type: "Gestão", power: 50, acc: 1.0, kind: "dmg_debuff", stat: "spd" }] },
-    Mateus: { name: "Mateus", types: ["Gestão"], base: { hp: 60, atk: 55, def: 55, spd: 55 }, jeitao: { name: "Pai da Clarinha", desc: "Chance de ataque duplo." }, moves: [{ name: "F2F Surpresa", type: "Gestão", power: 65, acc: 0.85, kind: "dmg" }, { name: "Adestrar Galinha", type: "Processo", power: 75, acc: 0.80, kind: "dmg_confuse" }] },
+    Mateus: { name: "Mateus", types: ["Gestão"], base: { hp: 60, atk: 55, def: 60, spd: 55 }, jeitao: { name: "Pai da Clarinha", desc: "Chance de ataque duplo." }, moves: [{ name: "F2F Surpresa", type: "Gestão", power: 65, acc: 0.85, kind: "dmg" }, { name: "Adestrar Galinha", type: "Processo", power: 75, acc: 0.80, kind: "dmg_confuse" }] },
     Eric: { name: "Eric", types: ["Processo"], base: { hp: 55, atk: 60, def: 50, spd: 60 }, jeitao: { name: "Rei do Sprint", desc: "Críticos garantidos." }, moves: [{ name: "Reduzir Setup", type: "Processo", power: 55, acc: 0.95, kind: "dmg" }, { name: "Termopar", type: "Social", power: 50, acc: 1.0, kind: "dmg_raise_spd" }] },
     Daniel: { name: "Daniel", types: ["Tech"], base: { hp: 60, atk: 45, def: 60, spd: 45 }, jeitao: { name: "Gosta de conversa", desc: "Pode fazer o inimigo dormir." }, moves: [{ name: "Fazer Figurinha", type: "Tech", power: 45, acc: 1.0, kind: "dmg_confuse" }, { name: "Fazer brique", type: "Social", power: 50, acc: 1.0, kind: "dmg_skip" }] },
     Edinei: { name: "Edinei", types: ["Processo"], base: { hp: 65, atk: 50, def: 55, spd: 50 }, jeitao: { name: "Bonitão", desc: "Recupera HP a cada turno." }, moves: [{ name: "Teste na Roller", type: "Processo", power: 55, acc: 0.95, kind: "dmg" }, { name: "Charme de Polaco", type: "Social", power: 35, acc: 1.0, kind: "dmg_debuff", stat: "atk" }] },
@@ -545,19 +559,23 @@ const ROSTER = {
 };
 
 const FEITOS_LIST = [
-    {id:"cafezinho", n:"Almoço no Sujinho", desc:"Recupere a equipe na Parada da Pizza."},
-    {id:"fds", n:"Trabalhar Fim de Semana", desc:"Sobreviva a todas as etapas e chegue ao Chefe."},
-    {id:"tomas", n:"Apresentação pro Tomas", desc:"Vença o Leandro e aprove o projeto final!"},
-    {id:"ods", n:"Aprovar ODS", desc:"Use o ataque 'Criar uma ODS' do Igor em combate."},
-    {id:"estrategista", n:"Estrategista", desc:"Troque de membro da equipe a meio de uma batalha."},
-    {id:"sorte", n:"Sorte Grande", desc:"Encontre o café esquecido na copa no meio do mapa."},
-    {id:"critico", n:"Na Mosca!", desc:"Acerte um golpe crítico num adversário."},
-    {id:"genio", n:"Génio do Gemba", desc:"Acerte em 2 perguntas da Auditoria na mesma jornada."},
-    {id:"quiz_master", n:"Mestre do Gemba", desc:"Acerte uma pergunta da Auditoria em menos de 3 segundos."},
-    {id:"perfect", n:"Zero Defeitos", desc:"Termine a jornada sem nenhuma baixa na equipe."},
-    {id:"full_team", n:"Bonde Completo", desc:"Chegue ao fim com a equipe cheia e viva."},
-    {id:"solo", n:"Lobo Solitário", desc:"Vença o jogo sem recrutar ninguém."},
-    {id:"no_pizza", n:"Dieta Rigorosa", desc:"Vença o jogo sem comer nenhuma pizza."}
+    {id:"cafezinho", n:"Almoço no Sujinho", desc:"Recupere a equipe na Parada da Pizza.", pts: 200},
+    {id:"ods", n:"Aprovar ODS", desc:"Use o ataque 'Criar uma ODS' do Igor em combate.", pts: 200},
+    {id:"estrategista", n:"Estrategista", desc:"Troque de membro da equipe a meio de uma batalha.", pts: 200},
+    {id:"solo", n:"Lobo Solitário", desc:"Vença o jogo sem recrutar ninguém.", pts: 200},
+
+    {id:"critico", n:"Na Mosca!", desc:"Acerte um golpe crítico num adversário.", pts: 500},
+    {id:"fds", n:"Trabalhar Fim de Semana", desc:"Sobreviva a todas as etapas e chegue ao Chefe.", pts: 500},
+    {id:"tomas", n:"Apresentação pro Tomas", desc:"Vença o Leandro e aprove o projeto final!", pts: 500},
+    {id:"no_pizza", n:"Dieta Rigorosa", desc:"Vença o jogo sem comer nenhuma pizza.", pts: 800},
+
+    {id:"genio", n:"Génio do Gemba", desc:"Acerte em 2 perguntas da Auditoria na mesma jornada.", pts: 1000},
+    {id:"full_team", n:"Bonde Completo", desc:"Chegue ao fim com a equipe cheia e viva.", pts: 1000},
+    {id:"perfect", n:"Zero Defeitos", desc:"Termine a jornada sem nenhuma baixa na equipe.", pts: 1000},
+    {id:"sorte", n:"Sorte Grande", desc:"Encontre o café esquecido na copa no meio do mapa.", pts: 1000},
+
+    {id:"quiz_master", n:"Mestre do Gemba", desc:"Acerte uma pergunta da Auditoria em menos de 3 segundos.", pts: 1500},
+    {id:"protagonista", n:"Dono do Jogo", desc:"Vença com seu personagem (nome igual ao crachá).", pts: 2500}
 ];
 
 let run, P, E;
@@ -645,6 +663,24 @@ function showToast(text) {
 }
 
 function unlockFeito(id) {
+    // Se o jogo não começou ou se JÁ pegamos esse feito NESTA run, ignoramos (evita farm infinito).
+    if (typeof run === 'undefined' || !run || !run.feitosNaRun || run.feitosNaRun.has(id)) return;
+
+    // 1. Marca que o feito foi atingido nesta jornada
+    run.feitosNaRun.add(id);
+
+    // 2. Busca o objeto do feito para saber quantos pontos ele vale
+    const feitoObj = FEITOS_LIST.find(f => f.id === id);
+    if (feitoObj) {
+        // Soma os pontos do feito atual (usando a propriedade 'pts' que criamos antes, ou 500 como padrão)
+        run.pontosFeitosNovos = (run.pontosFeitosNovos || 0) + (feitoObj.pts || 500);
+        
+        // Exibe a notificação e toca o som TODA VEZ que for atingido numa nova run!
+        SFX.win(); 
+        showToast(feitoObj.n);
+    }
+
+    // 3. Salva no localStorage APENAS para manter a galeria "Feitos & Rankings" global preenchida
     let stored;
     try { stored = new Set(JSON.parse(getLS('ppi_feitos', '[]'))); } 
     catch(e) { stored = new Set(); }
@@ -652,16 +688,6 @@ function unlockFeito(id) {
     if (!stored.has(id)) {
         stored.add(id);
         setLS('ppi_feitos', JSON.stringify([...stored]));
-        if (typeof run !== 'undefined' && run && run.feitos) {
-            run.feitos.add(id);
-            run.feitosNovos++; 
-        }
-        
-        const feitoObj = FEITOS_LIST.find(f => f.id === id);
-        if (feitoObj) {
-            SFX.win(); 
-            showToast(feitoObj.n);
-        }
     }
 }
 
@@ -673,6 +699,24 @@ function getFeitos() {
 function showScreen(id) {
     document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
     document.getElementById(id).style.display = 'flex';
+}
+
+// --- NOVA FUNÇÃO: Alert Customizado ---
+function showModal(text, callback) {
+    const modal = document.getElementById('customModal');
+    const textEl = document.getElementById('modalText');
+    const btn = document.getElementById('modalBtn');
+    
+    // Suporta quebra de linha nativa (\n) convertendo para <br> do HTML
+    textEl.innerHTML = text.replace(/\n/g, '<br>'); 
+    modal.style.display = 'flex';
+    
+    // Reseta o clique do botão para evitar duplicação de eventos
+    btn.onclick = () => {
+        SFX.click();
+        modal.style.display = 'none';
+        if (callback) callback(); // Executa o que quer que deva acontecer após o OK
+    };
 }
 
 function makeMon(key, lvl = 5) {
@@ -704,9 +748,10 @@ function showStarterSelection() {
     const nome = inputNome ? inputNome.value.trim().toUpperCase() : "";
     
     if (nome === "") {
-        alert("Atenção: Você precisa preencher o seu nome no crachá para jogar!");
-        if(inputNome) inputNome.focus();
-        return; 
+        showModal("⚠️ ATENÇÃO:<br>Você precisa preencher o seu nome no crachá para jogar!", () => {
+    if(inputNome) inputNome.focus();
+});
+return;
     }
     setLS('ppi_playerName', nome);
     
@@ -741,7 +786,9 @@ function chooseStarter(chosen) {
         team: [makeMon(chosen, 5)], 
         step: 0, 
         feitos: getFeitos(),
-        feitosNovos: 0, 
+        feitosNaRun: new Set(), 
+        pontosFeitosNovos: 0,   
+        perguntasFeitas: new Set(), // 👈 NOVO: Rastreador de perguntas da Auditoria!
         eventDone: false,
         currentEvents: null,
         battlesWon: 0,
@@ -766,16 +813,41 @@ function progressTrackHTML() {
 }
 
 function teamPreviewHTML() {
-    return run.team.map(m => {
+    return run.team.map((m, idx) => {
         const pct = Math.max(0, Math.round((m.hp / m.maxhp) * 100));
         const col = pct > 50 ? "var(--hp-green)" : pct > 20 ? "var(--hp-amber)" : "var(--hp-red)";
+        
+        // Verifica se é o líder (primeiro da fila)
+        const isLeader = idx === 0;
+        // Permite clicar apenas se estiver vivo e não for o líder
+        const canClick = m.hp > 0 && !isLeader; 
+        
         return `
-        <div class="mapt ${m.hp <= 0 ? "down" : ""}">
+        <div class="mapt ${m.hp <= 0 ? "down" : ""}" style="position:relative; ${canClick ? 'cursor:pointer; transform: scale(1.05);' : ''} transition: transform 0.2s;" ${canClick ? `onclick="setLeader(${idx})"` : ''} title="${canClick ? 'Definir como primeiro a atacar' : ''}">
+            
+            ${isLeader ? `<div class="pixel" style="position:absolute; top:-12px; font-size:8px; background:var(--accent); color:white; padding:3px 5px; border-radius:4px; z-index:30;">1º</div>` : ''}
+            
             <div class="mapt-tk" style="background-image:url('${IMG[m.key]}'); transform: ${getTransform(m.key, 'miniaturas')}"></div>
             <div class="mapt-hp"><div style="width:${pct}%; background:${col}"></div></div>
             <div class="mapt-nm">${m.hp}/${m.maxhp}</div>
         </div>`;
     }).join("");
+}
+
+// --- NOVA FUNÇÃO: Define quem será o primeiro a atacar ---
+function setLeader(idx) {
+    // Se já é o líder ou se o personagem está fora de combate (hp <= 0), não faz nada
+    if (idx === 0 || run.team[idx].hp <= 0) return;
+    
+    SFX.click();
+    
+    // Troca o personagem clicado com o que está na posição 0
+    const temp = run.team[0];
+    run.team[0] = run.team[idx];
+    run.team[idx] = temp;
+    
+    // Recarrega as escolhas para atualizar a tela
+    showChoices();
 }
 
 function showChoices() {
@@ -791,6 +863,7 @@ function showChoices() {
     const nextEnemy = ROSTER[nextEnemyKey];
     const isBoss = run.step === TOTAL_STEPS;
 
+    // --- PRÉ-CALCULA OS EVENTOS E AS CONSEQUÊNCIAS ---
     if (!run.currentEvents) {
       let pool = ['treino', 'pizza', 'quiz', 'recrutar', 'item'];
         
@@ -801,13 +874,22 @@ function showChoices() {
         
         pool.sort(() => 0.5 - Math.random());
         run.currentEvents = pool.slice(0, 2);
+
+        // Se "Recrutar" caiu, nós escolhemos QUEM (mantendo em segredo)
+        if (run.currentEvents.includes('recrutar')) {
+            run.mapRecruitKey = availableRecruits[Math.floor(Math.random() * availableRecruits.length)];
+            run.mapRecruitHpPct = 1.0; // Novo membro chega com 100% de HP
+        }
     }
 
     let html = `
         <div class="map-track">${progressTrackHTML()}</div>
+        
+        ${run.team.length > 1 ? `<div style="font-size:9px; color:#aaa; text-align:center; font-weight:800; margin-bottom: 5px; text-transform: uppercase;">👇 Clique em um recurso para colocá-lo como o primeiro a atacar 👇</div>` : ''}
+        
         <div class="map-team">${teamPreviewHTML()}</div>
         <div class="pixel" style="font-size:11px; margin-bottom:12px; color:${isBoss ? 'var(--hp-red)' : 'white'}; text-align:center;">
-            ${isBoss ? '⚠️ REUNIÃO COM A DIRETORIA ⚠️' : 'NOVA REUNIÃO AGENDADA:'}
+                        ${isBoss ? '⚠️ REUNIÃO COM A DIRETORIA ⚠️' : 'NOVA REUNIÃO AGENDADA:'}
         </div>
         
         <button class="btn" onclick="SFX.click(); ${isBoss ? 'startFinalBoss()' : `startBattle('${nextEnemyKey}')`}" style="display:flex; align-items:center; gap:12px; background:${isBoss ? '#f4cdc6' : '#fff'}; padding:8px 15px; overflow: hidden; margin-bottom:15px; border-color:${isBoss ? 'var(--hp-red)' : 'var(--panel-line)'};">
@@ -820,25 +902,69 @@ function showChoices() {
     `;
 
     if (!run.eventDone) {
-        html += `<div class="pixel" style="font-size:11px; margin: 15px 0 10px; color:var(--hp-amber); text-align:center;">OU PREPARE-SE ANTES (Escolha 1):</div>`;
+        html += `<div class="pixel" style="font-size:11px; margin: 15px 0 10px; color:var(--hp-amber); text-align:center;">DECISÃO TÁTICA ANTES DA REUNIÃO:</div>`;
         
         run.currentEvents.forEach(ev => {
             if (ev === 'treino') {
-                html += `<button class="btn" onclick="doTreino()" style="background:#f5e6d9; border-color:#80352f; text-align:left; padding:8px 15px; display:flex; align-items:center; gap:15px; margin-bottom:10px; overflow:hidden;"><div style="width:70px; height:70px; background-image:url('${IMG.Guilherme}'); background-size:contain; background-repeat:no-repeat; background-position:center; flex-shrink:0; transform: scale(1.3);"></div><div style="flex:1;"><div style="font-weight:900; font-size:14px; color:#80352f;">🏋️ TREINAMENTO DO PACHEQUINHO</div><div style="font-size:11px; margin-top:3px; color:#555; line-height:1.2;">-10% HP, mas ganham 1 Nível e +10 Ataque!</div></div></button>`;
-            } else if (ev === 'pizza') {
-                html += `<button class="btn" onclick="doPizza()" style="background:#f4d9cc; border-color:#d85a30; text-align:left; padding:8px 15px; display:flex; align-items:center; gap:15px; margin-bottom:10px; overflow:hidden;"><div style="width:70px; height:70px; background-image:url('${IMG.MarceloPizza}'); background-size:contain; background-repeat:no-repeat; background-position:center; flex-shrink:0; transform: scale(1.3);"></div><div style="flex:1;"><div style="font-weight:900; font-size:14px; color:#993C1D;">🍕 PIZZA DO MARCELO</div><div style="font-size:11px; margin-top:3px; color:#666; line-height:1.2;">Recupera 100% do HP da equipe toda.</div></div></button>`;
-            } else if (ev === 'quiz') {
-                html += `<button class="btn" onclick="startAudit()" style="background:#d9e6f5; border-color:#2f5480; text-align:left; padding:8px 15px; display:flex; align-items:center; gap:15px; margin-bottom:10px; overflow:hidden;"><div style="width:70px; height:70px; background-image:url('${IMG.Roleta}'); background-size:contain; background-repeat:no-repeat; background-position:center; flex-shrink:0; transform: scale(1.3);"></div><div style="flex:1;"><div style="font-weight:900; font-size:14px; color:#2f5480;">📋 SPRINT DO MILHÃO</div><div style="font-size:11px; margin-top:3px; color:#555; line-height:1.2;">Responda rápido para ganhar pontos e status!</div></div></button>`;
-            } else if (ev === 'recrutar') {
-                html += `<button class="btn" onclick="startMapRecruit()" style="background:#d9f5d9; border-color:#2f803c; text-align:left; padding:8px 15px; display:flex; align-items:center; gap:15px; margin-bottom:10px; overflow:hidden;"><div style="width:70px; height:70px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size: 32px; border-radius: 50%; background: rgba(255,255,255,0.4); border: 2px solid #2f803c;">🤝</div><div style="flex:1;"><div style="font-weight:900; font-size:14px; color:#2f803c;">👥 PROCESSO SELETIVO</div><div style="font-size:11px; margin-top:3px; color:#555; line-height:1.2;">Entreviste um talento e adicione-o à equipe!</div></div></button>`;
-            }
-            else if (ev === 'item') {
                 html += `
-                <button class="btn" onclick="offerItems()" style="background:#f5f0d9; border-color:#b8860b; text-align:left; padding:8px 15px; display:flex; align-items:center; gap:15px; margin-bottom:10px; overflow:hidden;">
-                    <div style="width:70px; height:70px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size: 32px; border-radius: 50%; background: rgba(255,255,255,0.4); border: 2px solid #b8860b;">🎁</div>
+                <button class="btn" onclick="doTreino()" style="background:#f5e6d9; border-color:#80352f; text-align:left; padding:10px 15px; display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                    <div style="width:60px; height:60px; background-image:url('${IMG.Guilherme}'); background-size:contain; background-repeat:no-repeat; background-position:center; flex-shrink:0;"></div>
                     <div style="flex:1;">
-                        <div style="font-weight:900; font-size:14px; color:#b8860b;">🎁 ITEM SURPRESA</div>
-                        <div style="font-size:11px; margin-top:3px; color:#555; line-height:1.2;">Fechou um cartão no gemba! Escolha um brinde.</div>
+                        <div style="font-weight:900; font-size:13px; color:#80352f; margin-bottom:6px;">🏋️ TREINO DO PACHEQUINHO</div>
+                        <div style="font-size:10px; color:#555; line-height:1.4;">
+                            <span style="color:var(--hp-red); font-weight:800;">📉 CUSTO:</span> -10% HP da Equipe<br>
+                            <span style="color:var(--hp-green); font-weight:800;">📈 GANHO:</span> +1 Nível e +10 Ataque
+                        </div>
+                    </div>
+                </button>`;
+            } else if (ev === 'pizza') {
+                html += `
+                <button class="btn" onclick="doPizza()" style="background:#f4d9cc; border-color:#d85a30; text-align:left; padding:10px 15px; display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                    <div style="width:60px; height:60px; background-image:url('${IMG.MarceloPizza}'); background-size:contain; background-repeat:no-repeat; background-position:center; flex-shrink:0;"></div>
+                    <div style="flex:1;">
+                        <div style="font-weight:900; font-size:13px; color:#993C1D; margin-bottom:6px;">🍕 PARADA DA PIZZA</div>
+                        <div style="font-size:10px; color:#555; line-height:1.4;">
+                            <span style="color:var(--hp-amber); font-weight:800;">⏳ CUSTO:</span> Perde a chance de evoluir/treinar<br>
+                            <span style="color:var(--hp-green); font-weight:800;">📈 GANHO:</span> 100% de HP para a Equipe
+                        </div>
+                    </div>
+                </button>`;
+            } else if (ev === 'quiz') {
+                html += `
+                <button class="btn" onclick="startAudit()" style="background:#d9e6f5; border-color:#2f5480; text-align:left; padding:10px 15px; display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                    <div style="width:60px; height:60px; background-image:url('${IMG.Roleta}'); background-size:contain; background-repeat:no-repeat; background-position:center; flex-shrink:0;"></div>
+                    <div style="flex:1;">
+                        <div style="font-weight:900; font-size:13px; color:#2f5480; margin-bottom:6px;">📋 SPRINT DO MILHÃO</div>
+                        <div style="font-size:10px; color:#555; line-height:1.4;">
+                            <span style="color:var(--hp-red); font-weight:800;">📉 RISCO:</span> -15% HP se errar<br>
+                            <span style="color:var(--hp-green); font-weight:800;">📈 GANHO:</span> +25% HP, Status e até +1000 Pts
+                        </div>
+                    </div>
+                </button>`;
+            } else if (ev === 'recrutar') {
+                const recLvl = 5 + run.step;
+                
+                html += `
+                <button class="btn" onclick="startMapRecruit()" style="background:#d9f5d9; border-color:#2f803c; text-align:left; padding:10px 15px; display:flex; align-items:center; gap:12px; margin-bottom:10px; overflow:hidden;">
+                    <div style="width:60px; height:60px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size: 32px; border-radius: 50%; background: rgba(255,255,255,0.4); border: 2px solid #2f803c;">🤝</div>
+                    <div style="flex:1;">
+                        <div style="font-weight:900; font-size:13px; color:#2f803c; margin-bottom:6px;">👥 PROCESSO SELETIVO</div>
+                        <div style="font-size:10px; color:#555; line-height:1.4;">
+                            <span style="color:var(--hp-amber); font-weight:800;">⏳ CUSTO:</span> Nenhum, mas a equipe atual não treina nem cura<br>
+                            <span style="color:var(--hp-green); font-weight:800;">📈 GANHO:</span> Membro surpresa Nv${recLvl} (HP Cheio)
+                        </div>
+                    </div>
+                </button>`;
+            } else if (ev === 'item') {
+                html += `
+                <button class="btn" onclick="offerItems()" style="background:#f5f0d9; border-color:#b8860b; text-align:left; padding:10px 15px; display:flex; align-items:center; gap:12px; margin-bottom:10px;">
+                    <div style="width:60px; height:60px; display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size: 28px; border-radius: 50%; background: rgba(255,255,255,0.4); border: 2px solid #b8860b;">🎁</div>
+                    <div style="flex:1;">
+                        <div style="font-weight:900; font-size:13px; color:#b8860b; margin-bottom:6px;">🎁 ITEM SURPRESA</div>
+                        <div style="font-size:10px; color:#555; line-height:1.4;">
+                            <span style="color:var(--hp-amber); font-weight:800;">⏳ CUSTO:</span> Nenhum, mas não dá níveis<br>
+                            <span style="color:var(--hp-green); font-weight:800;">📈 GANHO:</span> Melhoria permanente (Escolha 1 de 2)
+                        </div>
                     </div>
                 </button>`;
             }
@@ -853,8 +979,9 @@ function showChoices() {
         SFX.heal();
         run.team.forEach(m => { m.hp = Math.min(m.maxhp, m.hp + Math.round(m.maxhp * 0.25)); });
         unlockFeito("sorte"); 
-        alert("Sorte grande! A equipe encontrou um Cofee da Sodexo esquecido na copa. Todos recuperaram 25% do HP!");
-        document.querySelector('.map-team').innerHTML = teamPreviewHTML();
+        showModal("🍀 <strong>Sorte grande!</strong><br><br>A equipe encontrou um Cofee da Sodexo esquecido na copa. Todos recuperaram <span style='color:var(--hp-green);'>25% do HP!</span>", () => {
+    document.querySelector('.map-team').innerHTML = teamPreviewHTML();
+});
     }
     
     showScreen('mapScreen');
@@ -870,8 +997,9 @@ function doPizza() {
     
     unlockFeito("cafezinho");
     run.eventDone = true; 
-    alert("A equipe comeu pizza do Marcelo e está 100% recuperada! (Agora é hora de ir para a reunião)");
-    showChoices(); 
+    showModal("🍕 A equipe comeu pizza do Marcelo e está <strong>100% recuperada!</strong><br><br><span style='font-size:11px; color:#555;'>(Agora é hora de ir para o gemba)</span>", () => {
+    showChoices();
+});
 }
 
 function doTreino() {
@@ -884,13 +1012,30 @@ function doTreino() {
         }
     });
     run.eventDone = true;
-    alert("Treino exaustivo com o Pachequinho! Perderam 10% de HP por cansaço, mas subiram 1 Nível e ganharam +10 de Ataque.");
+    showModal("🏋️ Treino exaustivo com o Pachequinho!<br><br>Perderam <span style='color:var(--hp-red)'>10% de HP</span> por cansaço, mas subiram <strong style='color:var(--hp-green)'>1 Nível</strong> e ganharam <strong style='color:var(--hp-green)'>+10 de Ataque</strong>.", () => {
     showChoices();
+});
 }
 
 function startAudit() {
     SFX.click();
-    const q = AUDIT_QUIZ[Math.floor(Math.random() * AUDIT_QUIZ.length)];
+    
+    // 1. Filtra as perguntas que ainda não caíram nesta Run
+    let availableQuestions = AUDIT_QUIZ.filter((q, idx) => !run.perguntasFeitas.has(idx));
+    
+    // 2. Se todas as perguntas já foram feitas, reseta a lista para o jogo não travar
+    if (availableQuestions.length === 0) {
+        run.perguntasFeitas.clear();
+        availableQuestions = [...AUDIT_QUIZ];
+    }
+    
+    // 3. Escolhe uma aleatória dentre as disponíveis
+    const randomIdx = Math.floor(Math.random() * availableQuestions.length);
+    const q = availableQuestions[randomIdx];
+    
+    // 4. Registra o índice original da pergunta escolhida para não repetir mais
+    const originalIndex = AUDIT_QUIZ.indexOf(q);
+    run.perguntasFeitas.add(originalIndex);
     
     document.getElementById('auditPhoto').style.backgroundImage = `url('${IMG[q.asker]}')`;
     document.getElementById('auditPhoto').style.transform = getTransform(q.asker, 'telaInicial');
@@ -981,17 +1126,20 @@ async function answerAudit(selected, correct) {
 
 function startMapRecruit() {
     SFX.click();
-    const available = Object.keys(ROSTER).filter(k => k !== "Leandro" && !run.team.some(m => m.key === k));
-    if(available.length === 0) {
-        alert("Não há mais talentos disponíveis no Gemba!");
-        run.eventDone = true;
-        showChoices();
-        return;
+    
+    const wild = run.mapRecruitKey;
+    if(!wild) {
+       showModal("📉 Não há mais talentos disponíveis no Gemba no momento!", () => {
+    run.eventDone = true;
+    showChoices();
+});
+return;
     }
-    const wild = available[Math.floor(Math.random() * available.length)];
+
     const cand = ROSTER[wild];
     const candLvl = 5 + run.step;
     const candMon = makeMon(wild, candLvl); 
+    // candMon.hp já vem cheio por padrão do makeMon!
     
     document.getElementById('recruitPhoto').innerHTML = `<div style="width: 100%; height: 100%; background-image:url('${IMG[wild]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter:drop-shadow(0 6px 0 rgba(0,0,0,.25)); transform: ${getTransform(wild, 'telaInicial')};"></div>`;
     
@@ -999,7 +1147,7 @@ function startMapRecruit() {
         <div style="background:var(--panel-line); border:3px solid #5a6b5f; border-radius:12px; padding:15px; text-align:left;">
             <div style="font-weight:900; font-size:16px; color:var(--accent); text-align:center; margin-bottom:15px;">${candMon.name.toUpperCase()} <span style="font-size:10px; color:#aaa;">(Nv${candLvl})</span></div>
             <div style="display:flex; justify-content:space-around; margin-bottom:15px; font-size:12px; font-family:'Press Start 2P', monospace;">
-                <div style="text-align:center;"><div style="color:var(--hp-green); font-size:8px; margin-bottom:4px;">HP</div>${candMon.maxhp}</div>
+                <div style="text-align:center;"><div style="color:var(--hp-green); font-size:8px; margin-bottom:4px;">HP</div>${candMon.maxhp}/${candMon.maxhp}</div>
                 <div style="text-align:center;"><div style="color:var(--hp-red); font-size:8px; margin-bottom:4px;">ATK</div>${candMon.atk}</div>
                 <div style="text-align:center;"><div style="color:var(--hp-amber); font-size:8px; margin-bottom:4px;">DEF</div>${candMon.def}</div>
                 <div style="text-align:center;"><div style="color:#7ec8c2; font-size:8px; margin-bottom:4px;">SPD</div>${candMon.spd}</div>
@@ -1017,7 +1165,7 @@ function startMapRecruit() {
         html += `<button class="btn" style="text-align:center; background:#4cae6a; color:white; padding: 18px; font-size: 15px;" onclick="catchDo('${wild}')">Aprovar no Processo Seletivo</button>`;
         html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:10px; padding: 15px;" onclick="resolveRecruit()">Rejeitar Candidato</button>`;
     } else {
-        html += `<p style="color:var(--hp-red); font-size:12px; margin-bottom:15px;">equipe cheia (${MAX_TEAM} Máx). Substituir quem?</p>`;
+        html += `<p style="color:var(--hp-red); font-size:12px; margin-bottom:15px;">Equipe cheia (${MAX_TEAM} Máx). Substituir quem?</p>`;
         run.team.forEach((m, idx) => {
             html += `
             <button class="btn" style="margin-bottom:8px; display:flex; align-items:center; gap:10px; overflow:hidden;" onclick="catchReplace(${idx}, '${wild}')">
@@ -1034,75 +1182,21 @@ function startMapRecruit() {
     showScreen('recruitScreen');
 }
 
-function offerRecruit(defeatedKey) {
-    return new Promise(res => {
-        recruitResolve = res;
-        
-        let wild = defeatedKey; 
-        if(run.team.some(m => m.key === wild)) {
-            const available = Object.keys(ROSTER).filter(k => k !== "Leandro" && !run.team.some(m => m.key === k));
-            if(available.length === 0) return resolveRecruit(); 
-            wild = available[Math.floor(Math.random() * available.length)];
-        }
-
-        const cand = ROSTER[wild];
-        const candLvl = 5 + run.step;
-        const candMon = makeMon(wild, candLvl); 
-        
-        document.getElementById('recruitPhoto').innerHTML = `<div style="width: 100%; height: 100%; background-image:url('${IMG[wild]}'); background-size:contain; background-repeat:no-repeat; background-position:bottom center; filter:drop-shadow(0 6px 0 rgba(0,0,0,.25)); transform: ${getTransform(wild, 'telaInicial')};"></div>`;
-        
-        document.getElementById('recruitText').innerHTML = `
-            <div style="background:var(--panel-line); border:3px solid #5a6b5f; border-radius:12px; padding:15px; text-align:left;">
-                <div style="color:var(--hp-amber); font-weight:800; font-size:12px; margin-bottom:5px; text-align:center; font-family:'Press Start 2P', monospace;">ATENÇÃO:</div>
-<div style="font-weight:900; font-size:16px; color:#fff; text-align:center; margin-bottom:15px;">${candMon.name.toUpperCase()} QUER SE JUNTAR AO TIME DE PPI!</div>
-                <div style="display:flex; justify-content:space-around; margin-bottom:15px; font-size:12px; font-family:'Press Start 2P', monospace;">
-                    <div style="text-align:center;"><div style="color:var(--hp-green); font-size:8px; margin-bottom:4px;">HP</div>${candMon.maxhp}</div>
-                    <div style="text-align:center;"><div style="color:var(--hp-red); font-size:8px; margin-bottom:4px;">ATK</div>${candMon.atk}</div>
-                    <div style="text-align:center;"><div style="color:var(--hp-amber); font-size:8px; margin-bottom:4px;">DEF</div>${candMon.def}</div>
-                    <div style="text-align:center;"><div style="color:#7ec8c2; font-size:8px; margin-bottom:4px;">SPD</div>${candMon.spd}</div>
-                </div>
-                <div style="border-top:1px dashed #555; padding-top:12px;">
-                    <span style="font-size:10px; color:#aaa; font-weight:800;">Passiva:</span><br>
-                    <strong style="color:white; font-size:14px; display:inline-block; margin:4px 0;">${cand.jeitao.name}</strong><br>
-                    <span style="font-size:11px; color:#ccc; line-height:1.4;">${cand.jeitao.desc}</span>
-                </div>
-            </div>
-        `;
-        
-        let html = ``;
-        if (run.team.length < MAX_TEAM) {
-            html += `<button class="btn" style="text-align:center; background:#4cae6a; color:white; padding: 18px; font-size: 15px;" onclick="catchDo('${wild}')">Aprovar no Processo Seletivo</button>`;
-            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:10px; padding: 15px;" onclick="resolveRecruit()">Rejeitar Candidato</button>`;
-        } else {
-            html += `<p style="color:var(--hp-red); font-size:12px; margin-bottom:15px;">equipe cheia (${MAX_TEAM} Máx). Substituir quem?</p>`;
-            run.team.forEach((m, idx) => {
-                html += `
-                <button class="btn" style="margin-bottom:8px; display:flex; align-items:center; gap:10px; overflow:hidden;" onclick="catchReplace(${idx}, '${wild}')">
-                    <div class="team-mini" style="border:none; border-radius:0;">
-                        <div class="team-mini-img" style="background-image: url('${IMG[m.key]}'); transform: ${getTransform(m.key, 'miniaturas')};"></div>
-                    </div>
-                    <div style="z-index:2;">Demitir ${m.name.split(" ")[0]} e recrutar ${candMon.name.toUpperCase()}</div>
-                </button>`;
-            });
-            html += `<button class="btn" style="text-align:center; background:#e6dcc2; margin-top:15px; padding: 15px;" onclick="resolveRecruit()">Rejeitar Candidato</button>`;
-        }
-        
-        document.getElementById('recruitOptions').innerHTML = html;
-        showScreen('recruitScreen');
-    });
-}
-
 function catchDo(wild) {
     SFX.click();
     run.recruitsAccepted++;
-    run.team.push(makeMon(wild, 5 + run.step)); 
+    const newMon = makeMon(wild, 5 + run.step);
+    newMon.hp = newMon.maxhp; // Garante 100%
+    run.team.push(newMon); 
     resolveRecruit();
 }
 
 function catchReplace(idx, wild) {
     SFX.click();
     run.recruitsAccepted++;
-    run.team[idx] = makeMon(wild, 5 + run.step);
+    const newMon = makeMon(wild, 5 + run.step);
+    newMon.hp = newMon.maxhp; // Garante 100%
+    run.team[idx] = newMon;
     resolveRecruit();
 }
 
@@ -1393,11 +1487,13 @@ async function doSwitch(idx, forced = false) {
 function calcDamage(a, d, move) {
     // 1. Verificação de Precisão do Golpe com Frase
     const accuracy = move.acc !== undefined ? move.acc : 1.0;
-    if (Math.random() > accuracy) return {dmg: 0, missed: true, missText: `❌ ${a.name.split(" ")[0]} tentou usar ${move.name}, mas passou longe!`};
+    if (Math.random() > accuracy) return {dmg: 0, missed: true, missText: `❌ ${a.name.split(" ")[0]} tentou usar ${move.name}, mas precisou fechar um cartão no gemba primeiro!`};
 
     // 2. Passivas de Esquiva Personalizadas
-    if(d.jeitao.name === "Pequeno Alvo" && Math.random() < 0.2) return {dmg:0, missed:true, missText: `❌ ${a.name.split(" ")[0]} errou o alvo porque o ${d.name.split(" ")[0]} é muito pequeno!`};
-    if(d.jeitao.name === "Onde Eu Tava?" && Math.random() < 0.15) return {dmg:0, missed:true, missText: `❌ ${a.name.split(" ")[0]} errou! ${d.name.split(" ")[0]} nem percebeu o ataque porque estava distraído no Teams.`};
+    if(d.jeitao.name === "Pequeno Alvo" && Math.random() < 0.2) return {dmg:0, missed:true, missText: `❌ ${a.name.split(" ")[0]} errou o alvo porque o ${d.name.split(" ")[0]} é muito pequeno!`, esquivaPassiva: true};
+    
+    // 👇 ADICIONADO A FLAG 'esquivaPassiva' PARA O GABRIEL
+    if(d.jeitao.name === "Onde Eu Tava?" && Math.random() < 0.15) return {dmg:0, missed:true, missText: `❌ ${a.name.split(" ")[0]} errou! ${d.name.split(" ")[0]} nem percebeu o ataque porque estava distraído no Teams.`, esquivaPassiva: true};
 
     // 3. Fator de Nível
     const levelFactor = (2 * a.level / 5) + 2;
@@ -1407,7 +1503,13 @@ function calcDamage(a, d, move) {
     const stab = a.types.includes(move.type) ? 1.5 : 1;
     let mult = CHART[move.type]?.[d.types[0]] ?? 1;
     
-    if(d.jeitao.name === "Visão Analítica" && move.type === "Processo") mult *= 0.5;
+    // 👇 CRIADA A FLAG 'visaoTrig' PARA O LEONARDO
+    let visaoTrig = false;
+    if(d.jeitao.name === "Visão Analítica" && move.type === "Processo") {
+        mult *= 0.5;
+        visaoTrig = true;
+    }
+    
     if(d.jeitao.name === "O Chefe" && move.type === "Social") mult *= 0.5; 
 
     let baseDmg = ((levelFactor * move.power * (atkStat / defStat)) / 5) + 5;
@@ -1434,7 +1536,7 @@ function calcDamage(a, d, move) {
 
     let dmg = Math.round(baseDmg * stab * mult * critMult * passiveMult * rng);
     
-    // TETO DE DANO ESTRUTURAL (Camada 2 - Garante que ninguém morre de OHKO)
+    // TETO DE DANO ESTRUTURAL
     const tetoDeDano = Math.round(d.maxhp * 0.45);
     if (dmg > tetoDeDano) {
         dmg = tetoDeDano;
@@ -1442,7 +1544,8 @@ function calcDamage(a, d, move) {
 
     dmg = Math.max(1, dmg);
 
-    return {dmg, mult, crit, missed:false, clarinha};
+    // 👇 RETORNA AS FLAGS NOVAS
+    return {dmg, mult, crit, missed:false, clarinha, visaoTrig, esquivaPassiva: false};
 }
 
 async function applyEffect(move, atk, def) {
@@ -1458,7 +1561,7 @@ async function applyEffect(move, atk, def) {
     }
     if((k === "confuse" || k === "dmg_confuse") && !def.status && Math.random() < 0.6) { 
         def.status = "confuso"; def.statusTurns = 2 + Math.floor(Math.random()*2); 
-        await say(`🌀 ${def.name.split(" ")[0]} ficou confuso e se atrapalhou!`);
+        await say(`🌀 ${def.name.split(" ")[0]} ficou confuso com muitas prioridades!`);
     }
     if(k === "dmg_poison" && !def.status && Math.random() < 0.6) { 
         def.status = "veneno"; 
@@ -1470,7 +1573,7 @@ async function applyEffect(move, atk, def) {
     }
     if(k === "dmg_raise_spd") { 
         atk.stages["spd"] = Math.min(6, (atk.stages["spd"] || 0) + 1);
-        await say(`⚡ A velocidade de ${atk.name.split(" ")[0]} subiu!`); 
+        await say(`⚡ A velocidade de ${atk.name.split(" ")[0]} subiu depois do café!`); 
     }
 
     if (atk.jeitao.name === "Gosta de conversa" && Math.random() < 0.2 && !def.skip && def.hp > 0) {
@@ -1483,7 +1586,7 @@ async function performMove(atk, def, move, targetId) {
     // 1. Verificação de Skip (Pulou a rodada)
     if(atk.skip) { 
         // Puxa a frase personalizada, ou usa uma padrão se não tiver
-        const skipMsg = typeof atk.skip === 'string' ? atk.skip : `💤 ${atk.name.split(" ")[0]} perdeu a concentração!`;
+        const skipMsg = typeof atk.skip === 'string' ? atk.skip : `💤 ${atk.name.split(" ")[0]} perdeu a concentração com tantas prioridades!`;
         atk.skip = false; 
         await say(skipMsg); 
         return; 
@@ -1517,23 +1620,36 @@ async function performMove(atk, def, move, targetId) {
     let totalDmg = 0, anyCrit = false, lastMult = 1, anyMiss = false, clarinhaTrig = false;
     let missMsg = `❌ O ataque falhou!`; // Fallback padrão
 
-    // 4. Cálculo e Aplicação de Dano
+// 4. Cálculo e Aplicação de Dano
     if(def.hp > 0 && move.power > 0) {
         const r = calcDamage(atk, def, move);
         
         if(r.missed) { 
             anyMiss = true; 
-            if(r.missText) missMsg = r.missText; // Captura a frase engraçada do erro!
+            if(r.missText) missMsg = r.missText; 
+            
+            // 🌟 FEEDBACK VISUAL: Esquivas do Gabriel / Guilherme
+            if(r.esquivaPassiva) {
+                const defId = targetId === 'monE' ? 'monP' : 'monE'; // O texto sobe em quem esquivou
+                spawnFloatingText("ESQUIVOU!", "#7ec8c2", defId, 0);
+            }
         } else {
             lastMult = r.mult;
             if(r.crit) anyCrit = true;
             if(r.clarinha) clarinhaTrig = true;
 
-            // Passiva: Hora Extra (Sturdy)
+            // 🌟 FEEDBACK VISUAL: Hora Extra da Isis
             if(def.jeitao.name === "Hora Extra" && r.dmg >= def.hp && def.hp > 1 && !def.sturdyUsed) {
                 r.dmg = def.hp - 1;
                 def.sturdyUsed = true;
-                await say(`⏱️ ${def.name.split(" ")[0]} fez Hora Extra e segurou com 1 HP!`);
+                spawnFloatingText("HORA EXTRA!", "#e0a828", targetId, 0);
+                await say(`⏱️ ${def.name.split(" ")[0]} fez Hora Extra na draper e sobreviveu com 1 HP!`);
+            }
+            
+            // 🌟 FEEDBACK VISUAL: Visão Analítica do Leonardo
+            if(r.visaoTrig) {
+                spawnFloatingText("DEFENDEU!", "#4ea37d", targetId, 0);
+                await say(`🛡️ A Visão Analítica de ${def.name.split(" ")[0]} anulou metade do dano do processo!`);
             }
 
             def.hp = Math.max(0, def.hp - r.dmg);
@@ -1548,7 +1664,7 @@ async function performMove(atk, def, move, targetId) {
             spawnFloatingText(`-${r.dmg}`, '#fff', targetId, 0);
             if(r.crit) spawnFloatingText("CRÍTICO!", "#FFD700", targetId, 200);
             if(lastMult > 1.1) spawnFloatingText("SUPER EFICAZ!", "#4cae6a", targetId, 400);
-            else if(lastMult < 0.9 && lastMult > 0) spawnFloatingText("POUCO EFETIVO", "#d8442f", targetId, 400);
+            else if(lastMult < 0.9 && lastMult > 0 && !r.visaoTrig) spawnFloatingText("POUCO EFETIVO", "#d8442f", targetId, 400);
 
             renderBattle();
             await sleep(600);
@@ -1608,7 +1724,7 @@ async function performMove(atk, def, move, targetId) {
         await sleep(600);
         document.getElementById(targetId).classList.remove('flash');
 
-        await say(`⚠️ A DIRETORIA NÃO GOSTOU DOS NÚMEROS!`);
+        await say(`⚠️ CHAMA O TOMAS!`);
         await say(`📈 Leandro entrou em FÚRIA! Recuperou HP e seus atributos dispararam!`);
     }
 }
@@ -1634,18 +1750,21 @@ async function endOfTurn() {
 }
 
 async function handleEnemyDefeat() {
-   const e = act(E);
-   
+    const e = act(E);
+
     if (e.key !== "Leandro") {
         run.battlesWon++; 
     }
 
     await say(`${e.name.split(" ")[0]} foi superado na discussão!`);
-    
+
+    // Salvamos os níveis antigos para mostrar a evolução "De -> Para" na tela
+    const oldLevels = run.team.map(m => m.level);
+
     let leveledUp = false;
     run.team.forEach(m => {
         if(m.hp > 0) {
-           m.level += 1;
+            m.level += 1;
             const data = ROSTER[m.key];
             const boost = 1 + (m.level - 5) * 0.15;
             
@@ -1657,27 +1776,79 @@ async function handleEnemyDefeat() {
             m.def = Math.round(data.base.def * boost);
             m.spd = Math.round(data.base.spd * boost);
             
-            // Recupera o HP ganho pelo nível + 20% do HP máximo como bônus de cura
+            // Cura bônus pelo level up
             m.hp = Math.min(m.maxhp, m.hp + hpGain + Math.round(m.maxhp * 0.20)); 
             leveledUp = true;
         }
     });
 
-    if (leveledUp) {
-        await say(`A equipe ganhou experiência na reunião! Todos subiram de Nível e recuperaram parte da energia.`);
-    }
-
     if (e.key === "Leandro") {
         showEndScreen(true);
     } else {
-        await offerRecruit(e.key);
-        
-        run.step++;
-        run.eventDone = false;
-        run.currentEvents = null;
-        run.nextEnemyKey = null;
-        showChoices();
+        // Redireciona para a nova tela de celebração, passando o inimigo derrotado
+        renderVictoryScreen(e.key, oldLevels);
     }
+}
+
+// --- NOVA TELA DE RESULTADOS DE BATALHA ---
+function renderVictoryScreen(enemyKey, oldLevels) {
+    let html = `
+        <h1 class="pixel" style="color: var(--hp-green); font-size: 24px; margin-bottom: 10px; line-height: 1.4; text-shadow: 2px 2px 0 #000;">VITÓRIA!</h1>
+        <p style="font-size: 14px; font-weight: 700; margin-bottom: 25px; color: #ddd;">A equipe ganhou experiência na reunião!</p>
+        
+        <div style="background: var(--panel-line); border: 3px solid #5a6b5f; border-radius: 12px; padding: 15px; margin-bottom: 25px; width: 100%; max-width: 320px;">
+            <div style="display: flex; flex-direction: column; gap: 15px;">
+    `;
+
+    // Lista apenas os personagens vivos e mostra o crescimento deles
+    run.team.forEach((m, i) => {
+        if (m.hp > 0) {
+            const oldLvl = oldLevels[i];
+            const pct = Math.max(0, Math.round((m.hp / m.maxhp) * 100));
+            const col = pct > 50 ? "var(--hp-green)" : pct > 20 ? "var(--hp-amber)" : "var(--hp-red)";
+            
+            html += `
+                <div style="display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                    <div class="team-mini" style="border-color: var(--hp-green);">
+                        <div class="team-mini-img" style="background-image:url('${IMG[m.key]}'); transform: ${getTransform(m.key, 'miniaturas')};"></div>
+                    </div>
+                    <div style="flex: 1; text-align: left;">
+                        <div style="font-weight: 900; font-size: 14px; color: #fff; margin-bottom: 4px;">${m.name.split(" ")[0]}</div>
+                        <div class="pixel" style="font-size: 9px; color: var(--hp-green); margin-bottom: 6px;">Nv ${oldLvl} <span style="color:#fff">➔</span> Nv ${m.level}</div>
+                        <div class="hptrack" style="margin: 0; height: 6px;"><div class="hpfill" style="width:${pct}%; background:${col}"></div></div>
+                        <div style="font-size: 9px; text-align: right; color: #aaa; margin-top: 3px; font-family: 'Press Start 2P', monospace;">${m.hp}/${m.maxhp}</div>
+                    </div>
+                    <div style="font-weight: 900; font-size: 12px; color: var(--hp-amber);">+XP</div>
+                </div>
+            `;
+        }
+    });
+
+    html += `
+            </div>
+            <div style="margin-top: 15px; text-align: center; color: var(--hp-amber); font-weight: 800; font-size: 12px; background: rgba(0,0,0,0.3); padding: 8px; border-radius: 6px;">+600 PTS</div>
+        </div>
+        
+        <button class="ov-btn" style="max-width: 320px;" onclick="continueAfterVictory('${enemyKey}')">CONTINUAR JORNADA</button>
+    `;
+
+    document.getElementById('victoryScreen').innerHTML = html;
+    showScreen('victoryScreen');
+}
+
+// --- FUNÇÃO PARA SAIR DA TELA DE VITÓRIA ---
+async function continueAfterVictory(enemyKey) {
+    SFX.click();
+    
+    // Abre a tela de Recrutamento
+    await offerRecruit(enemyKey);
+    
+    // Após aceitar/rejeitar o recruta, volta pro mapa e segue a vida
+    run.step++;
+    run.eventDone = false;
+    run.currentEvents = null;
+    run.nextEnemyKey = null;
+    showChoices();
 }
 
 async function useMove(idx) {
@@ -1749,7 +1920,7 @@ async function showEndScreen(win) {
         </div>`;
     showScreen('endScreen');
 
-    let score = 0;
+let score = 0;
     let aliveCount = 0;
     let extraLevels = 0;
 
@@ -1764,17 +1935,33 @@ async function showEndScreen(win) {
     score += run.quizPoints; 
     score += extraLevels * 200;
     
+    // Variável para sinalizar se a recompensa foi ativada (para mostrar na tela depois)
+    let bonusProtagonista = false;
+
     if (win) {
         score += 5000;
         score += aliveCount * 1000;
         SFX.win();
+
+        // --- SISTEMA DE RECOMPENSA DO PROTAGONISTA ---
+        // Resgata o nome digitado na tela inicial
+        // --- SISTEMA DE RECOMPENSA DO PROTAGONISTA ---
+        const nomeJogador = getLS('ppi_playerName', '').trim().toUpperCase();
+        const temXara = run.team.some(m => m.hp > 0 && m.key.toUpperCase() === nomeJogador);
+
+        if (temXara) {
+            score += 2500; 
+            bonusProtagonista = true;
+            unlockFeito("protagonista"); // 🏆 NOVO: Desbloqueia o feito oficial!
+        }
+        // ---------------------------------------------
     } else {
         SFX.lose();
     }
     
     score -= run.deaths * 300; 
-    score += (run.feitosNovos || 0) * 500;
-    score = Math.max(0, score); 
+    score += (run.pontosFeitosNovos || 0);
+    score = Math.max(0, score);
 
     let rank = "D";
     let rankName = "Estagiário";
@@ -1834,6 +2021,7 @@ async function showEndScreen(win) {
                     </div>
                 </div>
                 ${isNewRecord ? `<div style="font-size:10px; color:var(--hp-green); font-weight:800; margin-top:10px;">🌟 NOVO RECORDE! 🌟</div>` : ''}
+                ${bonusProtagonista ? `<div style="font-size:10px; color:var(--hp-amber); font-weight:800; margin-top:10px; padding: 5px; border: 2px dashed var(--hp-amber); border-radius: 6px; animation: optBlink 0.5s infinite alternate;">👑 BÔNUS DE PROTAGONISTA (+2500 PTS) 👑</div>` : ''}
             </div>
 
             <div style="display:flex; justify-content:center; gap:8px; flex-wrap:wrap; margin-bottom: 20px;">
@@ -1862,7 +2050,7 @@ async function showEndScreen(win) {
                 </div>
                 <div>
                     <div style="font-size:9px; color:#aaa; margin-bottom:3px; text-transform:uppercase;">Feitos</div>
-                    <div style="font-weight:800; font-size:12px;">${getFeitos().size}/13</div>
+                    <div style="font-weight:800; font-size:12px;">${getFeitos().size}/${FEITOS_LIST.length}</div>
                 </div>
             </div>
 
@@ -1885,11 +2073,24 @@ async function showEndScreen(win) {
 function showFeitos(fromStart = false) {
     showScreen('feitosScreen');
     let html = `<h2 class="pixel" style="font-size:14px; margin-bottom:30px; color:white; text-align:center;">FEITOS DA JORNADA</h2>`;
+    
     FEITOS_LIST.forEach(f => {
         const got = getFeitos().has(f.id);
-        html += `<div style="padding:15px; border-radius: 8px; background: ${got ? 'var(--accent)' : 'var(--panel-line)'}; color:white; margin-bottom: 10px; font-weight:800; box-shadow: 0 3px 0 rgba(0,0,0,0.2);">
-            ${got?'🏆':'🔒'} ${f.n}<br>
-            <span style="font-size:9px; font-weight:400; color:#ddd; margin-top: 4px; display:block;">${f.desc}</span>
+        
+        // 👇 Verifica qual é o feito para dar o valor correto de pontos
+        const pontosValor = "+" + f.pts;
+        
+        html += `<div style="padding:15px; border-radius: 8px; background: ${got ? 'var(--accent)' : 'var(--panel-line)'}; color:white; margin-bottom: 10px; font-weight:800; box-shadow: 0 3px 0 rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center;">
+            
+            <div style="flex: 1; padding-right: 10px;">
+                ${got?'🏆':'🔒'} ${f.n}<br>
+                <span style="font-size:9px; font-weight:400; color:#ddd; margin-top: 4px; display:block;">${f.desc}</span>
+            </div>
+            
+            <div style="font-family: 'Press Start 2P', monospace; font-size: 8px; color: #ffd700; background: rgba(0,0,0,0.2); padding: 6px; border-radius: 6px; text-align: center; line-height: 1.4; white-space: nowrap;">
+                ${pontosValor}<br>PTS
+            </div>
+
         </div>`;
     });
     
