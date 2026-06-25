@@ -647,7 +647,7 @@ function showModal(text, callback) {
 }
 
 // --- SISTEMA DE HABILIDADE (QTE) ---
-function playAttackMinigame(attackPower) {
+function playAttackMinigame(attackPower, typeMultiplier = 1.0) {
     return new Promise((resolve) => {
         const overlay = document.getElementById('qte-overlay');
         const atkUI = document.getElementById('qte-attack');
@@ -661,14 +661,27 @@ function playAttackMinigame(attackPower) {
         feedback.innerText = "ATAQUE!";
         feedback.style.color = "white";
 
-        let zoneWidth = Math.max(15, 60 - (attackPower * 0.4)); 
+        // --- NOVA DIFICULDADE DINÂMICA (Hardcore) ---
+        // A barra base diminui de acordo com o poder do golpe
+        let baseWidth = 35 - (attackPower / 4); 
+        
+        // Ajusta pelo tipo do ataque:
+        if (typeMultiplier > 1) {
+            baseWidth -= 10; // SUPER EFICAZ: Barra minúscula!
+        } else if (typeMultiplier < 1) {
+            baseWidth += 15; // POUCO EFETIVO: Barra gigante!
+        }
+        
+        // Trava o tamanho: Nunca menor que 6%, nunca maior que 45%
+        let zoneWidth = Math.max(6, Math.min(45, baseWidth)); 
         targetZone.style.width = zoneWidth + '%';
         
+        // Posição aleatória na tela
         let zoneLeft = Math.random() * (100 - zoneWidth);
         targetZone.style.left = zoneLeft + '%';
 
         let cursorPos = 0;
-        let speed = 2.5; 
+        let speed = 3.2; // ⚡ Aumentamos a velocidade (antes era 2.5)
         let direction = 1;
         let animationId;
         let active = true;
@@ -702,12 +715,13 @@ function playAttackMinigame(attackPower) {
             const zoneStart = zoneLeft;
             const zoneEnd = zoneLeft + zoneWidth;
             
+            // Margens de tolerância apertadas
             if (cursorCenter >= zoneStart && cursorCenter <= zoneEnd) {
                 finishAction(1.0, "PERFEITO!", "var(--hp-green)");
-            } else if (cursorCenter >= zoneStart - 10 && cursorCenter <= zoneEnd + 10) {
-                finishAction(0.7, "BOM!", "var(--hp-amber)");
+            } else if (cursorCenter >= zoneStart - 8 && cursorCenter <= zoneEnd + 8) {
+                finishAction(0.6, "BOM!", "var(--hp-amber)"); // Antes dava 0.7, agora pune mais o "Bom"
             } else {
-                finishAction(0.4, "FRACO!", "var(--hp-red)");
+                finishAction(0.3, "FRACO!", "var(--hp-red)"); // Antes dava 0.4 de dano, agora dá só 0.3
             }
         };
 
@@ -1551,7 +1565,8 @@ async function performMove(atk, def, move, targetId) {
             // === INTEGRAÇÃO DO QTE AQUI ===
             let qteMultiplier = 1.0;
             if (targetId === 'monE') {
-                qteMultiplier = await playAttackMinigame(move.power);
+                // 👇 AGORA ENVIAMOS A EFETIVIDADE (r.mult) PARA O MINIGAME!
+                qteMultiplier = await playAttackMinigame(move.power, r.mult);
             } else if (targetId === 'monP') {
                 qteMultiplier = await playDefenseMinigame();
             }
