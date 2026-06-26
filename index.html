@@ -439,7 +439,7 @@ const ITEMS = [
     { id: "galinha", name: "Galinha Adestrada do Mateus", icon: "galinha.png", desc: "+30 Ataque (Apenas Líder)", effect: () => { run.team[0].atk += 30; } },
     { id: "cafe", name: "Café do Igor", icon: "cafe.png", desc: "+30 Velocidade (Apenas Líder)", effect: () => { run.team[0].spd += 30; } },
     { id: "mala", name: "Mala Presa da Isis", icon: "mala.png", desc: "+80 Max HP (Apenas Líder)", effect: () => { run.team[0].maxhp += 80; run.team[0].hp += 80; } },
-    { id: "doce", name: "Doce de Leite da Barbara", icon: "doce_de_leite.png", desc: "+10 em Todos os Status (Apenas Líder)", effect: () => { let p = run.team[0]; p.atk += 10; p.def += 10; p.spd += 10; } },
+    { id: "doce", name: "Doce de Leite da Barbara", icon: "docedeleite.png", desc: "+10 em Todos os Status (Apenas Líder)", effect: () => { let p = run.team[0]; p.atk += 10; p.def += 10; p.spd += 10; } },
     { id: "boina", name: "Boina do Marcelo", icon: "boina.png", desc: "+5 em Todos os Status (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) { m.atk += 5; m.def += 5; m.spd += 5; } }); } },
     { id: "poi", name: "POI do Leonardo", icon: "poi.png", desc: "+1 Nível (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) { m.level++; m.maxhp += 15; m.hp += 15; m.atk += 5; m.def += 5; m.spd += 5; } }); } },
     { id: "bingo", name: "Bingo da Palominha", icon: "bingo.png", desc: "Recupera 100% HP (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp > 0) m.hp = m.maxhp; }); } },
