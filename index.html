@@ -433,7 +433,7 @@ const IMG = {
 const ITEMS = [
     { id: "termopar", name: "Termopar do Eric", icon: "termopar.png", desc: "+15 Defesa (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) m.def += 15; }); } },
     { id: "ods", name: "ODS do Daniel", icon: "ods.png", desc: "+15 Ataque (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) m.atk += 15; }); } },
-    { id: "festa_junina", name: "Festa Junina do Edinei", icon: "festa_junina.png", desc: "+15 Velocidade (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) m.spd += 15; }); } },
+    { id: "festa_junina", name: "Festa Junina do Edinei", icon: "festajunina.png", desc: "+15 Velocidade (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) m.spd += 15; }); } },
     { id: "dinheiro", name: "Dinheiro do Guilherme", icon: "dinheiro.png", desc: "+50 Max HP (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) { m.maxhp += 50; m.hp += 50; } }); } },
     { id: "coxilha", name: "Coxilha do Gabriel", icon: "coxilha.png", desc: "+30 Defesa (Apenas Líder)", effect: () => { run.team[0].def += 30; } },
     { id: "galinha", name: "Galinha Adestrada do Mateus", icon: "galinha.png", desc: "+30 Ataque (Apenas Líder)", effect: () => { run.team[0].atk += 30; } },
@@ -443,7 +443,7 @@ const ITEMS = [
     { id: "boina", name: "Boina do Marcelo", icon: "boina.png", desc: "+5 em Todos os Status (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) { m.atk += 5; m.def += 5; m.spd += 5; } }); } },
     { id: "poi", name: "POI do Leonardo", icon: "poi.png", desc: "+1 Nível (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp>0) { m.level++; m.maxhp += 15; m.hp += 15; m.atk += 5; m.def += 5; m.spd += 5; } }); } },
     { id: "bingo", name: "Bingo da Palominha", icon: "bingo.png", desc: "Recupera 100% HP (Toda a equipe)", effect: () => { run.team.forEach(m => { if(m.hp > 0) m.hp = m.maxhp; }); } },
-    { id: "pao", name: "Pão de Queijo do Leandro", icon: "pao_de_queijo.png", desc: "Recupera 100% HP e +2 Níveis (Apenas Líder)", effect: () => { let p = run.team[0]; p.hp = p.maxhp; p.level += 2; p.maxhp += 30; p.hp += 30; p.atk += 10; p.def += 10; p.spd += 10; } }
+    { id: "pao", name: "Pão de Queijo do Leandro", icon: "paodequeijo.png", desc: "Recupera 100% HP e +2 Níveis (Apenas Líder)", effect: () => { let p = run.team[0]; p.hp = p.maxhp; p.level += 2; p.maxhp += 30; p.hp += 30; p.atk += 10; p.def += 10; p.spd += 10; } }
 ];
 
 function offerItems() {
@@ -512,7 +512,7 @@ const ROSTER = {
     Isis: { name: "Isis", types: ["Processo"], base: { hp: 60, atk: 50, def: 65, spd: 45 }, jeitao: { name: "Hora Extra", desc: "Sobrevive com 1 HP a golpe fatal." }, moves: [{ name: "Ajustar Receita DSS", type: "Processo", power: 55, acc: 0.95, kind: "dmg" }, { name: "Ajudar no SAP", type: "Tech", power: 40, acc: 1.0, kind: "dmg_debuff", stat: "def" }] },
     Igor: { name: "Igor", types: ["Processo"], base: { hp: 50, atk: 60, def: 40, spd: 65 }, jeitao: { name: "Cafeína", desc: "Sempre ataca primeiro." }, moves: [{ name: "Tomar um Cafezinho", type: "Social", power: 50, acc: 1.0, kind: "dmg_raise_spd" }, { name: "Criar uma ODS", type: "Tech", power: 60, acc: 0.90, kind: "dmg" }] },
     Paloma: { name: "Paloma", types: ["Social"], base: { hp: 60, atk: 45, def: 55, spd: 60 }, jeitao: { name: "Engagement", desc: "Reduz ataque do inimigo." }, moves: [{ name: "Dinâmica em grupo", type: "Social", power: 45, acc: 1.0, kind: "dmg" }, { name: "Mapa de Carreira", type: "Processo", power: 50, acc: 1.0, kind: "dmg_debuff", stat: "def" }] },
-    Leandro: { name: "Leandro", types: ["Gestão"], base: { hp: 150, atk: 75, def: 75, spd: 60 }, jeitao: { name: "O Chefe", desc: "Resiste a ataques Sociais (Não aprova ESign)." }, moves: [{ name: "Cobrar Indicador", type: "Gestão", power: 65, acc: 0.75, kind: "dmg_debuff", stat: "atk" }, { name: "Apresentação Surpresa", type: "Processo", power: 65, acc: 0.85, kind: "dmg" }] }
+    Leandro: { name: "Leandro", types: ["Gestão"], base: { hp: 150, atk: 85, def: 75, spd: 60 }, jeitao: { name: "O Chefe", desc: "Resiste a ataques Sociais (Não aprova ESign)." }, moves: [{ name: "Cobrar Indicador", type: "Gestão", power: 70, acc: 0.75, kind: "dmg_debuff", stat: "atk" }, { name: "Apresentação Surpresa", type: "Processo", power: 70, acc: 0.9, kind: "dmg" }] }
 };
 
 const FEITOS_LIST = [
